@@ -1,20 +1,12 @@
 #ifndef PROJECT_TOHNA_ALGO2_H
 #define PROJECT_TOHNA_ALGO2_H
-#include "fileHandler.h"
 #include "Modularity.h"
+#include "Power_iter.h"
 #include "Group_handler.h"
-#include "Algo3.h"
-#include "Algo2.h"
-#include <stdio.h>
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
 
-
-#define IS POSITIVE(X) ((X) > 0.00001)
-
-
-int divide_in_two(Graph *graph);
-
+int compute_s(SymMatrix *b_matrix_p , Pair *pair_p, int* s);
+int correction();
+int divide_group_into_two(int *input_set, SymMatrix *b , Pair *pair);
+int produce_input_set(Vector* input_set);
 
 #endif //PROJECT_TOHNA_ALGO2_H

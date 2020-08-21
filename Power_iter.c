@@ -1,0 +1,163 @@
+
+#include "Power_iter.h"
+
+//create random vector for initialization of power iteration
+int create_vec(int size, double *vec){
+    int i;
+    clock_t end, start;
+    srand(time(NULL));
+    start = clock();
+    for (i=0; i<size; i++){
+        vec[i] = (double)rand();
+    }
+    return 0;
+}
+
+//add ||C|| to diagonal elements of symmetric matrix B
+int matrix_shift(SymMatrix *b_matrix_p){
+    int i=0, j=0,count=0; double c_norm=0, max=0;
+
+    //checking sum of the maximum column
+    for (j=0; j<b_matrix_p->col_row_n; j++){
+        c_norm=0;
+        for (i=0; i<b_matrix_p->col_row_n;i++){
+            if (i>=j){
+                c_norm+= fabs(b_matrix_p->value[i*(i+1)/2 + j]);
+            }
+            else{
+                c_norm+= fabs(b_matrix_p->value[j*(j+1)/2 + i]);
+            }
+        }
+        if (c_norm>max){
+            max = c_norm;
+        }
+    }
+//    printf("\n\n%f", max);
+
+    //matrix shifting using max_column_sum
+
+    count = (int)(pow(b_matrix_p->col_row_n,2) + b_matrix_p->col_row_n)/2;
+
+    for (j = 0, i=2; j < count; j+=i, i++) {
+        b_matrix_p->value[j] = b_matrix_p->value[j] + max;
+    }
+}
+
+//multiply vector by symmetric shifted matrix B
+int norm_vec (double *rand_vec, SymMatrix *b_matrix_p,double *row_norm){
+    int i=0, j=0;
+    double *pointer2 = NULL, *pointer1 = NULL, *pointer3=NULL, *pointer4=NULL, *pointer5=NULL;
+    double temp = 0, temp2=0;
+
+//    row_norm = (double *) malloc(b_matrix_p->col_row_n * sizeof(double));
+
+    pointer1 = rand_vec;
+    pointer2 = &b_matrix_p->value[0];
+    pointer3 = &temp;
+    pointer4 = &row_norm[0];
+    pointer5 = &temp2;
+
+    for(i=0; i<b_matrix_p->col_row_n; i++) {
+        for (j = 0; j < b_matrix_p->col_row_n; j++) {
+            if (i>=j){
+                *pointer3 += (*(pointer2 + (i*(i+1)/2 + j))) * (*(pointer1+j));
+            }
+            else{
+                *pointer3 += (*(pointer2 + (j*(j+1)/2 + i))) * (*(pointer1+j));
+            }
+
+        }
+
+        (*(pointer4 + i)) = *pointer3;
+        *pointer5+=(*pointer3)*(*pointer3);
+        temp=0;
+    }
+
+    pointer4 = &row_norm[0];
+    temp = sqrt(temp2);
+    for (i = 0; i < b_matrix_p->col_row_n; i++) {
+        (*(pointer4 + i)) = (*(pointer4 + i))/temp;
+    }
+//    for (i=0; i<b_matrix_p->col_row_n; i++){
+//        printf("\n\n%f", row_norm[i] );
+//    }
+
+    return 0;
+}
+
+//check if the difference between two vectors is ~0
+int check_difference(int height ,double *temp ,double *next){
+    double difference=0.0, *pointer1 = NULL, *pointer2 = NULL;
+    int i;
+
+    pointer1 = &temp[0];
+    pointer2 = &next[0];
+
+    for (i = 0; i < height; i++) {
+        difference=fabs((*(pointer1 + i))-(*(pointer2 + i)));
+        if (!IS_POSITIVE(difference)){
+            continue;
+        }
+        else{
+            return 0;
+        }
+      }
+    return 1;
+}
+
+
+//power iteration which starts with random vector and matrix shift and return the Pair structure with eigenvector and eigenvalue
+int powerIteration(SymMatrix *bg_matrix_p ,Pair* pair_p){
+    double *next = NULL, *temp = NULL, *row_norm = NULL,  *vec = NULL, value=0.0;
+    int check, true=0, count = 0, i=0;
+    vec = (double *)malloc(bg_matrix_p->col_row_n*sizeof(double));
+    row_norm = (double *)malloc(bg_matrix_p->col_row_n*sizeof(double));
+
+    create_vec(bg_matrix_p->col_row_n, vec);
+    for (i=0; i<bg_matrix_p->col_row_n; i++){
+        printf("\n\n%f",vec[i]);
+    }
+
+//    count = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
+//    for (i=0; i<count; i++){
+//        printf("\n\n%f", bg_matrix_p->value[i] );
+//    }
+    matrix_shift(bg_matrix_p);
+
+//    for (i=0; i<count; i++){
+//        printf("\n\n%f", bg_matrix_p->value[i] );
+//    }
+
+
+    temp = vec;
+    while (true == 0) {
+        norm_vec(temp, bg_matrix_p, row_norm);
+        for (i=0; i<bg_matrix_p->col_row_n; i++){
+            printf("\n%f", row_norm[i] );
+        }
+        check=check_difference(bg_matrix_p->col_row_n ,temp ,row_norm);
+        if (check==0){
+            free(temp);
+            temp = row_norm;
+            row_norm = (double *)malloc(bg_matrix_p->col_row_n*sizeof(double));
+        }
+        else{
+            free(temp);
+            true=1;
+        }
+    }
+
+    pair_p->eigenvector = row_norm;
+
+    //find corresponding eigenvalue of the shifted matrix
+    double denominator=0.0, numerator = 0.0;
+    for(i=0; i< bg_matrix_p->col_row_n;i++){
+        denominator+= pair_p->eigenvector[i]*pair_p->eigenvector[i];
+    }
+
+//    bg_matrix_p->value;
+
+
+//    free(row_norm);
+    return 0;
+}
