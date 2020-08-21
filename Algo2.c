@@ -10,7 +10,8 @@ int produce_input_set(Vector* input_set){
 }
 
 int compute_s(SymMatrix *b_matrix_p , Pair *pair_p, int* s){
-    s = NULL; int i=0;
+    int i=0;
+    s = NULL;
     s = (int*)malloc(b_matrix_p->col_row_n * sizeof(int));
     for (i=0; i<b_matrix_p->col_row_n; i++){
         if (pair_p->eigenvector[i]>0){

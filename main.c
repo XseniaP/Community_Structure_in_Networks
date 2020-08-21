@@ -3,20 +3,20 @@
 
 int main(int argc,char* argv[]) {
     //declarations , initializations
-    Graph new_graph = {0,NULL}; Vector deg_vec = {0,NULL};
+    Graph new_graph = {0,0,NULL,NULL}; Vector deg_vec = {0,NULL};
     SymMatrix b_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL}; SymMatrix bg_matrix = {0, NULL };
-    Pair pair = {0.0, NULL}; Vector input_set = {0,NULL}; SparseMatrix adj_matrix = {0, NULL};
-    int i=0;
+    Pair pair = {0.0, NULL}; Vector input_set = {0,NULL}; SparseMatrix adj_matrix = {0, NULL,NULL, NULL};
+    int i=0, a, size;Graph *myGraph_p;SymMatrix *b_matrix_p,*bg_matrix_p, *bg_hat_matrix_p;Pair* pair_p;Vector *input_set_p;
     //Pointers
-    new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; Graph *myGraph_p = &new_graph;
-    SymMatrix *b_matrix_p = &b_matrix;SymMatrix *bg_matrix_p = &bg_matrix; SymMatrix *bg_hat_matrix_p = &bg_hat_matrix; Pair* pair_p = &pair; Vector *input_set_p = &input_set;
+    new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
+    b_matrix_p = &b_matrix;bg_matrix_p = &bg_matrix; bg_hat_matrix_p = &bg_hat_matrix; pair_p = &pair; input_set_p = &input_set;
     //check command line args
     if (argc<3){
         printf("Command line arguments missing\n");
         return 1;
     }
     //reading the file, creating the graph with Adj matrix and degree vector
-    int a = readFile(argv[1], myGraph_p);
+    a = readFile(argv[1], myGraph_p);
     if (a){
         printf("Couldn't read the file\n");
         return 1;
@@ -42,7 +42,7 @@ int main(int argc,char* argv[]) {
     matrix_bg(b_matrix_p, input_set_p, bg_matrix_p);
 
 
-    int size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
+    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
 //    printf("\n%d", size);
 //    for (i=0; i<size; i++){
 //        printf("%c",'\n');

@@ -3,7 +3,7 @@
 
 int readFile(char *fileName, struct Graph *graph) {
     int buffer1, buffer2,adj_loc=0,n = 0, i = 0, j=0, m=0;
-    FILE * stream;
+    FILE * stream; unsigned long a;
     stream = fopen(fileName, "r");
     if(stream == NULL){
         printf("Error reading the file\n");
@@ -17,7 +17,7 @@ int readFile(char *fileName, struct Graph *graph) {
     graph->deg_vec->data = (int*) malloc( n * sizeof(int));
 
     for (i=0; i<graph->number_of_nodes; i++){
-        unsigned long a = fread(&buffer1, sizeof(int), 1, stream);
+        a = fread(&buffer1, sizeof(int), 1, stream);
         if (a == 0)
             break;
         graph->deg_vec->data[i] = buffer1;
@@ -30,7 +30,7 @@ int readFile(char *fileName, struct Graph *graph) {
     graph->adj_matrix->row = (int*) malloc( graph->M/2* sizeof(int));
     graph->adj_matrix->col = (int*) malloc( graph->M/2* sizeof(int));
     rewind(stream);
-    unsigned long a = fread(&buffer1, sizeof(int), 1, stream);
+    a = fread(&buffer1, sizeof(int), 1, stream);
     if (a == 0) {
         printf("error reading the file after rewind\n");
         return 1;
@@ -59,10 +59,9 @@ int readFile(char *fileName, struct Graph *graph) {
     fclose(stream);
     return 0;
 }
-
-int writeToFile(char* fineName, struct Graph *graph){
-
-
-
-    return 0;
-}
+//int writeToFile(char* fineName, struct Graph *graph){
+//
+//
+//
+//    return 0;
+//}

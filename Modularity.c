@@ -11,7 +11,7 @@ int modularity_matrix(Graph *g, SymMatrix *b_matrix_p){
     // calculating first -KK/M matrix
     //adding 1 only in the places where ADJ matrix is non-empty
 
-    b_matrix_p->value = (int*) malloc( count * sizeof(double));
+    b_matrix_p->value = (double*) malloc( count * sizeof(double));
     b_matrix_p->col_row_n = g->number_of_nodes;
     count = 0;
     for (i=0; i<b_matrix_p->col_row_n; i++){
@@ -36,7 +36,6 @@ int modularity_matrix(Graph *g, SymMatrix *b_matrix_p){
 
 int matrix_bg(SymMatrix *b_matrix_p,Vector* input_set_p, SymMatrix *bg_matrix_p){
     int n=0, size=0, i=0,j=0;
-    double k=0;
     n = input_set_p->size;
     size = (int)(pow(n,2) + n)/2;
     bg_matrix_p->col_row_n = n;
@@ -47,11 +46,12 @@ int matrix_bg(SymMatrix *b_matrix_p,Vector* input_set_p, SymMatrix *bg_matrix_p)
             bg_matrix_p->value[i*(i+1)/2+j] = b_matrix_p->value[(input_set_p->data[i])*(input_set_p->data[i]+1)/2+(input_set_p->data[j])];
         }
     }
-        printf("\n%d", size);
-        for (i=0; i<size; i++){
-            printf("%c",'\n');
-            printf("%f", bg_matrix_p->value[i] );
-        }
+//        printf("\n%d", size);
+//        for (i=0; i<size; i++){
+//            printf("%c",'\n');
+//            printf("%f", bg_matrix_p->value[i] );
+//        }
+return 0;
 }
 
 int modularity_hat_matrix(SymMatrix *bg_matrix_p,SymMatrix *bg_hat_matrix_p){
