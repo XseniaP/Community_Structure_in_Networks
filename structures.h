@@ -10,10 +10,15 @@
 #include <string.h>
 #define IS_POSITIVE(X) ((X) > 0.00001)
 
-typedef struct Vector {
+typedef struct Vector_int {
     int size;
     int *data;
-}Vector;
+}Vector_int;
+
+typedef struct Vector_double {
+    int size;
+    double *data;
+}Vector_double;
 
 typedef struct SymMatrix {
     int col_row_n;
@@ -35,7 +40,7 @@ typedef struct Pair {
 typedef struct Graph {
     int number_of_nodes;
     int M;
-    Vector *deg_vec;
+    Vector_int *deg_vec;
     SparseMatrix *adj_matrix;
 }Graph;
 

@@ -1,6 +1,6 @@
 #include "Algo2.h"
 
-int produce_input_set(Vector* input_set){
+int produce_input_set(Vector_int* input_set){
     int i=0;
     input_set->data = (int *)malloc(input_set->size*sizeof(int));
     for (i=0; i<input_set->size; i++){

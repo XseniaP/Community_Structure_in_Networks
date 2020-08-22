@@ -3,13 +3,13 @@
 
 int main(int argc,char* argv[]) {
     //declarations , initializations
-    Graph new_graph = {0,0,NULL,NULL}; Vector deg_vec = {0,NULL};
+    Graph new_graph = {0,0,NULL,NULL}; Vector_int deg_vec = {0,NULL};
     SymMatrix b_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL}; SymMatrix bg_matrix = {0, NULL };
-    Pair pair = {0.0, NULL}; Vector input_set = {0,NULL}; SparseMatrix adj_matrix = {0, NULL,NULL, NULL};
-    int i=0, a, size;Graph *myGraph_p;SymMatrix *b_matrix_p,*bg_matrix_p, *bg_hat_matrix_p;Pair* pair_p;Vector *input_set_p;
+    Pair pair = {0.0, NULL}; Vector_int input_set = {0,NULL}; Vector_double row_sums = {0,NULL}; SparseMatrix adj_matrix = {0, NULL,NULL, NULL};
+    int i=0, a, size;Graph *myGraph_p;SymMatrix *b_matrix_p,*bg_matrix_p, *bg_hat_matrix_p;Pair* pair_p;Vector_int *input_set_p;Vector_double *row_sums_p;
     //Pointers
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
-    b_matrix_p = &b_matrix;bg_matrix_p = &bg_matrix; bg_hat_matrix_p = &bg_hat_matrix; pair_p = &pair; input_set_p = &input_set;
+    b_matrix_p = &b_matrix;bg_matrix_p = &bg_matrix; bg_hat_matrix_p = &bg_hat_matrix; pair_p = &pair; input_set_p = &input_set; row_sums_p=&row_sums;
     //check command line args
     if (argc<3){
         printf("Command line arguments missing\n");
@@ -26,21 +26,23 @@ int main(int argc,char* argv[]) {
     input_set.size = myGraph_p->number_of_nodes;
     produce_input_set(input_set_p);
 
-    //print adjacency matrix
-    for (i=0; i<new_graph.M/2; i++){
-        printf("%c",'\n');
-        printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
-    }
-
+    //print input set indices
 //    printf("\n%d", input_set.size);
 //    for (i=0; i<input_set.size; i++){
 //        printf("%c",'\n');
 //        printf("%d", input_set.data[i] );
 //    }
 
+
+    //print adjacency matrix
+    for (i=0; i<new_graph.M/2; i++){
+        printf("%c",'\n');
+        printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
+    }
+
+
     modularity_matrix(myGraph_p, b_matrix_p);
     matrix_bg(b_matrix_p, input_set_p, bg_matrix_p);
-
 
     size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
 //    printf("\n%d", size);
@@ -49,7 +51,7 @@ int main(int argc,char* argv[]) {
 //        printf("%f", bg_matrix_p->value[i] );
 //    }
 
-    modularity_hat_matrix(bg_matrix_p, bg_hat_matrix_p);
+    modularity_hat_matrix(bg_matrix_p, bg_hat_matrix_p, row_sums_p);
 
     size = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
 //    printf("\n%d", size);
@@ -57,7 +59,7 @@ int main(int argc,char* argv[]) {
 //        printf("%c",'\n');
 //        printf("%f", bg_hat_matrix_p->value[i] );
 //    }
-
+//    powerIteration(bg_hat_matrix_p ,pair_p, row_sums_p);
     powerIteration(bg_hat_matrix_p ,pair_p);
 
 

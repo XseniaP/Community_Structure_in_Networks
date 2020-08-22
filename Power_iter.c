@@ -14,18 +14,18 @@ int create_vec(int size, double *vec){
 }
 
 //add ||C|| (sum of max column) to diagonal elements of symmetric matrix B
-int matrix_shift(SymMatrix *b_matrix_p){
+int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
     int i=0, j=0,count=0; double c_norm=0, max=0;
 
     //checking sum of the maximum column
-    for (j=0; j<b_matrix_p->col_row_n; j++){
+    for (j=0; j<bg_hat_matrix_p->col_row_n; j++){
         c_norm=0;
-        for (i=0; i<b_matrix_p->col_row_n;i++){
+        for (i=0; i<bg_hat_matrix_p->col_row_n;i++){
             if (i>=j){
-                c_norm+= fabs(b_matrix_p->value[i*(i+1)/2 + j]);
+                c_norm+= fabs(bg_hat_matrix_p->value[i*(i+1)/2 + j]);
             }
             else{
-                c_norm+= fabs(b_matrix_p->value[j*(j+1)/2 + i]);
+                c_norm+= fabs(bg_hat_matrix_p->value[j*(j+1)/2 + i]);
             }
         }
         if (c_norm>max){
@@ -33,12 +33,12 @@ int matrix_shift(SymMatrix *b_matrix_p){
         }
     }
 //    printf("\n\n%f", max);
-
+    *max_p = max;
     //matrix shifting using max_column_sum
-    count = (int)(pow(b_matrix_p->col_row_n,2) + b_matrix_p->col_row_n)/2;
+    count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
 
     for (j = 0, i=2; j < count; j+=i, i++) {
-        b_matrix_p->value[j] = b_matrix_p->value[j] + max;
+        bg_hat_matrix_p->value[j] = bg_hat_matrix_p->value[j] + max;
     }
     return 0;
 }
@@ -77,6 +77,29 @@ int norm_vec (double *rand_vec, SymMatrix *b_matrix_p,double *row_norm){
     return 0;
 }
 
+//int norm_vec_improved_complexity (double *rand_vec, Graph *graph_p,Vector_double *row_sums_p,double max,double *row_norm, Vector_int *input_set_p){
+//    Vector_double ax, kktx; double ktx;int i, size;
+//    ax.data = (double*)calloc(row_sums_p->size,sizeof(double));
+//    kktx.data = (double*)calloc(row_sums_p->size,sizeof(double));
+//    ktx = 0.0;
+//    size = (int)(graph_p->M/2);
+//    //calculate Ax in O(m+n)
+//    for (i=0;i<size;i++){
+//        ax.data[graph_p->adj_matrix->col[i]] += rand_vec[graph_p->adj_matrix->row[i]];
+//        ax.data[graph_p->adj_matrix->row[i]] += rand_vec[graph_p->adj_matrix->col[i]];
+//    }
+//    //calculate k(kt * x)/M   in O(n)
+//    for(i=0;i<row_sums_p->size;i++){
+//        ktx += (double)rand_vec[i] * (double)graph_p->deg_vec->data[i];
+//    }
+//    for(i=0;i<graph_p->deg_vec->size;i++){
+//        ktx += (double)rand_vec[i] * (double)graph_p->deg_vec->data[i];
+//    }
+//
+//
+//    return 0;
+//}
+
 //check if the difference between two vectors is ~0
 int check_difference(int height ,double *temp ,double *next){
     double difference=0.0, *pointer1 = NULL, *pointer2 = NULL;
@@ -96,9 +119,11 @@ int check_difference(int height ,double *temp ,double *next){
 }
 
 //power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue
+//int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
 int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
-    double *temp = NULL, *row_norm = NULL,  *vec = NULL, value=0.0, denominator, numerator;
-    int check, true=0, i=0, j=0;
+    double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, value=0.0, denominator, numerator, max_v;
+    int check, true=0, i=0;
+    max = &max_v;
     vec = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
     row_norm = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
 
@@ -114,7 +139,7 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
 //        printf("\n\n%f", bg_matrix_p->value[i] );
 //    }
 
-    matrix_shift(bg_hat_matrix_p);
+    matrix_shift(bg_hat_matrix_p, max);
 
     //print shifted B[g] matrix
 //    for (i=0; i<count; i++){
@@ -148,9 +173,9 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
         denominator+= pair_p->eigenvector[i]*pair_p->eigenvector[i];
     }
 
-    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
-        numerator =
-    }
+//    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
+//        numerator =
+//    }
 
 
     value =numerator/denominator;

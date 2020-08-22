@@ -34,7 +34,7 @@ int modularity_matrix(Graph *g, SymMatrix *b_matrix_p){
     return 0;
 }
 
-int matrix_bg(SymMatrix *b_matrix_p,Vector* input_set_p, SymMatrix *bg_matrix_p){
+int matrix_bg(SymMatrix *b_matrix_p,Vector_int* input_set_p, SymMatrix *bg_matrix_p){
     int n=0, size=0, i=0,j=0;
     n = input_set_p->size;
     size = (int)(pow(n,2) + n)/2;
@@ -54,11 +54,12 @@ int matrix_bg(SymMatrix *b_matrix_p,Vector* input_set_p, SymMatrix *bg_matrix_p)
 return 0;
 }
 
-int modularity_hat_matrix(SymMatrix *bg_matrix_p,SymMatrix *bg_hat_matrix_p){
+int modularity_hat_matrix(SymMatrix *bg_matrix_p,SymMatrix *bg_hat_matrix_p, Vector_double *row_sums_p){
     int i=0, j=0, size=0; double sum=0.0;
     size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
     bg_hat_matrix_p->col_row_n = bg_matrix_p->col_row_n;
     bg_hat_matrix_p->value = (double*)malloc(size* sizeof(double));
+    row_sums_p->data = (double*)malloc(bg_hat_matrix_p->col_row_n* sizeof(double));
     for (i=0;i<bg_matrix_p->col_row_n;i++){
         sum=0.0;
         for (j=0; j<bg_matrix_p->col_row_n; j++){
@@ -72,7 +73,9 @@ int modularity_hat_matrix(SymMatrix *bg_matrix_p,SymMatrix *bg_hat_matrix_p){
             }
         }
         bg_hat_matrix_p->value[i*(i+1)/2+i] = bg_matrix_p->value[i*(i+1)/2+i] - sum;
+        row_sums_p->data[i] = sum;
     }
+    free(bg_matrix_p->value);
     return 0;
 }
 
