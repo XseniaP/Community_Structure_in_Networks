@@ -2,6 +2,7 @@
 #include "Algo2.h"
 
 int main(int argc,char* argv[]) {
+    //new branch
     //declarations , initializations
     Graph new_graph = {0,0,NULL,NULL}; Vector_int deg_vec = {0,NULL};
     SymMatrix b_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL}; SymMatrix bg_matrix = {0, NULL };
