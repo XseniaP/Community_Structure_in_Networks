@@ -23,7 +23,8 @@ int compute_s(SymMatrix *b_matrix_p , Pair *pair_p, int* s){
     }
     return 0;
 }
-
+//
+//
 //int divide_group_into_two(int *input_set, Matrix *b_matrix_p , Pair *pair_p){
 //
 //    }
