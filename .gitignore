@@ -2,3 +2,4 @@ cmake-build-debug
 sp_project.pdf
 .idea
 .DS_Store
+.project
