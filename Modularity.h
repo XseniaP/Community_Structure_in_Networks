@@ -11,7 +11,7 @@
 int modularity_matrix(Graph *g, SymMatrix *b_matrix_p);
 int matrix_bg(SymMatrix *b_matrix_p,Vector_int* input_set_p, SymMatrix *bg_matrix_p);
 int modularity_hat_matrix(SymMatrix *bg_matrix_p,SymMatrix *bg_hat_matrix, Vector_double *row_sums_p);
-int q_value();
+
 
 
 

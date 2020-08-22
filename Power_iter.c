@@ -39,6 +39,7 @@ int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
 
     for (j = 0, i=2; j < count; j+=i, i++) {
         bg_hat_matrix_p->value[j] = bg_hat_matrix_p->value[j] + max;
+//        printf("\n\n%f\n", bg_hat_matrix_p->value[j]);
     }
     return 0;
 }
@@ -122,7 +123,7 @@ int check_difference(int height ,double *temp ,double *next){
 //int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
 int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, value=0.0, denominator, numerator, max_v;
-    int check, true=0, i=0;
+    int check, true=0, i=0; int j=0; double sum=0.0, value_without_c = 0.0; double* vect_temp;
     max = &max_v;
     vec = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
     row_norm = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
@@ -140,6 +141,8 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
 //    }
 
     matrix_shift(bg_hat_matrix_p, max);
+    //print ||C|| = max column
+//    printf("\n\n %f \n\n",max_v);
 
     //print shifted B[g] matrix
 //    for (i=0; i<count; i++){
@@ -172,19 +175,33 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
     for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
         denominator+= pair_p->eigenvector[i]*pair_p->eigenvector[i];
     }
+    vect_temp = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
+    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
+        sum=0;
+        for (j = 0; j < bg_hat_matrix_p->col_row_n; j++) {
+            if (i>=j){
+                sum += bg_hat_matrix_p->value[i*(i+1)/2 + j] * pair_p->eigenvector[j];
+            }
+            else{
+                sum += bg_hat_matrix_p->value[j*(j+1)/2 + i] * pair_p->eigenvector[j];
+            }
+        }
+        vect_temp[i] = sum;
+//        printf("\n\n %f \n",vect_temp[i]);
+    }
 
-//    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
-//        numerator =
-//    }
-
+    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
+        numerator+= vect_temp[i]*pair_p->eigenvector[i];
+    }
 
     value =numerator/denominator;
 
     //deduct ||C|| to get leading eigenvalue of the original matrix
+//    printf("\n\n%f \n", value);
+    value_without_c = value - max_v;
+    pair_p->eigenvalue = value_without_c;
 
-
-//    bg_matrix_p->value;
-
+//    printf("\n\n%f \n", pair_p->eigenvalue);
 
 //    free(row_norm);
     return 0;
