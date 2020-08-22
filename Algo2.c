@@ -9,16 +9,15 @@ int produce_input_set(Vector_int* input_set){
     return 0;
 }
 
-int compute_s(SymMatrix *b_matrix_p , Pair *pair_p, int* s){
+int compute_s(Pair *pair_p, struct Vector_int* s_p){
     int i=0;
-    s = NULL;
-    s = (int*)malloc(b_matrix_p->col_row_n * sizeof(int));
-    for (i=0; i<b_matrix_p->col_row_n; i++){
+    s_p->data = (int*)malloc(s_p->size * sizeof(int));
+    for (i=0; i<s_p->size; i++){
         if (pair_p->eigenvector[i]>0){
-            s[i] = 1;
+            s_p->data[i] = 1;
         }
         else{
-            s[i] = -1;
+            s_p->data[i] = -1;
         }
     }
     return 0;

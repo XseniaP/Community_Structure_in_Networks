@@ -7,10 +7,11 @@ int main(int argc,char* argv[]) {
     Graph new_graph = {0,0,NULL,NULL}; Vector_int deg_vec = {0,NULL};
     SymMatrix b_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL}; SymMatrix bg_matrix = {0, NULL };
     Pair pair = {0.0, NULL}; Vector_int input_set = {0,NULL}; Vector_double row_sums = {0,NULL}; SparseMatrix adj_matrix = {0, NULL,NULL, NULL};
-    int i=0, a, size;Graph *myGraph_p;SymMatrix *b_matrix_p,*bg_matrix_p, *bg_hat_matrix_p;Pair* pair_p;Vector_int *input_set_p;Vector_double *row_sums_p;
+    Vector_int s ={0,NULL};
+    int i=0, a, size;Graph *myGraph_p;SymMatrix *b_matrix_p,*bg_matrix_p, *bg_hat_matrix_p;Pair* pair_p;Vector_int *input_set_p;Vector_double *row_sums_p; Vector_int* s_p;
     //Pointers
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
-    b_matrix_p = &b_matrix;bg_matrix_p = &bg_matrix; bg_hat_matrix_p = &bg_hat_matrix; pair_p = &pair; input_set_p = &input_set; row_sums_p=&row_sums;
+    b_matrix_p = &b_matrix;bg_matrix_p = &bg_matrix; bg_hat_matrix_p = &bg_hat_matrix; pair_p = &pair; input_set_p = &input_set; row_sums_p=&row_sums;s_p = &s;
     //check command line args
     if (argc<3){
         printf("Command line arguments missing\n");
@@ -62,7 +63,12 @@ int main(int argc,char* argv[]) {
 //    }
 //    powerIteration(bg_hat_matrix_p ,pair_p, row_sums_p);
     powerIteration(bg_hat_matrix_p ,pair_p);
-
+    if (pair_p->eigenvalue<=0) printf("the group is non-dividable");
+    s_p->size = bg_hat_matrix_p->col_row_n;
+    compute_s(pair_p,s_p);
+//    for (i=0;i<bg_hat_matrix_p->col_row_n;i++){
+//        printf("\n\n %d \n",s_p->data[i]);
+//    }
 
 //    powerIteration(b_matrix_p ,pair_p);
 
