@@ -23,6 +23,7 @@ int compute_s(Pair *pair_p, struct Vector_int* s_p){
     return 0;
 }
 
+
 int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modified){
     int i=0, j=0, index=0, count=0;
     graph_modified->number_of_nodes = input_set->size;
