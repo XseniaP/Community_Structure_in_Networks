@@ -24,17 +24,21 @@ int compute_s(Pair *pair_p, struct Vector_int* s_p){
 }
 
 int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modified){
-    int i=0, index=0;
+    int i=0, j=0, index=0;
     graph_modified->number_of_nodes = input_set->size;
     graph_modified->deg_vec->size = input_set->size;
     graph_modified->deg_vec->data = (int*)malloc(graph_modified->number_of_nodes* sizeof(int));
-//    for(i=0;i<graph->adj_matrix->size;i++){
-//
-//    }
-    for (i=0; i<input_set->size;i++){
-        index = input_set->data[i];
-        graph_modified->deg_vec->data[i] = graph->deg_vec->data[index];
+    for(i=0;i<graph->adj_matrix->size;i++){
+        for (j=0;j<input_set->size;j++) {
+            if ((input_set->data[i] = graph->adj_matrix->row[i]) || (input_set->data[i] = graph->adj_matrix->col[i])) {
+                index += 1;
+            }
+        }
     }
+//    for (i=0; i<input_set->size;i++){
+//        index = input_set->data[i];
+//        graph_modified->deg_vec->data[i] = graph->deg_vec->data[index];
+//    }
 return 0;
 }
 
