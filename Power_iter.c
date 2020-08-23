@@ -17,7 +17,7 @@ int create_vec(int size, double *vec){
 int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
     int i=0, j=0,count=0; double c_norm=0, max=0;
 
-    //checking sum of the maximum column
+    ///checking sum of the maximum column - O(n^2)
     for (j=0; j<bg_hat_matrix_p->col_row_n; j++){
         c_norm=0;
         for (i=0; i<bg_hat_matrix_p->col_row_n;i++){
@@ -36,7 +36,7 @@ int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
     *max_p = max;
     //matrix shifting using max_column_sum
     count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
-
+///adding sum of the max column to the diagonal - O(n)
     for (j = 0, i=2; j < count; j+=i, i++) {
         bg_hat_matrix_p->value[j] = bg_hat_matrix_p->value[j] + max;
 //        printf("\n\n%f\n", bg_hat_matrix_p->value[j]);
@@ -45,61 +45,55 @@ int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
 }
 
 //multiply vector by symmetric shifted matrix B
-int norm_vec (double *rand_vec, SymMatrix *b_matrix_p,double *row_norm){
-    int i=0, j=0; double temp = 0, temp2=0;
-    double *pointer2 = NULL, *pointer1 = NULL, *pointer3=NULL, *pointer4=NULL, *pointer5=NULL;
-    pointer1 = rand_vec; pointer2 = &b_matrix_p->value[0]; pointer3 = &temp; pointer4 = &row_norm[0]; pointer5 = &temp2;
+int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm){
+    int i=0, ind1=0,ind2=0;
+    double cons=0.0, *comp2, *comp3, sum=0.0;
 
-    for(i=0; i<b_matrix_p->col_row_n; i++) {
-        for (j = 0; j < b_matrix_p->col_row_n; j++) {
-            if (i>=j){
-                *pointer3 += (*(pointer2 + (i*(i+1)/2 + j))) * (*(pointer1+j));
-            }
-            else{
-                *pointer3 += (*(pointer2 + (j*(j+1)/2 + i))) * (*(pointer1+j));
-            }
-
-        }
-
-        (*(pointer4 + i)) = *pointer3;
-        *pointer5+=(*pointer3)*(*pointer3);
-        temp=0;
+    ///step1 - calculate A * random vector - O(M)
+    for (i=0; i<graph->M/2; i++){
+        ind1 = graph->adj_matrix->row[i];
+        ind2 = graph->adj_matrix->col[i];
+        row_norm[ind1] += rand_vec[ind2];
+        row_norm[ind2] += rand_vec[ind1];
     }
 
-    pointer4 = &row_norm[0];
-    temp = sqrt(temp2);
-    for (i = 0; i < b_matrix_p->col_row_n; i++) {
-        (*(pointer4 + i)) = (*(pointer4 + i))/temp;
+    ///step2 - to calculate Constant = Random vector * k^T - O(n)
+    for (i=0; i<graph->number_of_nodes; i++){
+        cons+=rand_vec[i]*graph->deg_vec->data[i];
     }
-//    for (i=0; i<b_matrix_p->col_row_n; i++){
-//        printf("\n\n%f", row_norm[i] );
+
+    ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
+    comp2 = (double*)malloc(graph->number_of_nodes* sizeof(double));
+    for (i=0; i<graph->number_of_nodes; i++){
+        comp2[i] = cons*graph->deg_vec->data[i]/graph->M;
+    }
+
+    ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
+    comp3 = (double*)malloc(graph->number_of_nodes* sizeof(double));
+    for (i=0; i<graph->number_of_nodes; i++){
+        comp3[i] = max*rand_vec[i];
+    }
+
+    ///step5 - combine 4 steps - O(n)
+    for (i=0; i<graph->number_of_nodes; i++){
+        row_norm[i] = row_norm[i]-comp2[i]+comp3[i];
+        sum +=pow(row_norm[i],2);
+    }
+
+    ///step6 - normalize - O(n)
+    for (i=0; i<graph->number_of_nodes; i++){
+        row_norm[i] = row_norm[i]/pow(sum,0.5);
+    }
+
+    ///print normalized vector at each step of power iter
+//    for (i=0; i<graph->number_of_nodes; i++){
+//        printf("%f\n",row_norm[i]);
 //    }
 
+    free(comp2);
+    free(comp3);
     return 0;
 }
-
-//int norm_vec_improved_complexity (double *rand_vec, Graph *graph_p,Vector_double *row_sums_p,double max,double *row_norm, Vector_int *input_set_p){
-//    Vector_double ax, kktx; double ktx;int i, size;
-//    ax.data = (double*)calloc(row_sums_p->size,sizeof(double));
-//    kktx.data = (double*)calloc(row_sums_p->size,sizeof(double));
-//    ktx = 0.0;
-//    size = (int)(graph_p->M/2);
-//    //calculate Ax in O(m+n)
-//    for (i=0;i<size;i++){
-//        ax.data[graph_p->adj_matrix->col[i]] += rand_vec[graph_p->adj_matrix->row[i]];
-//        ax.data[graph_p->adj_matrix->row[i]] += rand_vec[graph_p->adj_matrix->col[i]];
-//    }
-//    //calculate k(kt * x)/M   in O(n)
-//    for(i=0;i<row_sums_p->size;i++){
-//        ktx += (double)rand_vec[i] * (double)graph_p->deg_vec->data[i];
-//    }
-//    for(i=0;i<graph_p->deg_vec->size;i++){
-//        ktx += (double)rand_vec[i] * (double)graph_p->deg_vec->data[i];
-//    }
-//
-//
-//    return 0;
-//}
 
 //check if the difference between two vectors is ~0
 int check_difference(int height ,double *temp ,double *next){
@@ -125,17 +119,19 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, value=0.0, denominator, numerator, max_v;
     int check, true=0, i=0; int j=0; double sum=0.0, value_without_c = 0.0; double* vect_temp;
     max = &max_v;
-    vec = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
-    row_norm = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
+    vec = (double *)malloc(graph->number_of_nodes*sizeof(double));
+    /// using calloc to initialize to zero - important!
+    row_norm = (double *)calloc(graph->number_of_nodes,sizeof(double));
 
-    create_vec(bg_hat_matrix_p->col_row_n, vec);
+    /// create random vector
+    create_vec(graph->number_of_nodes, vec);
 
     ///print random vector
-    for (i=0; i<bg_hat_matrix_p->col_row_n; i++){
+    for (i=0; i<graph->number_of_nodes; i++){
         printf("\n\n%f",vec[i]);
     }
 
-    ///print B[g] matrix
+    ///print B_hat[g] matrix
 //    int count=0;
 //    count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
 //    for (i=0; i<count; i++){
@@ -144,7 +140,7 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
 
     matrix_shift(bg_hat_matrix_p, max);
     ///print ||C|| = max column
-//    printf("\n\n %f \n\n",max_v);
+    printf("\n\n %f \n\n",max_v);
 
     ///print shifted B[g] matrix
 //    for (i=0; i<count; i++){
@@ -154,15 +150,15 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
 
     temp = vec;
     while (true == 0) {
-        norm_vec(temp, bg_hat_matrix_p, row_norm);
-        for (i=0; i<bg_hat_matrix_p->col_row_n; i++){
-            printf("\n%f", row_norm[i] );
-        }
+        norm_vec(graph,temp, max_v, row_norm);
+//        for (i=0; i<bg_hat_matrix_p->col_row_n; i++){
+//            printf("\n%f", row_norm[i] );
+//        }
         check=check_difference(bg_hat_matrix_p->col_row_n ,temp ,row_norm);
         if (check==0){
             free(temp);
             temp = row_norm;
-            row_norm = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
+            row_norm = (double *)calloc(graph->number_of_nodes,sizeof(double));
         }
         else{
             free(temp);
