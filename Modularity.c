@@ -4,13 +4,13 @@
 int modularity_matrix(Graph *g, SymMatrix *b_matrix_p){
     int i=0, j=0, count=0, count2=0;
 
-    //number of elements in lower part of the symmetric matrix
+///number of elements in lower part of the symmetric matrix
     count = (int)(pow(g->number_of_nodes,2) + g->number_of_nodes)/2;
 
-    //storing only lower part of b_matrix in the array in the following order {b00,b10,b11,b20,b21,b22...} for j<=i bij can be retrieved using the formula bij=b[i(i+1)/2+j] , and bij=bji thus for j>i
-    // calculating first -KK/M matrix
-    //adding 1 only in the places where ADJ matrix is non-empty
-
+///storing only lower part of b_matrix in the array in the following order {b00,b10,b11,b20,b21,b22...}
+/// for j<=i bij can be retrieved using the formula bij=b[i(i+1)/2+j] , and bij=bji thus for j>i
+/// calculating first -KK/M matrix
+///adding 1 only in the places where ADJ matrix is non-empty
     b_matrix_p->value = (double*) malloc( count * sizeof(double));
     b_matrix_p->col_row_n = g->number_of_nodes;
     count = 0;
@@ -25,27 +25,29 @@ int modularity_matrix(Graph *g, SymMatrix *b_matrix_p){
             count2 = (g->adj_matrix->row[i])*(g->adj_matrix->row[i]+1)/2+(g->adj_matrix->col[i]);
             b_matrix_p->value[count2] +=1 ;
         }
-
-    printf("\n%d", count);
-    for (i=0; i<count; i++){
-        printf("%c",'\n');
-        printf("%f", b_matrix_p->value[i] );
-    }
+///print B matrix
+//    printf("\n%d", count);
+//    for (i=0; i<count; i++){
+//        printf("%c",'\n');
+//        printf("%f", b_matrix_p->value[i] );
+//    }
     return 0;
 }
 
-int matrix_bg(SymMatrix *b_matrix_p,Vector_int* input_set_p, SymMatrix *bg_matrix_p){
+int matrix_bg(Graph* graph, SymMatrix *b_matrix_p,SymMatrix *bg_matrix_p){
     int n=0, size=0, i=0,j=0;
-    n = input_set_p->size;
+    n = graph->number_of_nodes;
     size = (int)(pow(n,2) + n)/2;
     bg_matrix_p->col_row_n = n;
     bg_matrix_p->value = (double*)malloc(size* sizeof(double));
     //bij=b[i(i+1)/2+j]
-    for (i=0; i<input_set_p->size;i++){
+    for (i=0; i<graph->number_of_nodes;i++){
         for (j=0; j<=i;j++) {
-            bg_matrix_p->value[i*(i+1)/2+j] = b_matrix_p->value[(input_set_p->data[i])*(input_set_p->data[i]+1)/2+(input_set_p->data[j])];
+            bg_matrix_p->value[i*(i+1)/2+j] = b_matrix_p->value[(graph->indices_set[i])*(graph->indices_set[i]+1)/2+(graph->indices_set[j])];
         }
     }
+
+///print B[g] matrix
 //        printf("\n%d", size);
 //        for (i=0; i<size; i++){
 //            printf("%c",'\n');
@@ -75,7 +77,7 @@ int modularity_hat_matrix(SymMatrix *bg_matrix_p,SymMatrix *bg_hat_matrix_p, Vec
         bg_hat_matrix_p->value[i*(i+1)/2+i] = bg_matrix_p->value[i*(i+1)/2+i] - sum;
         row_sums_p->data[i] = sum;
     }
-    free(bg_matrix_p->value);
+//    free(bg_matrix_p->value);
     return 0;
 }
 

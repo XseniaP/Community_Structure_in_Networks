@@ -7,6 +7,7 @@
 
 
 int readFile(char *fileName, struct Graph *graph);
+int produce_input_set(struct Graph *graph);
 
 
 int writeToFile(char* fileName, struct Graph *graph);

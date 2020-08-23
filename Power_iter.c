@@ -119,9 +119,9 @@ int check_difference(int height ,double *temp ,double *next){
     return 1;
 }
 
-//power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue
-//int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
-int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
+///power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue
+///int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
+int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, value=0.0, denominator, numerator, max_v;
     int check, true=0, i=0; int j=0; double sum=0.0, value_without_c = 0.0; double* vect_temp;
     max = &max_v;
@@ -129,24 +129,26 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
     row_norm = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
 
     create_vec(bg_hat_matrix_p->col_row_n, vec);
-    //print random vector
+
+    ///print random vector
     for (i=0; i<bg_hat_matrix_p->col_row_n; i++){
         printf("\n\n%f",vec[i]);
     }
-    //print B[g] matrix
+
+    ///print B[g] matrix
 //    int count=0;
-//    count = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
+//    count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
 //    for (i=0; i<count; i++){
-//        printf("\n\n%f", bg_matrix_p->value[i] );
+//        printf("\n\n%f", bg_hat_matrix_p->value[i] );
 //    }
 
     matrix_shift(bg_hat_matrix_p, max);
-    //print ||C|| = max column
+    ///print ||C|| = max column
 //    printf("\n\n %f \n\n",max_v);
 
-    //print shifted B[g] matrix
+    ///print shifted B[g] matrix
 //    for (i=0; i<count; i++){
-//        printf("\n\n%f", bg_matrix_p->value[i] );
+//        printf("\n\n%f", bg_hat_matrix_p->value[i] );
 //    }
 
 
@@ -170,11 +172,14 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
 
     pair_p->eigenvector = row_norm;
 
-    //find corresponding eigenvalue of the shifted matrix
+    ///find corresponding eigenvalue of the shifted matrix
     denominator=0.0, numerator = 0.0;
+    ///calculate eigenvector * eigenvector O(n)
     for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
         denominator+= pair_p->eigenvector[i]*pair_p->eigenvector[i];
     }
+
+    ///calculate B_hat shifted * eigenvector O(n^2) - CAN BE IMPROVED USING A - kk/m + IC
     vect_temp = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
     for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
         sum=0;
@@ -189,14 +194,14 @@ int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
         vect_temp[i] = sum;
 //        printf("\n\n %f \n",vect_temp[i]);
     }
-
+///dot product of eigenvector and vector with the results from B_hat shifted * eigenvector - O(n)
     for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
         numerator+= vect_temp[i]*pair_p->eigenvector[i];
     }
 
     value =numerator/denominator;
 
-    //deduct ||C|| to get leading eigenvalue of the original matrix
+///deduct ||C|| to get leading eigenvalue of the original matrix O(1)
 //    printf("\n\n%f \n", value);
     value_without_c = value - max_v;
     pair_p->eigenvalue = value_without_c;

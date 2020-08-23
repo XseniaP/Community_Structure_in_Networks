@@ -38,11 +38,15 @@ typedef struct Pair {
 }Pair;
 
 typedef struct Graph {
-    int *set;
+    int *indices_set;
     int number_of_nodes;
     int M;
     Vector_int *deg_vec;
     SparseMatrix *adj_matrix;
 }Graph;
+
+typedef struct Set {
+    int *indices_set;
+}Set;
 
 #endif //PROJECT_TOHNA_STRUCTURES_H
