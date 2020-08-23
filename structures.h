@@ -38,6 +38,7 @@ typedef struct Pair {
 }Pair;
 
 typedef struct Graph {
+    int *set;
     int number_of_nodes;
     int M;
     Vector_int *deg_vec;
