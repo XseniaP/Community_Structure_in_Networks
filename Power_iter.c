@@ -53,35 +53,43 @@ int vec_mult_B(Graph* graph, double *rand_vec, double max,double *row_norm, Vect
     long double cons=0.0, *comp2, *comp3; double* comp;
 
     ///step1 - calculate A * random vector - O(m)
-    for (i=0; i<graph->M/2; i++){
+    for (i=0; i<graph->adj_matrix->size; i++){
         ind1 = graph->adj_matrix->row[i];
         ind2 = graph->adj_matrix->col[i];
         row_norm[ind1] += rand_vec[ind2];
         row_norm[ind2] += rand_vec[ind1];
+//        printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     }
+//    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
+//    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
+//    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
+//    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
 
     ///step2 - to calculate Constant = Random vector * k^T - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(rand_vec[i])*(long double)(graph->deg_vec->data[i]);
     }
-
+//    printf("\n%Lf  \\n", cons);
 
     ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
-        comp2[i] = cons*graph->deg_vec->data[i]/graph->M;
+        comp2[i] = cons*(graph->deg_vec->data[i])/(graph->M);
     }
+//    printf("\n\n%Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2]);
 
     ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
     comp3 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp3[i] = (long double)max * (long double)rand_vec[i];
     }
+//    printf("\n\n%Lf  %Lf  %Lf\n", comp3[0],comp3[1],comp3[2]);
 
     ///step5 - combine 4 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
         row_norm[i] = row_norm[i]-(double)comp2[i]+(double)comp3[i];
     }
+    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
 
     ///step6 - deduct Row sums of B_hat matrix * Eigenvector  - O(n)
     comp = (double *)malloc(graph->number_of_nodes*sizeof(double));
@@ -89,6 +97,9 @@ int vec_mult_B(Graph* graph, double *rand_vec, double max,double *row_norm, Vect
         comp[i] = row_sums_p->data[i]*rand_vec[i];
         row_norm[i] = row_norm[i] - comp[i];
     }
+    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
+
+//    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     free(comp);
     free(comp2);
     free(comp3);
@@ -98,7 +109,6 @@ int vec_mult_B(Graph* graph, double *rand_vec, double max,double *row_norm, Vect
 int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p){
     int i=0;
     double sum=0.0;
-
     vec_mult_B(graph,rand_vec,max,row_norm,row_sums_p);
     ///step5 - combine 4 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
@@ -154,9 +164,6 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector
         printf("\n\n%f",vec[i]);
     }
 
-//    printf("%d  %d  \\n", graph->adj_matrix->row[0],graph->adj_matrix->col[0]);
-//    printf("%d  %d  \\n", graph->adj_matrix->row[1],graph->adj_matrix->col[1]);
-
     matrix_shift(bg_hat_matrix_p, max);
     ///print ||C|| = max column
 //    printf("\n\n %f \n\n",max_v);
@@ -164,6 +171,7 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector
     temp = vec;
     while (true == 0) {
         norm_vec(graph,temp, max_v, row_norm, row_sums_p);
+//            printf("%f %f %f  \\n", row_norm[0],row_norm[1],row_norm[2]);
         check=check_difference(graph->number_of_nodes ,temp ,row_norm);
         if (check==0){
             free(temp);

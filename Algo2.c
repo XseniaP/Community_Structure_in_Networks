@@ -40,7 +40,6 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
     }
 
     graph_modified->adj_matrix->size = count;
-    graph_modified->M = count*2;
     graph_modified->adj_matrix->row = (int*)malloc(count*sizeof(int));
     graph_modified->adj_matrix->col = (int*)malloc(count*sizeof(int));
     count = 0;
@@ -63,11 +62,12 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
         index = 0;
     }
     graph_modified->indices_set=input_set->data;
-
+    graph_modified->M = 0;
     ///update degree vector based on the relevant indices
     for (i=0; i<graph_modified->number_of_nodes;i++){
         index = input_set->data[i];
         graph_modified->deg_vec->data[i] = graph->deg_vec->data[index];
+        graph_modified->M +=graph->deg_vec->data[index];
     }
 return 0;
 }
