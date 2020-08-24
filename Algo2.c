@@ -1,6 +1,5 @@
 #include "Algo2.h"
 
-
 int compute_s(Pair *pair_p, struct Vector_int* s_p){
     int i=0;
     s_p->data = (int*)malloc(s_p->size * sizeof(int));
