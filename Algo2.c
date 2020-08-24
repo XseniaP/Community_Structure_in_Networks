@@ -184,7 +184,6 @@ int divide_network(char* argv[], Set* output_p){
 //    free(myGraph_p->adj_matrix->col);
 //    free(myGraph_p->indices_set);
 //    free(b_matrix.value);
-
     return 0;
 }
 
