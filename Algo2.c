@@ -54,7 +54,7 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
                 v =graph->adj_matrix->row[i];
                 graph_modified->adj_matrix->row[count] = graph->adj_matrix->row[i];
                 v =graph->adj_matrix->col[i];
-                graph_modified->adj_matrix->row[count] = graph->adj_matrix->col[i];
+                graph_modified->adj_matrix->col[count] = graph->adj_matrix->col[i];
                 index = 0;
                 count+=1;
                 break;
@@ -63,7 +63,7 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
         index = 0;
     }
     graph_modified->indices_set=input_set->data;
-//    printf("%d   %d \\n", graph_modified->adj_matrix->row[0],graph_modified->adj_matrix->row[1]);
+
     ///update degree vector based on the relevant indices
     for (i=0; i<graph_modified->number_of_nodes;i++){
         index = input_set->data[i];
