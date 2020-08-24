@@ -62,12 +62,11 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
         index = 0;
     }
     graph_modified->indices_set=input_set->data;
-    graph_modified->M = 0;
+    graph_modified->M = graph->M;
     ///update degree vector based on the relevant indices
     for (i=0; i<graph_modified->number_of_nodes;i++){
         index = input_set->data[i];
         graph_modified->deg_vec->data[i] = graph->deg_vec->data[index];
-        graph_modified->M +=graph->deg_vec->data[index];
     }
 return 0;
 }
@@ -83,7 +82,6 @@ int divide_group_into_two(Graph* graph, SymMatrix *b_matrix_p){
     Pair* pair_p = &pair;row_sums_p=&row_sums; s_p = &s;
     ///calculate B matrix and row_sums for [g] based on its Graph
     matrix_bg(graph, b_matrix_p,bg_matrix_p);
-
 
     ///print B[g] matrix
 //    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
@@ -161,16 +159,17 @@ int divide_network(char* argv[], Set* output_p){
 //        printf("%f", b_matrix_p->value[i]);
 //    }
 
-///   meantime a placeholder with functions , later when groups are defined will be replaced with the ALGORITHM3 flow : while P is not empty keep dividing
-/// my graph pointer is assigned new graph every time
-    input_set.data = (int*)malloc(3*sizeof(int));
-    for (i=0; i<3;i++){
-        input_set.data[i]=i;
-    }
-    input_set.size=3;
-    graph_for_input_set(myGraph_p ,input_set_p, graph_modified_p);
-    divide_group_into_two(graph_modified_p, b_matrix_p);
-//    divide_group_into_two(myGraph_p, b_matrix_p);
+///   meantime a placeholder with functions , later when groups are defined will be replaced with the ALGORITHM3 flow :
+/// while P is not empty keep dividing
+/// my graph pointer is assigned new graph every time (head from the LINKED LIST SET)
+//    input_set.data = (int*)malloc(3*sizeof(int));
+//    for (i=0; i<3;i++){
+//        input_set.data[i]=i;
+//    }
+//    input_set.size=3;
+//    graph_for_input_set(myGraph_p ,input_set_p, graph_modified_p);
+//    divide_group_into_two(graph_modified_p, b_matrix_p);
+    divide_group_into_two(myGraph_p, b_matrix_p);
 
 ///create new Graph struct for the given set
 

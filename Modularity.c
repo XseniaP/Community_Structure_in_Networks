@@ -46,6 +46,8 @@ int matrix_bg(Graph* graph, SymMatrix *b_matrix_p,SymMatrix *bg_matrix_p){
             bg_matrix_p->value[i*(i+1)/2+j] = b_matrix_p->value[(graph->indices_set[i])*(graph->indices_set[i]+1)/2+(graph->indices_set[j])];
         }
     }
+    ///free the memory  of B (n^2 space)
+    free(b_matrix_p->value);
 
 ///print B[g] matrix
 //        printf("\n%d", size);
