@@ -13,9 +13,10 @@ int create_vec(int size, double *vec){
     return 0;
 }
 
-//add ||C|| (sum of max column) to diagonal elements of symmetric matrix B
+///calculate ||C|| (sum of max column) /// optionally add it to diagonal elements of symmetric matrix B to create b^, but we dont need to keep b^
 int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
-    int i=0, j=0,count=0; double c_norm=0, max=0;
+    int i=0, j=0; double c_norm=0, max=0;
+//    int count=0;
 
     ///checking sum of the maximum column - O(n^2)
     for (j=0; j<bg_hat_matrix_p->col_row_n; j++){
@@ -34,22 +35,24 @@ int matrix_shift(SymMatrix *bg_hat_matrix_p, double* max_p){
     }
 //    printf("\n\n%f", max);
     *max_p = max;
-    //matrix shifting using max_column_sum
-    count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
+//    free(bg_hat_matrix_p->value);
+
+    ///matrix shifting using max_column_sum
+//    count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
 ///adding sum of the max column to the diagonal - O(n)
-    for (j = 0, i=2; j < count; j+=i, i++) {
-        bg_hat_matrix_p->value[j] = bg_hat_matrix_p->value[j] + max;
+//    for (j = 0, i=2; j < count; j+=i, i++) {
+//        bg_hat_matrix_p->value[j] = bg_hat_matrix_p->value[j] + max;
 //        printf("\n\n%f\n", bg_hat_matrix_p->value[j]);
-    }
+//    }
     return 0;
 }
 
-//multiply vector by symmetric shifted matrix B
-int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm){
+///multiply vector by symmetric shifted matrix B
+int vec_mult_B(Graph* graph, double *rand_vec, double max,double *row_norm, Vector_double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
-    double cons=0.0, *comp2, *comp3, sum=0.0;
+    long double cons=0.0, *comp2, *comp3; double* comp;
 
-    ///step1 - calculate A * random vector - O(M)
+    ///step1 - calculate A * random vector - O(m)
     for (i=0; i<graph->M/2; i++){
         ind1 = graph->adj_matrix->row[i];
         ind2 = graph->adj_matrix->col[i];
@@ -59,24 +62,46 @@ int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm){
 
     ///step2 - to calculate Constant = Random vector * k^T - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
-        cons+=rand_vec[i]*graph->deg_vec->data[i];
+        cons+=(long double)(rand_vec[i])*(long double)(graph->deg_vec->data[i]);
     }
 
+
     ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
-    comp2 = (double*)malloc(graph->number_of_nodes* sizeof(double));
+    comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*graph->deg_vec->data[i]/graph->M;
     }
 
     ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
-    comp3 = (double*)malloc(graph->number_of_nodes* sizeof(double));
+    comp3 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
-        comp3[i] = max*rand_vec[i];
+        comp3[i] = (long double)max * (long double)rand_vec[i];
     }
 
     ///step5 - combine 4 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
-        row_norm[i] = row_norm[i]-comp2[i]+comp3[i];
+        row_norm[i] = row_norm[i]-(double)comp2[i]+(double)comp3[i];
+    }
+
+    ///step6 - deduct Row sums of B_hat matrix * Eigenvector  - O(n)
+    comp = (double *)malloc(graph->number_of_nodes*sizeof(double));
+    for(i=0; i<graph->number_of_nodes;i++){
+        comp[i] = row_sums_p->data[i]*rand_vec[i];
+        row_norm[i] = row_norm[i] - comp[i];
+    }
+    free(comp);
+    free(comp2);
+    free(comp3);
+    return 0;
+}
+
+int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p){
+    int i=0;
+    double sum=0.0;
+
+    vec_mult_B(graph,rand_vec,max,row_norm,row_sums_p);
+    ///step5 - combine 4 steps - O(n)
+    for (i=0; i<graph->number_of_nodes; i++){
         sum +=pow(row_norm[i],2);
     }
 
@@ -86,12 +111,10 @@ int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm){
     }
 
     ///print normalized vector at each step of power iter
-//    for (i=0; i<graph->number_of_nodes; i++){
-//        printf("%f\n",row_norm[i]);
-//    }
+    for (i=0; i<graph->number_of_nodes; i++){
+        printf("%f\n",row_norm[i]);
+    }
 
-    free(comp2);
-    free(comp3);
     return 0;
 }
 
@@ -115,8 +138,8 @@ int check_difference(int height ,double *temp ,double *next){
 
 ///power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue
 ///int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
-int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
-    double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, value=0.0, denominator, numerator, max_v;
+int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
+    double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, numerator, max_v;
     int check, true=0, i=0; int j=0; double sum=0.0, value_without_c = 0.0; double* vect_temp;
     max = &max_v;
     vec = (double *)malloc(graph->number_of_nodes*sizeof(double));
@@ -131,30 +154,17 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
         printf("\n\n%f",vec[i]);
     }
 
-    ///print B_hat[g] matrix
-//    int count=0;
-//    count = (int)(pow(bg_hat_matrix_p->col_row_n,2) + bg_hat_matrix_p->col_row_n)/2;
-//    for (i=0; i<count; i++){
-//        printf("\n\n%f", bg_hat_matrix_p->value[i] );
-//    }
+//    printf("%d  %d  \\n", graph->adj_matrix->row[0],graph->adj_matrix->col[0]);
+//    printf("%d  %d  \\n", graph->adj_matrix->row[1],graph->adj_matrix->col[1]);
 
     matrix_shift(bg_hat_matrix_p, max);
     ///print ||C|| = max column
-    printf("\n\n %f \n\n",max_v);
-
-    ///print shifted B[g] matrix
-//    for (i=0; i<count; i++){
-//        printf("\n\n%f", bg_hat_matrix_p->value[i] );
-//    }
-
+//    printf("\n\n %f \n\n",max_v);
 
     temp = vec;
     while (true == 0) {
-        norm_vec(graph,temp, max_v, row_norm);
-//        for (i=0; i<bg_hat_matrix_p->col_row_n; i++){
-//            printf("\n%f", row_norm[i] );
-//        }
-        check=check_difference(bg_hat_matrix_p->col_row_n ,temp ,row_norm);
+        norm_vec(graph,temp, max_v, row_norm, row_sums_p);
+        check=check_difference(graph->number_of_nodes ,temp ,row_norm);
         if (check==0){
             free(temp);
             temp = row_norm;
@@ -167,42 +177,36 @@ int powerIteration(Graph* graph,SymMatrix *bg_hat_matrix_p ,Pair* pair_p){
     }
 
     pair_p->eigenvector = row_norm;
+    ///print eigenvector
+        for (i=0; i<graph->number_of_nodes; i++){
+        printf("\n\n%f", pair_p->eigenvector[i] );
+    }
 
     ///find corresponding eigenvalue of the shifted matrix
-    denominator=0.0, numerator = 0.0;
-    ///calculate eigenvector * eigenvector O(n)
-    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
-        denominator+= pair_p->eigenvector[i]*pair_p->eigenvector[i];
-    }
+    numerator = 0.0;
+//    denominator=0.0;
+//    ///calculate eigenvector * eigenvector O(n)
+//    for(i=0; i<graph->number_of_nodes;i++){
+//        denominator+= pair_p->eigenvector[i]*pair_p->eigenvector[i];
+//    }
+//    printf("\n%f\n\n", denominator);
+    ///important to use calloc here, so that zeroes are initiated
+    vect_temp = (double *)calloc(graph->number_of_nodes,sizeof(double));
+    vec_mult_B(graph, pair_p->eigenvector , max_v,vect_temp, row_sums_p);
 
-    ///calculate B_hat shifted * eigenvector O(n^2) - CAN BE IMPROVED USING A - kk/m + IC
-    vect_temp = (double *)malloc(bg_hat_matrix_p->col_row_n*sizeof(double));
-    for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
-        sum=0;
-        for (j = 0; j < bg_hat_matrix_p->col_row_n; j++) {
-            if (i>=j){
-                sum += bg_hat_matrix_p->value[i*(i+1)/2 + j] * pair_p->eigenvector[j];
-            }
-            else{
-                sum += bg_hat_matrix_p->value[j*(j+1)/2 + i] * pair_p->eigenvector[j];
-            }
-        }
-        vect_temp[i] = sum;
-//        printf("\n\n %f \n",vect_temp[i]);
-    }
+
 ///dot product of eigenvector and vector with the results from B_hat shifted * eigenvector - O(n)
     for(i=0; i<bg_hat_matrix_p->col_row_n;i++){
         numerator+= vect_temp[i]*pair_p->eigenvector[i];
     }
-
-    value =numerator/denominator;
+    printf("\n\n%f \n", numerator);
 
 ///deduct ||C|| to get leading eigenvalue of the original matrix O(1)
 //    printf("\n\n%f \n", value);
-    value_without_c = value - max_v;
+    value_without_c = numerator - max_v;
     pair_p->eigenvalue = value_without_c;
 
-//    printf("\n\n%f \n", pair_p->eigenvalue);
+    printf("\n\n%f \n", pair_p->eigenvalue);
 
 //    free(row_norm);
     return 0;
