@@ -34,10 +34,15 @@ int modularity_matrix(Graph *g, SymMatrix *b_matrix_p){
     return 0;
 }
 
-int matrix_bg(Graph* graph, SymMatrix *b_matrix_p,SymMatrix *bg_matrix_p){
+int matrix_bg(Graph* graph, SymMatrix *bg_matrix_p){
     int n=0, size=0, i=0,j=0;
+    SymMatrix b_matrix = {0, NULL };SymMatrix *b_matrix_p;
+    b_matrix_p = &b_matrix;
     n = graph->number_of_nodes;
     size = (int)(pow(n,2) + n)/2;
+
+    modularity_matrix(graph, b_matrix_p);
+
     bg_matrix_p->col_row_n = n;
     bg_matrix_p->value = (double*)malloc(size* sizeof(double));
     //bij=b[i(i+1)/2+j]

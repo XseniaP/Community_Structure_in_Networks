@@ -71,7 +71,7 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
 return 0;
 }
 
-int divide_group_into_two(Graph* graph, SymMatrix *b_matrix_p){
+int divide_group_into_two(Graph* graph){
     ///declarations
     SymMatrix bg_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL};
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;Vector_int* s_p;
@@ -81,7 +81,7 @@ int divide_group_into_two(Graph* graph, SymMatrix *b_matrix_p){
     SymMatrix* bg_matrix_p = &bg_matrix; SymMatrix* bg_hat_matrix_p = &bg_hat_matrix;
     Pair* pair_p = &pair;row_sums_p=&row_sums; s_p = &s;
     ///calculate B matrix and row_sums for [g] based on its Graph
-    matrix_bg(graph, b_matrix_p,bg_matrix_p);
+    matrix_bg(graph,bg_matrix_p);
 
     ///print B[g] matrix
 //    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
@@ -116,12 +116,12 @@ int divide_network(char* argv[], Set* output_p){
     Graph new_graph = {NULL,0,0,NULL, NULL};Graph *myGraph_p;
     Graph graph_modified = {NULL,0,0,NULL, NULL}; Graph* graph_modified_p = &graph_modified;
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL}, adj_matrix2={0,NULL,NULL,NULL};Vector_int deg_vec = {0,NULL}, deg_vec2={0,NULL};
-    SymMatrix b_matrix = {0, NULL };SymMatrix *b_matrix_p; Vector_int input_set ={0,NULL};Vector_int* input_set_p;
+    Vector_int input_set ={0,NULL};Vector_int* input_set_p;
     SymMatrix *bg_matrix_p; SymMatrix bg_matrix = {0, NULL };
     int i=0, a; int size;
 
 ///Pointers
-    new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; graph_modified.deg_vec = &deg_vec2;graph_modified.adj_matrix = &adj_matrix2; myGraph_p = &new_graph;b_matrix_p = &b_matrix;input_set_p=&input_set;
+    new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; graph_modified.deg_vec = &deg_vec2;graph_modified.adj_matrix = &adj_matrix2; myGraph_p = &new_graph;input_set_p=&input_set;
     bg_matrix_p = &bg_matrix;
 ///reading the file, creating the graph with Adj matrix and degree vector
     a = readFile(argv[1], myGraph_p);
@@ -150,7 +150,7 @@ int divide_network(char* argv[], Set* output_p){
 //    }
 
 ///    calculate matrix B only once to get out of it rum_sums for further calculations
-    modularity_matrix(myGraph_p, b_matrix_p);
+//    modularity_matrix(myGraph_p, b_matrix_p);
 
 ///   print B matrix
 //    size = (int)(pow(b_matrix_p->col_row_n,2) + b_matrix_p->col_row_n)/2;
@@ -169,7 +169,7 @@ int divide_network(char* argv[], Set* output_p){
 //    input_set.size=3;
 //    graph_for_input_set(myGraph_p ,input_set_p, graph_modified_p);
 //    divide_group_into_two(graph_modified_p, b_matrix_p);
-    divide_group_into_two(myGraph_p, b_matrix_p);
+    divide_group_into_two(myGraph_p);
 
 ///create new Graph struct for the given set
 
