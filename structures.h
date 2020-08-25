@@ -49,4 +49,8 @@ typedef struct Set {
     int *indices_set;
 }Set;
 
+typedef struct Group{
+    Graph subgraph;
+}Group;
+
 #endif //PROJECT_TOHNA_STRUCTURES_H
