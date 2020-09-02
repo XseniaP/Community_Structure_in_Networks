@@ -15,24 +15,37 @@ int create_vec(int size, double *vec){
 ///calculate ||C|| (sum of max column) /// optionally add it to diagonal elements of symmetric matrix B to create b^, but we dont need to keep b^
 /// complexity O(m+n)*n , sparse graphs with m ~ n are in in the focus thus the resulting complexity would be O(n^2)
 int matrix_shift_C_new(Graph* graph, double* max_p, Vector_double *row_sums_p){
-    int i,j;
-    double sum, max,q;
-    double * temp, *temp2;
-    temp = (double*) calloc( graph->number_of_nodes , sizeof(double));
-    sum=0, max=0;
+    int i,j; double sum, max,q, count, index, *temp, *temp2;
+    temp = (double*) calloc(graph->number_of_nodes , sizeof(double));
+    temp2 = (double*) calloc(graph->adj_matrix->size , sizeof(double));
+    sum=0, max=0, count =0, index=0;
 
-    for (i=0; i<graph->number_of_nodes; i++){
-        /// the loop is O(M), but it will get smaller with every subset division
-        for (j=0; j<graph->adj_matrix->size;j++){
-            if ((graph->adj_matrix->row[j] == i)||(graph->adj_matrix->col[j]==i)){
-                if(graph->adj_matrix->row[j] == i){
-                    temp[graph->adj_matrix->col[j]] += 1.0;
-                    }
-                else{
-                    temp[graph->adj_matrix->row[j]] += 1.0;
+    for(i=0;i<graph->adj_matrix->size;i++){
+        for (j=0;j<graph->number_of_nodes;j++) {
+            if ((graph->indices_set[j] == graph->adj_matrix->row[i]) || (graph->indices_set[j] == graph->adj_matrix->col[i])) {
+                index += 1;
+            }
+            if (index == 2){
+                temp2[i]=1;
+                break;
+            }
+        }
+        index = 0;
+    }
+
+    for (i=0; i<graph->number_of_nodes; i++) {
+        /// the loop is O(M)
+        for (j = 0; j < graph->adj_matrix->size; j++) {
+            if (temp2[j]==1){
+                if ((graph->adj_matrix->row[j] == i) || (graph->adj_matrix->col[j] == i)) {
+                    if (graph->adj_matrix->row[j] == i) {
+                        temp[graph->adj_matrix->col[j]] += 1.0;
+                    } else {
+                        temp[graph->adj_matrix->row[j]] += 1.0;
                     }
                 }
             }
+        }
         /// the loop is O(n)
         for (j=0; j<graph->number_of_nodes; j++){
             temp[j] +=  - (((double)graph->deg_vec->data[i]) * ((double)graph->deg_vec->data[j]) / (double)graph->M);
@@ -59,7 +72,7 @@ int matrix_shift_C_new(Graph* graph, double* max_p, Vector_double *row_sums_p){
         memset(temp,(double)0.0,(graph->number_of_nodes)*(sizeof(double)));
     }
 
-    free(temp);
+    free(temp); free(temp2);
     *max_p = max;
 
     return 0;

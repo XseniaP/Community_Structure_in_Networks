@@ -24,6 +24,7 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
     graph_modified->deg_vec->size = input_set->size;
     graph_modified->deg_vec->data = (int*)malloc(graph_modified->number_of_nodes* sizeof(int));
 
+
     for(i=0;i<graph->adj_matrix->size;i++){
         for (j=0;j<input_set->size;j++) {
             if ((input_set->data[j] == graph->adj_matrix->row[i]) || (input_set->data[j] == graph->adj_matrix->col[i])) {
