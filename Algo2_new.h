@@ -1,7 +1,7 @@
-#ifndef PROJECT_TOHNA_ALGO2_H
-#define PROJECT_TOHNA_ALGO2_H
-#include "Modularity.h"
-#include "Power_iter.h"
+
+#ifndef PROJECT_TOHNA_ALGO2_NEW_H
+#define PROJECT_TOHNA_ALGO2_NEW_H
+#include "Power_iter_new.h"
 #include "Group_handler.h"
 #include "fileHandler.h"
 
@@ -11,4 +11,4 @@ int divide_group_into_two(Graph* graph);
 int compute_s(Pair *pair_p, struct Vector_int* s_p);
 int improvement();
 
-#endif //PROJECT_TOHNA_ALGO2_H
+#endif //PROJECT_TOHNA_ALGO2_NEW_H

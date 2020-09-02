@@ -1,4 +1,4 @@
-#include "Algo2.h"
+#include "Algo2_new.h"
 #include "structures.h"
 
 int main(int argc,char* argv[]) {

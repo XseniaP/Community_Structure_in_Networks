@@ -1,4 +1,4 @@
-#include "Algo2.h"
+#include "Algo2_new.h"
 
 int compute_s(Pair *pair_p, struct Vector_int* s_p){
     int i=0;
@@ -67,20 +67,20 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
         index = input_set->data[i];
         graph_modified->deg_vec->data[i] = graph->deg_vec->data[index];
     }
-return 0;
+    return 0;
 }
 
 int divide_group_into_two(Graph* graph){
     ///declarations
-    SymMatrix bg_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL};
+//    SymMatrix bg_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL};
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;Vector_int* s_p;
     struct Vector_int s ={0, NULL};
     int size =0, i=0;
     ///pointers
-    SymMatrix* bg_matrix_p = &bg_matrix; SymMatrix* bg_hat_matrix_p = &bg_hat_matrix;
+//    SymMatrix* bg_matrix_p = &bg_matrix; SymMatrix* bg_hat_matrix_p = &bg_hat_matrix;
     Pair* pair_p = &pair;row_sums_p=&row_sums; s_p = &s;
     ///calculate B matrix and row_sums for [g] based on its Graph
-    matrix_bg(graph,bg_matrix_p);
+//    matrix_bg(graph,bg_matrix_p);
 
     ///print B[g] matrix
 //    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
@@ -91,7 +91,7 @@ int divide_group_into_two(Graph* graph){
 //    }
 
     ///build B_hat matrix and run power iterations to return eigenPair: vector and value
-    modularity_hat_matrix(bg_matrix_p, bg_hat_matrix_p, row_sums_p);
+//    modularity_hat_matrix(bg_matrix_p, bg_hat_matrix_p, row_sums_p);
 //    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
 //    printf("\n%d", size);
 //    for (i=0; i<size; i++){
@@ -99,8 +99,8 @@ int divide_group_into_two(Graph* graph){
 //        printf("%f", bg_hat_matrix_p->value[i] );
 //    }
 
-
-    powerIteration(graph, bg_hat_matrix_p ,pair_p, row_sums_p);
+    row_sums.data = (double *)calloc(graph->number_of_nodes,sizeof(double));
+    powerIteration(graph,pair_p, row_sums_p);
     compute_s(pair_p, s_p);
 
     if (pair_p->eigenvalue<=0){
@@ -116,12 +116,12 @@ int divide_network(char* argv[], Set* output_p){
     Graph graph_modified = {NULL,0,0,NULL, NULL}; Graph* graph_modified_p = &graph_modified;
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL}, adj_matrix2={0,NULL,NULL,NULL};Vector_int deg_vec = {0,NULL}, deg_vec2={0,NULL};
     Vector_int input_set ={0,NULL};Vector_int* input_set_p;
-    SymMatrix *bg_matrix_p; SymMatrix bg_matrix = {0, NULL };
+//    SymMatrix *bg_matrix_p; SymMatrix bg_matrix = {0, NULL };
     int i=0, a; int size;
 
 ///Pointers
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; graph_modified.deg_vec = &deg_vec2;graph_modified.adj_matrix = &adj_matrix2; myGraph_p = &new_graph;input_set_p=&input_set;
-    bg_matrix_p = &bg_matrix;
+//    bg_matrix_p = &bg_matrix;
 ///reading the file, creating the graph with Adj matrix and degree vector
     a = readFile(argv[1], myGraph_p);
     if (a){
@@ -130,16 +130,16 @@ int divide_network(char* argv[], Set* output_p){
     }
 
 ///    print indices set indices
-//    for (i=0; i<new_graph.number_of_nodes; i++){
-//        printf("%c",'\n');
-//        printf("%d", new_graph.indices_set[i]);
-//    }
+    for (i=0; i<new_graph.number_of_nodes; i++){
+        printf("%c",'\n');
+        printf("%d", new_graph.indices_set[i]);
+    }
 
 ///    print adjacency matrix
-//    for (i=0; i<new_graph.M/2; i++){
-//        printf("%c",'\n');
-//        printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
-//    }
+    for (i=0; i<new_graph.M/2; i++){
+        printf("%c",'\n');
+        printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
+    }
 
 
 ///    print degree vector
