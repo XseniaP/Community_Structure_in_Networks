@@ -15,7 +15,7 @@ int compute_s(Pair *pair_p, struct Vector_int* s_p){
 }
 
 int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modified){
-    int i=0, j=0,v=0, index=0, count=0;
+    int i=0, j=0,v=0, index=0, count=0, a=0, b=0;
 
     graph_modified->number_of_nodes = input_set->size;
     graph_modified->indices_set = (int*)malloc(graph_modified->number_of_nodes* sizeof(int));
@@ -47,13 +47,23 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
         for (j=0;j<input_set->size;j++) {
             if ((input_set->data[j] == graph->adj_matrix->row[i]) || (input_set->data[j] == graph->adj_matrix->col[i])) {
                 index += 1;
+                if (index == 2){
+                    b=j;
+                }
+                else{
+                    a=j;
+                }
             }
             if (index == 2){
-                v =graph->adj_matrix->row[i];
-                graph_modified->adj_matrix->row[count] = graph->adj_matrix->row[i];
-                v =graph->adj_matrix->col[i];
-                graph_modified->adj_matrix->col[count] = graph->adj_matrix->col[i];
-                index = 0;
+                if (a>b){
+                graph_modified->adj_matrix->row[count] = a;
+                graph_modified->adj_matrix->col[count] = b;}
+                else{
+                    graph_modified->adj_matrix->row[count] = b;
+                    graph_modified->adj_matrix->col[count] = a;
+                }
+//                graph_modified->adj_matrix->row[count] = graph->adj_matrix->row[i];
+//                graph_modified->adj_matrix->col[count] = graph->adj_matrix->col[i];
                 count+=1;
                 break;
             }
@@ -72,32 +82,11 @@ int graph_for_input_set(Graph* graph ,Vector_int* input_set, Graph* graph_modifi
 
 int divide_group_into_two(Graph* graph){
     ///declarations
-//    SymMatrix bg_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL};
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;Vector_int* s_p;
     struct Vector_int s ={0, NULL};
     int size =0, i=0;
     ///pointers
-//    SymMatrix* bg_matrix_p = &bg_matrix; SymMatrix* bg_hat_matrix_p = &bg_hat_matrix;
     Pair* pair_p = &pair;row_sums_p=&row_sums; s_p = &s;
-    ///calculate B matrix and row_sums for [g] based on its Graph
-//    matrix_bg(graph,bg_matrix_p);
-
-    ///print B[g] matrix
-//    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
-//    printf("\n%d", size);
-//    for (i=0; i<size; i++){
-//        printf("%c",'\n');
-//        printf("%f", bg_matrix_p->value[i] );
-//    }
-
-    ///build B_hat matrix and run power iterations to return eigenPair: vector and value
-//    modularity_hat_matrix(bg_matrix_p, bg_hat_matrix_p, row_sums_p);
-//    size = (int)(pow(bg_matrix_p->col_row_n,2) + bg_matrix_p->col_row_n)/2;
-//    printf("\n%d", size);
-//    for (i=0; i<size; i++){
-//        printf("%c",'\n');
-//        printf("%f", bg_hat_matrix_p->value[i] );
-//    }
 
     row_sums.data = (double *)calloc(graph->number_of_nodes,sizeof(double));
     powerIteration(graph,pair_p, row_sums_p);
@@ -148,27 +137,22 @@ int divide_network(char* argv[], Set* output_p){
 //        printf("%d", new_graph.deg_vec->data[i]);
 //    }
 
-///    calculate matrix B only once to get out of it rum_sums for further calculations
-//    modularity_matrix(myGraph_p, b_matrix_p);
-
-///   print B matrix
-//    size = (int)(pow(b_matrix_p->col_row_n,2) + b_matrix_p->col_row_n)/2;
-//     for (i=0; i<size; i++){
-//        printf("%c",'\n');
-//        printf("%f", b_matrix_p->value[i]);
-//    }
-
 ///   meantime a placeholder with functions , later when groups are defined will be replaced with the ALGORITHM3 flow :
 /// while P is not empty keep dividing
 /// my graph pointer is assigned new graph every time (head from the LINKED LIST SET)
-//    input_set.data = (int*)malloc(3*sizeof(int));
+    input_set.data = (int*)malloc(3*sizeof(int));
 //    for (i=0; i<3;i++){
 //        input_set.data[i]=i;
 //    }
-//    input_set.size=3;
-//    graph_for_input_set(myGraph_p ,input_set_p, graph_modified_p);
+    input_set.size=3;
+    input_set.data[0]=0;
+    input_set.data[1]=2;
+    input_set.data[2]=4;
+
+    graph_for_input_set(myGraph_p ,input_set_p, graph_modified_p);
 //    divide_group_into_two(graph_modified_p, b_matrix_p);
-    divide_group_into_two(myGraph_p);
+//    divide_group_into_two(myGraph_p);
+    divide_group_into_two(graph_modified_p);
 
 ///create new Graph struct for the given set
 

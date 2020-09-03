@@ -16,8 +16,8 @@ int create_vec(int size, double *vec){
 /// complexity O(m+n)*n , sparse graphs with m ~ n are in in the focus thus the resulting complexity would be O(n^2)
 int matrix_shift_C_new(Graph* graph, double* max_p, Vector_double *row_sums_p){
     int i,j;
-    double sum, max,q;
-    double * temp, *temp2;
+    double sum, max;
+    double * temp;
     temp = (double*) calloc( graph->number_of_nodes , sizeof(double));
     sum=0, max=0;
 
@@ -36,10 +36,13 @@ int matrix_shift_C_new(Graph* graph, double* max_p, Vector_double *row_sums_p){
         /// the loop is O(n)
         for (j=0; j<graph->number_of_nodes; j++){
             temp[j] +=  - (((double)graph->deg_vec->data[i]) * ((double)graph->deg_vec->data[j]) / (double)graph->M);
+//            printf("  %f", temp[j]);
             sum += temp[j];
         }
 
+//            printf("\n %f  %f  %f \n", temp[0],temp[1],temp[2]);
         row_sums_p->data[i]=sum;
+//        printf("\n  %f\n", sum);
         sum=0;
 
         /// the loop is O(n)
@@ -55,13 +58,14 @@ int matrix_shift_C_new(Graph* graph, double* max_p, Vector_double *row_sums_p){
             max = sum;
         }
         sum=0;
+
         /// memset is O(n)
         memset(temp,(double)0.0,(graph->number_of_nodes)*(sizeof(double)));
     }
 
+//    printf("\n %f \n", max);
     free(temp);
     *max_p = max;
-
     return 0;
 
 }
@@ -108,7 +112,7 @@ int vec_mult_B(Graph* graph, double *rand_vec, double max,double *row_norm, Vect
     for (i=0; i<graph->number_of_nodes; i++){
         row_norm[i] = row_norm[i]-(double)comp2[i]+(double)comp3[i];
     }
-    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
+//    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
 
     ///step6 - deduct Row sums of B_hat matrix * Eigenvector  - O(n)
     comp = (double *)malloc(graph->number_of_nodes*sizeof(double));
@@ -116,7 +120,7 @@ int vec_mult_B(Graph* graph, double *rand_vec, double max,double *row_norm, Vect
         comp[i] = row_sums_p->data[i]*rand_vec[i];
         row_norm[i] = row_norm[i] - comp[i];
     }
-    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
+//    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
 
 //    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     free(comp);
@@ -140,9 +144,9 @@ int norm_vec (Graph* graph, double *rand_vec, double max,double *row_norm,Vector
     }
 
     ///print normalized vector at each step of power iter
-    for (i=0; i<graph->number_of_nodes; i++){
-        printf("%f\n",row_norm[i]);
-    }
+//    for (i=0; i<graph->number_of_nodes; i++){
+//        printf("%f\n",row_norm[i]);
+//    }
 
     return 0;
 }
