@@ -105,12 +105,12 @@ int divide_network(char* argv[], Set* output_p){
     Graph graph_modified = {NULL,0,0,NULL, NULL}; Graph* graph_modified_p = &graph_modified;
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL}, adj_matrix2={0,NULL,NULL,NULL};Vector_int deg_vec = {0,NULL}, deg_vec2={0,NULL};
     Vector_int input_set ={0,NULL};Vector_int* input_set_p;
-//    SymMatrix *bg_matrix_p; SymMatrix bg_matrix = {0, NULL };
+//    List p_list; List o_list; List p_head, o_head;
     int i=0, a; int size;
 
 ///Pointers
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; graph_modified.deg_vec = &deg_vec2;graph_modified.adj_matrix = &adj_matrix2; myGraph_p = &new_graph;input_set_p=&input_set;
-//    bg_matrix_p = &bg_matrix;
+
 ///reading the file, creating the graph with Adj matrix and degree vector
     a = readFile(argv[1], myGraph_p);
     if (a){
@@ -118,7 +118,7 @@ int divide_network(char* argv[], Set* output_p){
         return 1;
     }
 
-///    print indices set indices
+    ///    print indices set indices
     for (i=0; i<new_graph.number_of_nodes; i++){
         printf("%c",'\n');
         printf("%d", new_graph.indices_set[i]);
@@ -136,13 +136,47 @@ int divide_network(char* argv[], Set* output_p){
 //        printf("%d", new_graph.deg_vec->data[i]);
 //    }
 
+
 ///   meantime a placeholder with functions , later when groups are defined will be replaced with the ALGORITHM3 flow :
 /// while P is not empty keep dividing
 /// my graph pointer is assigned new graph every time (head from the LINKED LIST SET)
+
+    ///creating P and O lists
+//    create_empty_list(o_head);
+//    create_list_with_graph(myGraph_p, p_head);
+//
+//    while (!is_empty(p_head)){
+//        g = remove_graph_from_list(p_head);
+//        result = divide_group_into_two(g, s_p);
+//        if (result ==0){
+//            add_graph_to_list(g, tail_p);
+//        }
+//        else{
+//            create_groups(s_p, groups);
+//            if (groups[0]->number_of_nodes == 1)&(groups[1]->number_of_nodes == 1){
+//                add_graph_to_list(groups[0], tail_o);
+//                add_graph_to_list(groups[1], tail_o);
+//            };
+//            else if (groups[0]->number_of_nodes == 1){
+//                add_graph_to_list(groups[0], tail_o);
+//                add_graph_to_list(groups[1], tail_p);
+//            };
+//            else if (groups[1]->number_of_nodes == 1){
+//                add_graph_to_list(groups[0], tail_p);
+//                add_graph_to_list(groups[1],tail_o);
+//            };
+//            else {
+//                add_graph_to_list(groups[0], tail_p);
+//                add_graph_to_list(groups[1], tail_p);
+//            }
+//        }
+//    }
+
+    ///dummy data
     input_set.data = (int*)malloc(3*sizeof(int));
-    for (i=0; i<3;i++){
-        input_set.data[i]=i;
-    }
+//    for (i=0; i<3;i++){
+//        input_set.data[i]=i;
+//    }
     input_set.size=3;
     input_set.data[0]=0;
     input_set.data[1]=2;
@@ -159,7 +193,7 @@ int divide_network(char* argv[], Set* output_p){
 
 
     ///placeholder for the output
-    output_p->indices_set = new_graph.indices_set;
+//    return o_head;
 
     ///free memory
 //    free(myGraph_p->deg_vec->data);
