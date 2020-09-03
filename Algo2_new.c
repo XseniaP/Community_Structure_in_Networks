@@ -130,7 +130,6 @@ int divide_network(char* argv[], Set* output_p){
         printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
     }
 
-
 ///    print degree vector
 //    for (i=0; i<new_graph.number_of_nodes; i++){
 //        printf("%c",'\n');
@@ -141,14 +140,14 @@ int divide_network(char* argv[], Set* output_p){
 /// while P is not empty keep dividing
 /// my graph pointer is assigned new graph every time (head from the LINKED LIST SET)
     input_set.data = (int*)malloc(3*sizeof(int));
-//    for (i=0; i<3;i++){
-//        input_set.data[i]=i;
-//    }
+    for (i=0; i<3;i++){
+        input_set.data[i]=i;
+    }
     input_set.size=3;
     input_set.data[0]=0;
     input_set.data[1]=2;
-    input_set.data[2]=4;
-
+    input_set.data[2]=3;
+//
     graph_for_input_set(myGraph_p ,input_set_p, graph_modified_p);
 //    divide_group_into_two(graph_modified_p, b_matrix_p);
 //    divide_group_into_two(myGraph_p);
