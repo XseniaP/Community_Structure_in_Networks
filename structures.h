@@ -1,6 +1,4 @@
-//
-// Created by Ksenia Polonsky on 8/18/20.
-//
+
 
 #ifndef PROJECT_TOHNA_STRUCTURES_H
 #define PROJECT_TOHNA_STRUCTURES_H
@@ -20,11 +18,6 @@ typedef struct Vector_double {
     double *data;
 }Vector_double;
 
-typedef struct SymMatrix {
-    int col_row_n;
-    double *value;
-}SymMatrix;
-
 typedef struct SparseMatrix {
     int size;
     int *row;
@@ -38,15 +31,15 @@ typedef struct Pair {
 }Pair;
 
 typedef struct Graph {
-    int *indices_set;
     int number_of_nodes;
     int M;
     Vector_int *deg_vec;
     SparseMatrix *adj_matrix;
 }Graph;
 
-typedef struct Set {
+typedef struct group {
     int *indices_set;
-}Set;
+    int *Adj_indices_set;
+}Group;
 
 #endif //PROJECT_TOHNA_STRUCTURES_H

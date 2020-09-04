@@ -1,15 +1,6 @@
 
 #include "fileHandler.h"
 
-int produce_input_set(struct Graph *graph){
-    int i=0;
-    graph->indices_set = (int *)malloc(graph->number_of_nodes*sizeof(int));
-    for (i=0; i<graph->number_of_nodes; i++){
-        graph->indices_set[i] = i;
-    }
-    return 0;
-}
-
 int readFile(char *fileName, struct Graph *graph) {
     int buffer1, buffer2,adj_loc=0,n = 0, i = 0, j=0, m=0;
     FILE * stream; unsigned long a;
@@ -58,8 +49,6 @@ int readFile(char *fileName, struct Graph *graph) {
             }
         }
     }
-
-    produce_input_set(graph);
 
 ///print adjacency matrix
 //    for (i=0; i<=graph->M/2; i++){

@@ -1,8 +1,8 @@
-#include "Algo2_new.h"
+#include "Algo2.h"
 #include "structures.h"
 
 int main(int argc,char* argv[]) {
-    Set output={NULL}; Set* output_p;
+    int** output={NULL}; int*** output_p;
     output_p = &output;
 ///check command line args
     if (argc<3){
