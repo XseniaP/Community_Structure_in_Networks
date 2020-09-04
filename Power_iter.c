@@ -1,6 +1,6 @@
 #include "Power_iter.h"
 
-//create random vector for initialization of power iteration
+///create random vector for initialization of power iteration ; O(n)
 int create_vec(Group* g, int size, double *vec){
     int i;
     clock_t start;
@@ -90,7 +90,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 
 }
 
-///multiply vector by symmetric shifted matrix B
+///multiply vector by symmetric shifted matrix B ; O(n+m)
 int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, Vector_double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
@@ -151,6 +151,7 @@ int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *ro
     return 0;
 }
 
+///O(n+m) due to vec_mult_B complexity
 int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p){
     int i=0;
     double sum=0.0;

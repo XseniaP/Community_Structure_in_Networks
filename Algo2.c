@@ -1,5 +1,6 @@
 #include "Algo2.h"
 
+/// O(n)
 int compute_s(Pair *pair_p, struct Vector_int* s_p){
     int i=0;
     s_p->data = (int*)malloc(s_p->size * sizeof(int));
@@ -14,6 +15,7 @@ int compute_s(Pair *pair_p, struct Vector_int* s_p){
     return 0;
 }
 
+/// O(m*n)
 int adj_ind_for_input_set(Graph* graph ,Group* g){
     int i=0, j=0,v=0, index=0, count=0, a=0, b=0;
 
@@ -73,11 +75,21 @@ int divide_network(char* argv[], int*** output_p){
 
     ///Allocations
     g.indices_set = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
+//    g.indices_set[0] = 1;
+//    g.indices_set[1] = 0;
+//    g.indices_set[2] = 1;
+//    g.indices_set[3] = 1;
+//    g.indices_set[4] = 0;
     for (i=0; i<myGraph_p->number_of_nodes;i++){
         g.indices_set[i]=1;
     }
 //    memset(g.indices_set,(int)1,myGraph_p->number_of_nodes*sizeof(int));
     g.Adj_indices_set = (int *)calloc(myGraph_p->M/2,sizeof(int));
+//    g.Adj_indices_set[0] = 0;
+//    g.Adj_indices_set[1] = 1;
+//    g.Adj_indices_set[2] = 1;
+//    g.Adj_indices_set[3] = 0;
+//    g.Adj_indices_set[4] = 0;
     for (i=0; i<myGraph_p->M/2;i++){
         g.Adj_indices_set[i]=1;
     }
