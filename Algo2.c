@@ -63,12 +63,6 @@ int divide_network(char* argv[], int*** output_p){
 
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
 
-///Allocations
-    g.indices_set = (int *)calloc(myGraph_p->number_of_nodes,sizeof(int));
-    memset(g.indices_set,1,myGraph_p->number_of_nodes*sizeof(int));
-    g.Adj_indices_set = (int *)calloc(myGraph_p->M/2,sizeof(int));
-    memset(g.Adj_indices_set,1,myGraph_p->M/2*sizeof(int));
-
 
 ///reading the file, creating the graph with Adj matrix and degree vector
     a = readFile(argv[1], myGraph_p);
@@ -76,6 +70,19 @@ int divide_network(char* argv[], int*** output_p){
         printf("Couldn't read the file\n");
         return 1;
     }
+
+    ///Allocations
+    g.indices_set = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
+    for (i=0; i<myGraph_p->number_of_nodes;i++){
+        g.indices_set[i]=1;
+    }
+//    memset(g.indices_set,(int)1,myGraph_p->number_of_nodes*sizeof(int));
+    g.Adj_indices_set = (int *)calloc(myGraph_p->M/2,sizeof(int));
+    for (i=0; i<myGraph_p->M/2;i++){
+        g.Adj_indices_set[i]=1;
+    }
+//    memset(g.Adj_indices_set,(int)1,myGraph_p->M/2*sizeof(int));
+
 
 ///    print indices set indices
     for (i=0; i<new_graph.number_of_nodes; i++){

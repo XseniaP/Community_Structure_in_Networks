@@ -22,7 +22,6 @@ typedef struct SparseMatrix {
     int size;
     int *row;
     int *col;
-    double *value;
 }SparseMatrix;
 
 typedef struct Pair {
