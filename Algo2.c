@@ -48,6 +48,7 @@ int divide_group_into_two(Graph* graph, Group* g){
 
     if (pair_p->eigenvalue<=0){
         printf("network is non-dividable");
+        return 1;
     }
 
     free(pair_p->eigenvector);
@@ -60,10 +61,13 @@ int divide_network(char* argv[], int*** output_p){
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,NULL};
     Group* g_p; g_p = &g;
-//    List p_list; List o_list; List p_head, o_head;
-    int i=0, a;
+    Element p_set ={NULL,NULL}, o_set ={NULL,NULL};
+    Element *p_set_head, *o_set_head;
+
+    int i=0, a, result;
 
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
+    p_set_head = &p_set; o_set_head = &o_set;
 
 
 ///reading the file, creating the graph with Adj matrix and degree vector
@@ -75,7 +79,7 @@ int divide_network(char* argv[], int*** output_p){
 
     ///Allocations
     g.indices = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
-    g.group_size = myGraph_p->number_of_nodes;
+//    g.group_size = myGraph_p->number_of_nodes;
     for (i=0; i<myGraph_p->number_of_nodes;i++){
         g.indices[i]=i;
     }
@@ -88,7 +92,7 @@ int divide_network(char* argv[], int*** output_p){
 
 
     g.Adj_indices = (int *)calloc(myGraph_p->M/2,sizeof(int));
-    g.Adj_size = myGraph_p->M/2;
+//    g.Adj_size = myGraph_p->M/2;
     for (i=0; i<myGraph_p->M/2;i++){
         g.Adj_indices[i]=i;
     }
@@ -123,14 +127,16 @@ int divide_network(char* argv[], int*** output_p){
 /// my graph pointer is assigned new graph every time (head from the LINKED LIST SET)
 
     ///creating P and O lists
-//    create_empty_list(o_head);
-//    create_list_with_graph(myGraph_p, p_head);
+//    p_set_head = createElement(sizeof(Group));
+//    p_set_head->data = (void *)g_p;
 //
-//    while (!is_empty(p_head)){
-//        g = remove_graph_from_list(p_head);
-//        result = divide_group_into_two(g, s_p);
-//        if (result ==0){
-//            add_graph_to_list(g, tail_p);
+//    o_set_head = createElement(sizeof(int**));
+//
+//    while (!is_empty(p_set_head)){
+//        g_p = remove_graph_from_list(p_set_head);
+//        result = divide_group_into_two(myGraph_p,g_p);
+//        if (result ==1){
+//            add_group_to_element(g_p, o_set_head);
 //        }
 //        else{
 //            create_groups(s_p, groups);

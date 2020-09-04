@@ -14,4 +14,5 @@ int compute_s(Pair *pair_p, struct Vector_int* s_p);
 int create_groups(struct Vector_int* s_p, Graph** groups);
 
 
+
 #endif //PROJECT_TOHNA_ALGO2_H
