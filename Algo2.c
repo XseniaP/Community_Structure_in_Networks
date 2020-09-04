@@ -17,15 +17,15 @@ int compute_s(Pair *pair_p, struct Vector_int* s_p){
 
 /// O(m*n)
 int adj_ind_for_input_set(Graph* graph ,Group* g){
-    int i=0, j=0,v=0, index=0, count=0, a=0, b=0;
+    int i=0, j=0, index=0;
 
     for(i=0;i<graph->M/2;i++){
         for (j=0;j<graph->number_of_nodes;j++) {
-            if ((g->indices_set[graph->adj_matrix->row[i]]==1) || (g->indices_set[graph->adj_matrix->col[i]]==1)) {
+            if ((g->indices[graph->adj_matrix->row[i]]==1) || (g->indices[graph->adj_matrix->col[i]]==1)) {
                 index += 1;
             }
             if (index == 2) {
-                g->Adj_indices_set[i] = 1;
+                g->Adj_indices[i] = 1;
                 break;
             }
         }
@@ -39,7 +39,6 @@ int divide_group_into_two(Graph* graph, Group* g){
     ///declarations
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;Vector_int* s_p;
     struct Vector_int s ={0, NULL};
-    int size =0, i=0;
     ///pointers
     Pair* pair_p = &pair;row_sums_p=&row_sums; s_p = &s;
 
@@ -51,6 +50,7 @@ int divide_group_into_two(Graph* graph, Group* g){
         printf("network is non-dividable");
     }
 
+    free(pair_p->eigenvector);
     return 0;
 }
 
@@ -61,7 +61,7 @@ int divide_network(char* argv[], int*** output_p){
     Group g ={NULL,NULL};
     Group* g_p; g_p = &g;
 //    List p_list; List o_list; List p_head, o_head;
-    int i=0, a; int size;
+    int i=0, a;
 
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
 
@@ -74,30 +74,35 @@ int divide_network(char* argv[], int*** output_p){
     }
 
     ///Allocations
-    g.indices_set = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
+    g.indices = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
+    g.group_size = myGraph_p->number_of_nodes;
     for (i=0; i<myGraph_p->number_of_nodes;i++){
-        g.indices_set[i]=1;
+        g.indices[i]=i;
     }
-    //    g.indices_set[0] = 1;
-//    g.indices_set[1] = 0;
-//    g.indices_set[2] = 1;
-//    g.indices_set[3] = 1;
-//    g.indices_set[4] = 0;
 
-    g.Adj_indices_set = (int *)calloc(myGraph_p->M/2,sizeof(int));
+//    g.indices = (int *)malloc(3*sizeof(int));
+//    g.group_size = 3;
+//    g.indices[0] = 0;
+//    g.indices[1] = 2;
+//    g.indices[2] = 4;
+
+
+    g.Adj_indices = (int *)calloc(myGraph_p->M/2,sizeof(int));
+    g.Adj_size = myGraph_p->M/2;
     for (i=0; i<myGraph_p->M/2;i++){
-        g.Adj_indices_set[i]=1;
+        g.Adj_indices[i]=i;
     }
-    //    g.Adj_indices_set[0] = 0;
-//    g.Adj_indices_set[1] = 1;
-//    g.Adj_indices_set[2] = 1;
-//    g.Adj_indices_set[3] = 0;
-//    g.Adj_indices_set[4] = 0;
+
+//    g.Adj_indices = (int *)calloc(3,sizeof(int));
+//    g.Adj_size = 3;
+//    g.Adj_indices[0] = 1;
+//    g.Adj_indices[1] = 3;
+//    g.Adj_indices[2] = 4;
 
 ///    print indices set indices
     for (i=0; i<new_graph.number_of_nodes; i++){
         printf("%c",'\n');
-        printf("%d", g.indices_set[i]);
+        printf("%d", g.indices[i]);
     }
 
 ///    print adjacency matrix
@@ -167,6 +172,8 @@ int divide_network(char* argv[], int*** output_p){
 //    free(myGraph_p->adj_matrix->col);
 //    free(myGraph_p->indices_set);
 //    free(b_matrix.value);
+//free(g.Adj_indices);
+//free(g.indices);
     return 0;
 }
 

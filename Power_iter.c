@@ -1,16 +1,32 @@
 #include "Power_iter.h"
 
+
+int indices_to_indices_set(int *indices, int size, int* indices_set){
+    int i, count =0;
+    for (i=0; i<size; i++){
+        if(indices[count] == i) {
+            indices_set[i] = 1;
+            count +=1;
+        }
+        else{
+            indices_set[i] = 0;
+        }
+    }
+}
+
 ///create random vector for initialization of power iteration ; O(n)
 int create_vec(Group* g, int size, double *vec){
     int i;
-    clock_t start;
+    int* indices_set;
+    indices_set = (int*)malloc(size*sizeof(int));
+    indices_to_indices_set(g->indices, size, indices_set);
+
     srand(time(NULL));
-    start = clock();
     for (i=0; i<size; i++){
-        if (g->indices_set[i] == 0){
+        if (indices_set[i] == 0){
             vec[i] = 0;
         }
-        else if (g->indices_set[i] == 1){
+        else if (indices_set[i] == 1){
             vec[i] = (double)rand();
         }
         else{
@@ -18,6 +34,7 @@ int create_vec(Group* g, int size, double *vec){
             return 1;
         }
     }
+    free(indices_set);
     return 0;
 }
 
@@ -30,12 +47,21 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
     temp = (double*) calloc( graph->number_of_nodes , sizeof(double));
     sum=0, max=0;
 
+    int* indices_set;
+    indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
+    indices_to_indices_set(g->indices, graph->number_of_nodes, indices_set);
+
+    int* Adj_indices_set;
+    Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
+    indices_to_indices_set(g->Adj_indices, graph->M/2, Adj_indices_set);
+
+
     /// the loop is O(n*(m+n))
     for (i=0; i<graph->number_of_nodes; i++){
 
         /// the loop is O(M); going over Adj matrix and adding 1 where appropriate
         for (j=0; j<graph->adj_matrix->size;j++) {
-            if (g->Adj_indices_set[j] == 1) {
+            if (Adj_indices_set[j] == 1) {
                 if ((graph->adj_matrix->row[j] == i) || (graph->adj_matrix->col[j] == i)) {
                     if (graph->adj_matrix->row[j] == i) {
                         temp[graph->adj_matrix->col[j]] += 1.0;
@@ -54,7 +80,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 
         /// the loop is O(n); multiplying by the indices , not relevant elements will turn zero
         for (j=0; j<graph->number_of_nodes; j++){
-            temp[j] = temp[j]*g->indices_set[i]*g->indices_set[j];
+            temp[j] = temp[j]*indices_set[i]*indices_set[j];
 //            printf("  %f", temp[j]);
             sum += temp[j];
         }
@@ -85,6 +111,8 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 
 //    printf("\n %f \n", max);
     free(temp);
+    free(indices_set);
+    free(Adj_indices_set);
     *max_p = max;
     return 0;
 
@@ -95,9 +123,17 @@ int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *ro
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
 
+    int* indices_set;
+    indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
+    indices_to_indices_set(g_p->indices, graph->number_of_nodes, indices_set);
+
+    int* Adj_indices_set;
+    Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
+    indices_to_indices_set(g_p->Adj_indices, graph->M/2, Adj_indices_set);
+
     ///step1 - calculate A * random vector - O(m)
     for (i=0; i<graph->adj_matrix->size; i++){
-        if (g_p->Adj_indices_set[i]==1) {
+        if (Adj_indices_set[i]==1) {
             ind1 = graph->adj_matrix->row[i];
             ind2 = graph->adj_matrix->col[i];
             row_norm[ind1] += rand_vec[ind2];
@@ -119,7 +155,7 @@ int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *ro
     ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
-        comp2[i] = cons*(graph->deg_vec->data[i])*(g_p->indices_set[i])/(graph->M);
+        comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
 //    printf("\n\n%Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2]);
 
@@ -148,6 +184,8 @@ int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *ro
     free(comp);
     free(comp2);
     free(comp3);
+    free(indices_set);
+    free(Adj_indices_set);
     return 0;
 }
 
@@ -176,7 +214,7 @@ int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row
 
 //check if the difference between two vectors is ~0
 int check_difference(int height ,double *temp ,double *next){
-    double difference=0.0, *pointer1 = NULL, *pointer2 = NULL;
+    double difference, *pointer1 = NULL, *pointer2 = NULL;
     int i;
     pointer1 = &temp[0]; pointer2 = &next[0];
 
@@ -196,7 +234,7 @@ int check_difference(int height ,double *temp ,double *next){
 ///int powerIteration(SymMatrix *bg_hat_matrix_p ,Pair* pair_p, Vector_double *row_sums_p){
 int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_sums_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, numerator, max_v;
-    int check, true=0, i=0; int j=0; double sum=0.0, value_without_c = 0.0; double* vect_temp;
+    int check, true=0, i=0; double value_without_c; double* vect_temp;
     max = &max_v;
     vec = (double *)malloc(graph->number_of_nodes*sizeof(double));
     /// using calloc to initialize to zero - important!

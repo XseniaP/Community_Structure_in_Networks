@@ -37,8 +37,10 @@ typedef struct Graph {
 }Graph;
 
 typedef struct group {
-    int *indices_set;
-    int *Adj_indices_set;
+    int *indices;
+    int group_size;
+    int *Adj_indices;
+    int Adj_size;
 }Group;
 
 #endif //PROJECT_TOHNA_STRUCTURES_H
