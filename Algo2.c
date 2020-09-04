@@ -75,26 +75,24 @@ int divide_network(char* argv[], int*** output_p){
 
     ///Allocations
     g.indices_set = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
-//    g.indices_set[0] = 1;
+    for (i=0; i<myGraph_p->number_of_nodes;i++){
+        g.indices_set[i]=1;
+    }
+    //    g.indices_set[0] = 1;
 //    g.indices_set[1] = 0;
 //    g.indices_set[2] = 1;
 //    g.indices_set[3] = 1;
 //    g.indices_set[4] = 0;
-    for (i=0; i<myGraph_p->number_of_nodes;i++){
-        g.indices_set[i]=1;
-    }
-//    memset(g.indices_set,(int)1,myGraph_p->number_of_nodes*sizeof(int));
+
     g.Adj_indices_set = (int *)calloc(myGraph_p->M/2,sizeof(int));
-//    g.Adj_indices_set[0] = 0;
+    for (i=0; i<myGraph_p->M/2;i++){
+        g.Adj_indices_set[i]=1;
+    }
+    //    g.Adj_indices_set[0] = 0;
 //    g.Adj_indices_set[1] = 1;
 //    g.Adj_indices_set[2] = 1;
 //    g.Adj_indices_set[3] = 0;
 //    g.Adj_indices_set[4] = 0;
-    for (i=0; i<myGraph_p->M/2;i++){
-        g.Adj_indices_set[i]=1;
-    }
-//    memset(g.Adj_indices_set,(int)1,myGraph_p->M/2*sizeof(int));
-
 
 ///    print indices set indices
     for (i=0; i<new_graph.number_of_nodes; i++){
