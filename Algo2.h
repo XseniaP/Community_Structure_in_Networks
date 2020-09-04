@@ -9,9 +9,9 @@
 
 int divide_network(char* argv[], int*** output_p);
 int adj_ind_for_input_set(Graph* graph , Group* g);
-int divide_group_into_two(Graph* graph, Group* g);
-int compute_s(Pair *pair_p, struct Vector_int* s_p);
-int create_groups(struct Vector_int* s_p, Graph** groups);
+int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2);
+int compute_s(Pair *pair_p, int* s_p, int size);
+int split_group_based_on_s(int* s_p, int size, Group* group1, Group* group2);
 
 
 

@@ -1,54 +1,89 @@
 #include "Algo2.h"
 
 /// O(n)
-int compute_s(Pair *pair_p, struct Vector_int* s_p){
+int compute_s(Pair *pair_p, int* s_p, int size){
     int i=0;
-    s_p->data = (int*)malloc(s_p->size * sizeof(int));
-    for (i=0; i<s_p->size; i++){
-        if (pair_p->eigenvector[i]>0){
-            s_p->data[i] = 1;
+    for (i=0; i<size; i++){
+        if(pair_p->eigenvector[i]==0.0){
+            s_p[i] = 0;
+        }
+        else if (pair_p->eigenvector[i]>0.0){
+            s_p[i] = 1;
         }
         else{
-            s_p->data[i] = -1;
+            s_p[i] = -1;
         }
     }
     return 0;
 }
 
 /// O(m*n)
-int adj_ind_for_input_set(Graph* graph ,Group* g){
-    int i=0, j=0, index=0;
+//int adj_ind_for_input_set(Graph* graph ,Group* g){
+//    int i=0, j=0, index=0;
+//
+//    for(i=0;i<graph->M/2;i++){
+//        for (j=0;j<graph->number_of_nodes;j++) {
+//            if ((g->indices[graph->adj_matrix->row[i]]==1) || (g->indices[graph->adj_matrix->col[i]]==1)) {
+//                index += 1;
+//            }
+//            if (index == 2) {
+//                g->Adj_indices[i] = 1;
+//                break;
+//            }
+//        }
+//        index = 0;
+//    }
+//
+//    return 0;
+//}
 
-    for(i=0;i<graph->M/2;i++){
-        for (j=0;j<graph->number_of_nodes;j++) {
-            if ((g->indices[graph->adj_matrix->row[i]]==1) || (g->indices[graph->adj_matrix->col[i]]==1)) {
-                index += 1;
+int split_group_based_on_s(int *s_p, int size, Group* group1, Group* group2){
+    int i, count1=0, count2=0;
+
+    for (i=0; i<size; i++){
+            if(s_p[i]==1){
+                count1+=1;
             }
-            if (index == 2) {
-                g->Adj_indices[i] = 1;
-                break;
+            else if(s_p[i]==(-1)){
+                count2+=1;
             }
         }
-        index = 0;
+    group1->indices = (int*)calloc(count1,sizeof(int));
+    group2->indices = (int*)calloc(count2,sizeof(int));
+    count1=0; count2=0;
+    for (i=0; i<size; i++){
+        if(s_p[i]==1){
+            group1->indices[count1]=i;
+            count1+=1;
+        }
+        else if(s_p[i]==(-1)){
+            group2->indices[count2]=i;
+            count2+=1;
+        }
     }
 
-    return 0;
-}
+};
 
-int divide_group_into_two(Graph* graph, Group* g){
+int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2){
     ///declarations
-    Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;Vector_int* s_p;
-    struct Vector_int s ={0, NULL};
+    Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;
+    int* s_p;
     ///pointers
-    Pair* pair_p = &pair;row_sums_p=&row_sums; s_p = &s;
+    Pair* pair_p = &pair;row_sums_p=&row_sums;
+    int i, count1=0, count2=0;
 
     row_sums.data = (double *)calloc(graph->number_of_nodes,sizeof(double));
     powerIteration(graph, g, pair_p, row_sums_p);
-    compute_s(pair_p, s_p);
+
+    s_p = (int*)malloc(graph->number_of_nodes * sizeof(int));
+    compute_s(pair_p, s_p, graph->number_of_nodes);
 
     if (pair_p->eigenvalue<=0){
         printf("network is non-dividable");
         return 1;
+    }
+    else{
+        return 0;
     }
 
     free(pair_p->eigenvector);
@@ -59,8 +94,8 @@ int divide_network(char* argv[], int*** output_p){
 ///declarations , initializations, pointers
     Graph new_graph = {NULL,0,0,NULL, NULL};Graph *myGraph_p;
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL};Vector_int deg_vec = {0,NULL};
-    Group g ={NULL,NULL};
-    Group* g_p; g_p = &g;
+    Group g ={NULL,NULL};Group g1 ={NULL,NULL};Group g2 ={NULL,NULL};
+    Group *g_p, *g1_p, *g2_p; g_p = &g; g1_p = &g1; g2_p = &g2;
     Element p_set ={NULL,NULL}, o_set ={NULL,NULL};
     Element *p_set_head, *o_set_head;
 
@@ -134,7 +169,7 @@ int divide_network(char* argv[], int*** output_p){
 //
 //    while (!is_empty(p_set_head)){
 //        g_p = remove_graph_from_list(p_set_head);
-//        result = divide_group_into_two(myGraph_p,g_p);
+//        result = divide_group_into_two(myGraph_p,g_p,s_p);
 //        if (result ==1){
 //            add_group_to_element(g_p, o_set_head);
 //        }
@@ -161,7 +196,7 @@ int divide_network(char* argv[], int*** output_p){
 
 
 
-    divide_group_into_two(myGraph_p, g_p);
+    divide_group_into_two(myGraph_p, g_p, g1_p,g2_p);
 
 //    adj_ind_for_input_set(myGraph_p ,g);
 
