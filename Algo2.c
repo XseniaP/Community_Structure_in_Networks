@@ -192,26 +192,26 @@ int divide_network(char* argv[], int*** output_p){
     ///creating P and O lists
     p_set_head = createElement(sizeof(Group));
     p_set_head->data = g_p;
-    o_set_head = createElement(sizeof(Group));
+    o_set_head = createElement(sizeof(int**));
 
     while (!is_empty(p_set_head)){
         g_p = remove_graph_from_list(p_set_head);
         result = divide_group_into_two(myGraph_p,g_p,g1_p, g2_p);
         if (result ==1){
-            add_group_to_element(g_p, o_set_head);
+            add_group_to_final_set(g_p, o_set_head);
         }
         else{
             if ((g1_p->group_size == 1)&&(g2_p->group_size == 1)){
-                add_group_to_element(g1_p, o_set_head);
-                add_group_to_element(g2_p, o_set_head);
+                add_group_to_final_set(g1_p, o_set_head);
+                add_group_to_final_set(g2_p, o_set_head);
             }
             else if (g1_p->group_size == 1){
-                add_group_to_element(g1_p, o_set_head);
+                add_group_to_final_set(g1_p, o_set_head);
                 add_group_to_element(g2_p, p_set_head);
             }
             else if (g2_p->group_size == 1){
                 add_group_to_element(g1_p, p_set_head);
-                add_group_to_element(g2_p, o_set_head);
+                add_group_to_final_set(g2_p, o_set_head);
             }
             else {
                 add_group_to_element(g1_p, p_set_head);
@@ -223,9 +223,6 @@ int divide_network(char* argv[], int*** output_p){
 //    divide_group_into_two(myGraph_p, g_p, g1_p,g2_p);
 
 //    adj_ind_for_input_set(myGraph_p ,g);
-
-///create new Graph struct for the given set
-
 
 
     ///placeholder for the output

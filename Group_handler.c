@@ -69,3 +69,29 @@ int add_group_to_element(Group* g_p, Element* some_set_head){
         return 0;
     }
 }
+
+int add_group_to_final_set(Group* g_p, Element* some_set_head){
+    Element temp; int i;
+
+    printf("\n \n");
+    for(i=0;i<g_p->group_size;i++){
+        printf("%d  ",g_p->indices[i]);
+        printf("\n");
+    }
+
+    if ((some_set_head->data == NULL)&&(some_set_head->next == NULL)){
+        some_set_head->data = g_p->indices;
+        return 0;
+    }
+    else if ((some_set_head->data == NULL)&&(some_set_head->next != NULL)){
+        printf("linked list element has inaccurate structure");
+        return 1;
+    }
+    else{
+        temp = *some_set_head;
+        some_set_head->data = g_p->indices;
+        some_set_head->next = &temp;
+        return 0;
+    }
+}
+
