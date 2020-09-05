@@ -21,5 +21,4 @@ int add_group_to_element(Group* g_p, Element* o_set_head);
 
 
 
-
 #endif //PROJECT_TOHNA_GROUP_HANDLER_H

@@ -18,51 +18,78 @@ int compute_s(Pair *pair_p, int* s_p, int size){
 }
 
 /// O(m*n)
-//int adj_ind_for_input_set(Graph* graph ,Group* g){
-//    int i=0, j=0, index=0;
-//
-//    for(i=0;i<graph->M/2;i++){
-//        for (j=0;j<graph->number_of_nodes;j++) {
-//            if ((g->indices[graph->adj_matrix->row[i]]==1) || (g->indices[graph->adj_matrix->col[i]]==1)) {
-//                index += 1;
-//            }
-//            if (index == 2) {
-//                g->Adj_indices[i] = 1;
-//                break;
-//            }
-//        }
-//        index = 0;
-//    }
-//
-//    return 0;
-//}
+int adj_for_g(Graph* graph ,Group* g){
+    int i, j, count1=0,count2=0, a,b;
+    for(i=0;i<graph->M/2;i++) {
+        for (j = 0; j < g->group_size; j++) {
+            if ((g->indices[j] == graph->adj_matrix->row[i])||(g->indices[j] == graph->adj_matrix->col[i])) {
+                count1 += 1;
+            }
+            if (count1 == 2) {
+                count2 += 1;
+                break;
+            }
+        }
+        count1 = 0;
+    }
+    g->Adj_size = count2;
+    g->Adj_indices = (int*)malloc(g->Adj_size* sizeof(int));
 
-int split_group_based_on_s(int *s_p, int size, Group* group1, Group* group2){
-    int i, count1=0, count2=0;
+    for(i=0;i<graph->M/2;i++) {
+        for (j = 0; j < g->group_size; j++) {
+            if ((g->indices[j] == graph->adj_matrix->row[i])||(g->indices[j] == graph->adj_matrix->col[i])) {
+                count1 += 1;
+            }
+            if (count1 == 2) {
+                g->Adj_indices[count2] = i;
+                count2 += 1;
+                break;
+            }
+        }
+        count1 = 0;
+    }
 
-    for (i=0; i<size; i++){
+    return 0;
+}
+
+int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2){
+    int i,count1=0, count2=0;
+
+    for (i=0; i<graph->number_of_nodes; i++){
             if(s_p[i]==1){
                 count1+=1;
             }
             else if(s_p[i]==(-1)){
                 count2+=1;
             }
-        }
+    }
     group1->indices = (int*)calloc(count1,sizeof(int));
+    group1->group_size = count1;
     group2->indices = (int*)calloc(count2,sizeof(int));
+    group2->group_size = count2;
+    for (i=0; i<graph->number_of_nodes; i++){
+        printf("%d ", s_p[i]);
+    }
+    printf("\n ");
     count1=0; count2=0;
-    for (i=0; i<size; i++){
+    for (i=0; i<graph->number_of_nodes; i++){
         if(s_p[i]==1){
             group1->indices[count1]=i;
+            printf("gr1  %d  ",i);
             count1+=1;
         }
         else if(s_p[i]==(-1)){
             group2->indices[count2]=i;
+            printf("gr2  %d  ",i);
             count2+=1;
         }
     }
+    adj_for_g(graph ,group1);
+    adj_for_g(graph ,group2);
 
-};
+    printf("\n");
+    return 0;
+}
 
 int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2){
     ///declarations
@@ -83,6 +110,7 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2){
         return 1;
     }
     else{
+        split_group_based_on_s(s_p, graph, g1, g2);
         return 0;
     }
 
@@ -97,7 +125,7 @@ int divide_network(char* argv[], int*** output_p){
     Group g ={NULL,NULL};Group g1 ={NULL,NULL};Group g2 ={NULL,NULL};
     Group *g_p, *g1_p, *g2_p; g_p = &g; g1_p = &g1; g2_p = &g2;
     Element p_set ={NULL,NULL}, o_set ={NULL,NULL};
-    Element *p_set_head, *o_set_head;
+    Element *p_set_head, *o_set_head, next;
 
     int i=0, a, result;
 
@@ -112,9 +140,9 @@ int divide_network(char* argv[], int*** output_p){
         return 1;
     }
 
-    ///Allocations
+    ///Initiate default group g of initial full graph
     g.indices = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
-//    g.group_size = myGraph_p->number_of_nodes;
+    g.group_size = myGraph_p->number_of_nodes;
     for (i=0; i<myGraph_p->number_of_nodes;i++){
         g.indices[i]=i;
     }
@@ -125,9 +153,9 @@ int divide_network(char* argv[], int*** output_p){
 //    g.indices[1] = 2;
 //    g.indices[2] = 4;
 
-
+    ///Initiate Adj matrix indices for default g
     g.Adj_indices = (int *)calloc(myGraph_p->M/2,sizeof(int));
-//    g.Adj_size = myGraph_p->M/2;
+    g.Adj_size = myGraph_p->M/2;
     for (i=0; i<myGraph_p->M/2;i++){
         g.Adj_indices[i]=i;
     }
@@ -138,13 +166,13 @@ int divide_network(char* argv[], int*** output_p){
 //    g.Adj_indices[1] = 3;
 //    g.Adj_indices[2] = 4;
 
-///    print indices set indices
+///    print indices in the default g
     for (i=0; i<new_graph.number_of_nodes; i++){
         printf("%c",'\n');
         printf("%d", g.indices[i]);
     }
 
-///    print adjacency matrix
+///    print full adjacency matrix
     for (i=0; i<new_graph.M/2; i++){
         printf("%c",'\n');
         printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
@@ -162,41 +190,37 @@ int divide_network(char* argv[], int*** output_p){
 /// my graph pointer is assigned new graph every time (head from the LINKED LIST SET)
 
     ///creating P and O lists
-//    p_set_head = createElement(sizeof(Group));
-//    p_set_head->data = (void *)g_p;
-//
-//    o_set_head = createElement(sizeof(int**));
-//
-//    while (!is_empty(p_set_head)){
-//        g_p = remove_graph_from_list(p_set_head);
-//        result = divide_group_into_two(myGraph_p,g_p,s_p);
-//        if (result ==1){
-//            add_group_to_element(g_p, o_set_head);
-//        }
-//        else{
-//            create_groups(s_p, groups);
-//            if (groups[0]->number_of_nodes == 1)&(groups[1]->number_of_nodes == 1){
-//                add_graph_to_list(groups[0], tail_o);
-//                add_graph_to_list(groups[1], tail_o);
-//            };
-//            else if (groups[0]->number_of_nodes == 1){
-//                add_graph_to_list(groups[0], tail_o);
-//                add_graph_to_list(groups[1], tail_p);
-//            };
-//            else if (groups[1]->number_of_nodes == 1){
-//                add_graph_to_list(groups[0], tail_p);
-//                add_graph_to_list(groups[1],tail_o);
-//            };
-//            else {
-//                add_graph_to_list(groups[0], tail_p);
-//                add_graph_to_list(groups[1], tail_p);
-//            }
-//        }
-//    }
+    p_set_head = createElement(sizeof(Group));
+    p_set_head->data = g_p;
+    o_set_head = createElement(sizeof(Group));
 
+    while (!is_empty(p_set_head)){
+        g_p = remove_graph_from_list(p_set_head);
+        result = divide_group_into_two(myGraph_p,g_p,g1_p, g2_p);
+        if (result ==1){
+            add_group_to_element(g_p, o_set_head);
+        }
+        else{
+            if ((g1_p->group_size == 1)&&(g2_p->group_size == 1)){
+                add_group_to_element(g1_p, o_set_head);
+                add_group_to_element(g2_p, o_set_head);
+            }
+            else if (g1_p->group_size == 1){
+                add_group_to_element(g1_p, o_set_head);
+                add_group_to_element(g2_p, p_set_head);
+            }
+            else if (g2_p->group_size == 1){
+                add_group_to_element(g1_p, p_set_head);
+                add_group_to_element(g2_p, o_set_head);
+            }
+            else {
+                add_group_to_element(g1_p, p_set_head);
+                add_group_to_element(g2_p, p_set_head);
+            }
+        }
+    }
 
-
-    divide_group_into_two(myGraph_p, g_p, g1_p,g2_p);
+//    divide_group_into_two(myGraph_p, g_p, g1_p,g2_p);
 
 //    adj_ind_for_input_set(myGraph_p ,g);
 

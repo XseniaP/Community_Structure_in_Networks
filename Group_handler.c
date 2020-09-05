@@ -24,16 +24,17 @@ Element* createElement(size_t data_size_bytes)
 
 int is_empty(Element* p_set_head){
     if (p_set_head->data == NULL){
-        return 0;
+        return 1;
     }
     else{
-        return 1;
+        return 0;
     }
 }
 
 Group* remove_graph_from_list(Element* p_set_head){
     Group *temp;
     if (p_set_head->data == NULL){
+        printf("the set is empty, no groups to remove");
         return NULL;
     }
     else if(p_set_head->next == NULL)
@@ -52,7 +53,7 @@ Group* remove_graph_from_list(Element* p_set_head){
 }
 
 int add_group_to_element(Group* g_p, Element* some_set_head){
-    Element *temp;
+    Element temp;
     if ((some_set_head->data == NULL)&&(some_set_head->next == NULL)){
         some_set_head->data = g_p;
         return 0;
@@ -62,9 +63,9 @@ int add_group_to_element(Group* g_p, Element* some_set_head){
         return 1;
     }
     else{
-        temp = some_set_head;
+        temp = *some_set_head;
         some_set_head->data = g_p;
-        some_set_head->next = temp;
+        some_set_head->next = &temp;
         return 0;
     }
 }
