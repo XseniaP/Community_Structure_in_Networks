@@ -9,7 +9,7 @@
 #include <time.h>
 
 int create_vec(Group* g, int size, double *vec);
-int vec_mult_B(Graph* graph,Group* g_p, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p);
+int vec_mult_B_shifted(Graph* graph,Group* g_p, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p);
 int norm_vec (Graph* graph,Group* g_p, double *rand_vec, double max, double *row_norm,Vector_double *row_sums_p);
 int check_difference(int height ,double *temp ,double *next);
 int powerIteration(Graph* graph, Group* g, Pair* pair_p, Vector_double *row_sums_p);

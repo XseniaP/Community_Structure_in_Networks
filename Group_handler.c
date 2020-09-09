@@ -10,12 +10,13 @@ Element* createElement(size_t data_size_bytes)
     newNode =  malloc(sizeof(Element));/*always the same*/
     if(NULL == newNode)
     {
+        printf("failed to allocate memory for the Node");
         return NULL;
     }
     newNode->data =  malloc(data_size_bytes);/*changes by input*/
     if(NULL == newNode->data)
     {
-        printf("failed to allocate memory for the Node");
+        printf("failed to allocate memory for the Node's data");
         return NULL;
     }
     newNode->next = NULL;
@@ -33,7 +34,7 @@ int is_empty(Element* p_set_head){
 
 Group* remove_graph_from_list(Element* p_set_head){
     Group *temp;
-    if (p_set_head->data == NULL){
+    if ((p_set_head->data == NULL)&&(p_set_head->next == NULL)){
         printf("the set is empty, no groups to remove");
         return NULL;
     }
@@ -95,3 +96,9 @@ int add_group_to_final_set(Group* g_p, Element* some_set_head){
     }
 }
 
+int count_size(Element* set_head){
+    int cnt = 0;
+    for (; set_head!=NULL; set_head = set_head->next)
+        cnt++;
+    return cnt;
+}

@@ -119,7 +119,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 }
 
 ///multiply vector by symmetric shifted matrix B ; O(n+m)
-int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, Vector_double *row_sums_p) {
+int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, Vector_double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
 
@@ -193,7 +193,7 @@ int vec_mult_B(Graph* graph, Group* g_p, double *rand_vec, double max,double *ro
 int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p){
     int i=0;
     double sum=0.0;
-    vec_mult_B(graph, g_p,rand_vec,max,row_norm,row_sums_p);
+    vec_mult_B_shifted(graph, g_p,rand_vec,max,row_norm,row_sums_p);
     ///step5 - combine 4 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
         sum +=pow(row_norm[i],2);
@@ -284,8 +284,7 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
 //    printf("\n%f\n\n", denominator);
     ///important to use calloc here, so that zeroes are initiated
     vect_temp = (double *)calloc(graph->number_of_nodes,sizeof(double));
-    vec_mult_B(graph, g_p, pair_p->eigenvector , max_v,vect_temp, row_sums_p);
-
+    vec_mult_B_shifted(graph, g_p, pair_p->eigenvector , max_v,vect_temp, row_sums_p);
 
 ///dot product of eigenvector and vector with the results from B_hat shifted * eigenvector - O(n)
     for(i=0; i<graph->number_of_nodes;i++){
