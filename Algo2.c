@@ -90,7 +90,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 
 /// O(m*n)
 int adj_for_g(Graph* graph ,Group* g){
-    int i, j, count1=0,count2=0, a,b;
+    int i, j, count1=0,count2=0;
     for(i=0;i<graph->M/2;i++) {
         for (j = 0; j < g->group_size; j++) {
             if ((g->indices[j] == graph->adj_matrix->row[i])||(g->indices[j] == graph->adj_matrix->col[i])) {
@@ -106,6 +106,7 @@ int adj_for_g(Graph* graph ,Group* g){
     g->Adj_size = count2;
     g->Adj_indices = (int*)malloc(g->Adj_size* sizeof(int));
 
+    count1=0,count2=0;
     for(i=0;i<graph->M/2;i++) {
         for (j = 0; j < g->group_size; j++) {
             if ((g->indices[j] == graph->adj_matrix->row[i])||(g->indices[j] == graph->adj_matrix->col[i])) {
