@@ -147,7 +147,7 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         }
 //        printf("\n\n%f  %f  %f  %f  %f   %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
     }
-    printf("\n\n%f  %f  %f  %f  %f   %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
+//    printf("\n\n%f  %f  %f  %f  %f   %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
 //    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
 //    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
 //    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
@@ -157,21 +157,21 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(rand_vec[i])*(long double)(graph->deg_vec->data[i]);
     }
-    printf("\n%Lf  ", cons);
+//    printf("\n%Lf  ", cons);
 
     ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
-    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5]);
+//    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5]);
 
     ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
     comp3 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp3[i] = (long double)max * (long double)rand_vec[i];
     }
-    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf\n", comp3[0],comp3[1],comp3[2],comp3[3],comp3[4],comp3[5]);
+//    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf\n", comp3[0],comp3[1],comp3[2],comp3[3],comp3[4],comp3[5]);
 
     ///step5 - combine 4 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){

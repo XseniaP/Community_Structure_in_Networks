@@ -23,7 +23,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     long double cons=0.0, *comp2; double* comp;
     *dq_p=0.0;
 
-    row_norm = (double*)malloc(graph->number_of_nodes*sizeof(double));
+    row_norm = (double*)calloc(graph->number_of_nodes,sizeof(double));
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p->indices, graph->number_of_nodes, indices_set);
@@ -42,6 +42,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
         }
 //        printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     }
+    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
 //    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
 //    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
 //    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
@@ -74,7 +75,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     }
 //    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
 
-//    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
+    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
 
     ///step6 - multiply the obtained vector by ST from the left  - O(n)
     for(i=0; i<graph->number_of_nodes;i++){
@@ -176,6 +177,13 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 
     s_p = (int*)malloc(graph->number_of_nodes * sizeof(int));
     compute_s(pair_p, s_p, graph->number_of_nodes);
+
+//    printf("\n");
+//    for (i=0; i<graph->number_of_nodes; i++){
+//        printf("%f  ", row_sums_p->data[i]);
+//    }
+//    printf("\n");
+
     calculate_dq(graph,g, s_p, row_sums_p, dq_p);
 
     if (pair_p->eigenvalue<=0){
