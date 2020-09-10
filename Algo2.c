@@ -186,11 +186,11 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 
     calculate_dq(graph,g, s_p, row_sums_p, dq_p);
 
-    if (pair_p->eigenvalue<=0){
+    if (!IS_POSITIVE(pair_p->eigenvalue)){
         printf("network is non-dividable");
         return 1;
     }
-    else if (*dq_p<=0){
+    else if (!IS_POSITIVE(*dq_p)){
         printf("%f  network is non-dividable", *dq_p);
         return 1;
     }
