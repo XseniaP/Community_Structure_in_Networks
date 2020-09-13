@@ -7,7 +7,7 @@ int compute_s(Pair *pair_p, int* s_p, int size){
         if(pair_p->eigenvector[i]==0.0){
             s_p[i] = 0;
         }
-        else if (pair_p->eigenvector[i]>0.0){
+        else if (IS_POSITIVE(pair_p->eigenvector[i])){
             s_p[i] = 1;
         }
         else{
@@ -82,6 +82,9 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
         *dq_p += row_norm[i]*s_p[i];
     }
 
+    ///step7 - divide by 2M according to the original paper
+//    *dq_p = *dq_p/(graph->M*2);
+//    printf("\n  %f  \n",*dq_p);
     free(comp);
     free(comp2);
     free(indices_set);
