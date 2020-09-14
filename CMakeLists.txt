@@ -5,4 +5,4 @@ project(Project_tohna C)
 
 set(CMAKE_C_STANDARD 90)
 
-add_executable(Project_tohna main.c fileHandler.c fileHandler.h Group_handler.c Group_handler.h structures.h Power_iter.c Power_iter.h Algo2.c Algo2.h)
+add_executable(Project_tohna main.c fileHandler.c fileHandler.h Group_handler.c Group_handler.h structures.h Power_iter.c Power_iter.h Algo2.c Algo2.h Maximization.c Maximization.h)

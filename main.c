@@ -12,7 +12,7 @@ int main(int argc,char* argv[]) {
     divide_network(argv, output_p);
 
 //    free(output.indices_set);
-        return 0;
+
 
 //    Vector_int deg_vec = {0,NULL};
 //    SymMatrix b_matrix = {0, NULL }; SymMatrix bg_hat_matrix = {0, NULL}; SymMatrix bg_matrix = {0, NULL };
@@ -56,14 +56,13 @@ int main(int argc,char* argv[]) {
 //
 //
 ////    create new file with the nodes
-////    i=0;
-////    int k[16] = {5,3,1,2,4,1,0,3,0,3,4,1,2,2,0,2};
-////    FILE * f2 = NULL; int n;
-////    f2 = fopen("graph_test2.in", "wb");
-////    assert(f2 != NULL);
-////    n = fwrite(&k, sizeof(int), 16, f2);
-////    assert(n==16);
-////    fclose(f2);
+//    int k[11] = {6,1,5,1,3,0,1,1,0,1,0};
+//    FILE * f2 = NULL; int n;
+//    f2 = fopen("graph_test4.in", "wb");
+//    assert(f2 != NULL);
+//    n = fwrite(&k, sizeof(int), 11, f2);
+//    assert(n==11);
+//    fclose(f2);
 //
 //
 //
@@ -88,5 +87,6 @@ int main(int argc,char* argv[]) {
 ////        temp = p_set[0];
 ////    }
 ////}
+    return 0;
 
 }

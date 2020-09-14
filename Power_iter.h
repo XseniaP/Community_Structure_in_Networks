@@ -15,5 +15,6 @@ int check_difference(int height ,double *temp ,double *next);
 int powerIteration(Graph* graph, Group* g, Pair* pair_p, Vector_double *row_sums_p);
 int matrix_shift_C_new(Graph* graph,Group* g, double* max_p, Vector_double *row_sums_p);
 int indices_to_indices_set(int *indices, int size, int* indices_set);
+int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, double* dq_p);
 
 #endif //PROJECT_TOHNA_POWER_ITER_H

@@ -96,6 +96,17 @@ int add_group_to_final_set(Group* g_p, Element* some_set_head){
     }
 }
 
+int add_group_to_final_cluster(Group* g_p, Final_List* final_cluster_p){
+    int i;
+    final_cluster_p->total_groups +=1;
+    for (i=0;i<g_p->group_size;i++){
+        final_cluster_p->nodes_group_ind[g_p->indices[i]] = final_cluster_p->total_groups;
+    }
+    free(g_p->indices);
+    free(g_p->Adj_indices);
+    return 0;
+}
+
 int count_size(Element* set_head){
     int cnt = 0;
     for (; set_head!=NULL; set_head = set_head->next)

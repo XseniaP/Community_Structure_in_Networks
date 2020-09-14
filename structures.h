@@ -36,7 +36,7 @@ typedef struct Graph {
     SparseMatrix *adj_matrix;
 }Graph;
 
-typedef struct group {
+typedef struct Group_{
     int *indices;
     int group_size;
     int *Adj_indices;
