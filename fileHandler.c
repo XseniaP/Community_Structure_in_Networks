@@ -55,20 +55,35 @@ int readFile(char *fileName, struct Graph *graph) {
 }
 
 int writeToFile(char* fileName, Final_List* final_cluster_p){
-    int n,i,j;
+    int n,i,j; int *group_sizes;  int count;
     FILE *f = fopen(fileName, "wb");
     n = fwrite(&final_cluster_p->total_groups, sizeof(int), 1, f);
     if (n!=1){
         printf("couldn't write number of groups into the file");
         return 1;
     }
+
     ///complexity can be improved to O(n) changing the data structure,add Element to it with groups ordered///
+    group_sizes = (int*)malloc(final_cluster_p->total_groups* sizeof(int));
     for (j = 0; j < final_cluster_p->total_groups; j++) {
+        count =0;
         for (i=0; i<final_cluster_p->total_nodes; i++) {
-            if (j == final_cluster_p->nodes_group_ind[i]) {
+            if (final_cluster_p->nodes_group_ind[i]-1==j){
+            count+=1;
+            }
+        }
+        group_sizes[j] = count;
+    }
+
+    for (j = 0; j < final_cluster_p->total_groups; j++) {
+        fwrite(&group_sizes[j], sizeof(int), 1, f);
+        for (i=0; i<final_cluster_p->total_nodes; i++) {
+            if (j == final_cluster_p->nodes_group_ind[i]-1) {
                 fwrite(&i, sizeof(int), 1, f);
             }
         }
     }
+    fclose(f);
+    return 0;
 }
 
