@@ -50,12 +50,25 @@ int readFile(char *fileName, struct Graph *graph) {
         }
     }
 
-///print adjacency matrix
-//    for (i=0; i<=graph->M/2; i++){
-//        printf("%c",'\n');
-//        printf("%d %d", graph->adj_matrix->row[i],graph->adj_matrix->col[i]);
-//    }
-
     fclose(stream);
     return 0;
 }
+
+int writeToFile(char* fileName, Final_List* final_cluster_p){
+    int n,i,j;
+    FILE *f = fopen(fileName, "wb");
+    n = fwrite(&final_cluster_p->total_groups, sizeof(int), 1, f);
+    if (n!=1){
+        printf("couldn't write number of groups into the file");
+        return 1;
+    }
+    ///complexity can be improved to O(n) changing the data structure,add Element to it with groups ordered///
+    for (j = 0; j < final_cluster_p->total_groups; j++) {
+        for (i=0; i<final_cluster_p->total_nodes; i++) {
+            if (j == final_cluster_p->nodes_group_ind[i]) {
+                fwrite(&i, sizeof(int), 1, f);
+            }
+        }
+    }
+}
+
