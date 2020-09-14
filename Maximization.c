@@ -5,7 +5,5 @@
 //    while (IS_POSITIVE(*dq_p)){
 //
 //    }
-//
-//
 //    return 0;
 //}

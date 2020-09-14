@@ -1,10 +1,10 @@
 #include "Power_iter.h"
 
 
-int indices_to_indices_set(int *indices, int size, int* indices_set){
+int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set){
     int i, count =0;
     for (i=0; i<size; i++){
-        if(indices[count] == i) {
+        if((indices[count] == i)&&(count<group->group_size)) {
             indices_set[i] = 1;
             count +=1;
         }
@@ -12,6 +12,7 @@ int indices_to_indices_set(int *indices, int size, int* indices_set){
             indices_set[i] = 0;
         }
     }
+    return 0;
 }
 
 ///create random vector for initialization of power iteration ; O(n)
@@ -19,7 +20,7 @@ int create_vec(Group* g, int size, double *vec){
     int i;
     int* indices_set;
     indices_set = (int*)malloc(size*sizeof(int));
-    indices_to_indices_set(g->indices, size, indices_set);
+    indices_to_indices_set(g,g->indices, size, indices_set);
 
     srand(time(NULL));
     for (i=0; i<size; i++){
@@ -49,11 +50,11 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
-    indices_to_indices_set(g->indices, graph->number_of_nodes, indices_set);
+    indices_to_indices_set(g,g->indices, graph->number_of_nodes, indices_set);
 
     int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
-    indices_to_indices_set(g->Adj_indices, graph->M/2, Adj_indices_set);
+    indices_to_indices_set(g,g->Adj_indices, graph->M/2, Adj_indices_set);
 
 
     /// the loop is O(n*(m+n))
@@ -125,11 +126,11 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
 
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
-    indices_to_indices_set(g_p->indices, graph->number_of_nodes, indices_set);
+    indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set);
 
     int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
-    indices_to_indices_set(g_p->Adj_indices, graph->M/2, Adj_indices_set);
+    indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set);
 
 //    printf("\n  ");
 //    for (i=0; i<graph->adj_matrix->size; i++){
@@ -320,11 +321,11 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     row_norm = (double*)calloc(graph->number_of_nodes,sizeof(double));
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
-    indices_to_indices_set(g_p->indices, graph->number_of_nodes, indices_set);
+    indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set);
 
     int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
-    indices_to_indices_set(g_p->Adj_indices, graph->M/2, Adj_indices_set);
+    indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set);
 
     ///step1 - calculate A *  s_vector - O(m)
     for (i=0; i<graph->adj_matrix->size; i++){
