@@ -151,6 +151,8 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
     }
     else{
         split_group_based_on_s(s_p, graph, g1, g2);
+        free(g->Adj_indices);
+        free(g->indices);
         return 0;
     }
 
@@ -163,10 +165,11 @@ int divide_network(char* argv[], int*** output_p){
     Graph new_graph = {NULL,0,0,NULL, NULL};Graph *myGraph_p;
     Final_List final_cluster = {0, 0,NULL,0.0};
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL};Vector_int deg_vec = {0,NULL};
-    Group g ={NULL,NULL};Group g1 ={NULL,NULL};Group g2 ={NULL,NULL};
-    Group *g_p, *g1_p, *g2_p; g_p = &g; g1_p = &g1; g2_p = &g2;
-    Element p_set ={NULL,NULL}, o_set ={NULL,NULL};
-    Element *p_set_head, next; Final_List *final_cluster_p;
+    Group g ={NULL, 0,NULL,0};Group g1 ={NULL, 0,NULL,0};Group g2 ={NULL, 0,NULL,0};
+    Group g_empty ={NULL, 0,NULL,0};
+    Group *g_p, *g1_p, *g2_p, *g_empty_p; g_p = &g; g1_p = &g1; g2_p = &g2; g_empty_p=&g_empty;
+    Element p_set ={NULL,NULL};
+    Element *p_set_head; Final_List *final_cluster_p;
     double *dq_p; double dq;
 
     int i=0, a, result;
@@ -222,10 +225,12 @@ int divide_network(char* argv[], int*** output_p){
 
     ///creating P list
     p_set_head = createElement(sizeof(Group));
+//    add_group_to_element(g_p, p_set_head);
     p_set_head->data = g_p;
+    p_set_head->data_value = g;
 
-    while (!is_empty(p_set_head)){
-        g_p = remove_graph_from_list(p_set_head);
+    do {
+        g = remove_graph_from_list(p_set_head, g_empty_p);
         result = divide_group_into_two(myGraph_p,g_p,g1_p, g2_p, dq_p);
         if (result ==1){
             add_group_to_final_cluster(g_p, final_cluster_p);
@@ -248,7 +253,7 @@ int divide_network(char* argv[], int*** output_p){
                 add_group_to_element(g2_p, p_set_head);
             }
         }
-    }
+    }while (!is_empty(p_set_head));
 
     ///print final set O
     printf("\n  ");
@@ -259,17 +264,17 @@ int divide_network(char* argv[], int*** output_p){
     }
 
     ///write into output file
-    writeToFile(argv[2],final_cluster_p);
+//    writeToFile(argv[2],final_cluster_p);
 
     ///check what was written into the file
-    printf("\n  ");
-    int temp;
-    FILE *f = fopen(argv[2], "r");
-
-        while (fread(&temp, 1, sizeof(int), f) == sizeof(int)) {
-            printf("%d  " , temp);
-        }
-        fclose(f);
+//    printf("\n  ");
+//    int temp;
+//    FILE *f = fopen(argv[2], "r");
+//
+//        while (fread(&temp, 1, sizeof(int), f) == sizeof(int)) {
+//            printf("%d  " , temp);
+//        }
+//        fclose(f);
 
 
     ///free memory

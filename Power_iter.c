@@ -4,7 +4,8 @@
 int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set){
     int i, count =0;
     for (i=0; i<size; i++){
-        if((indices[count] == i)&&(count<group->group_size)) {
+        if((count<group->group_size)&&(indices[count] == i)) {
+//        if(indices[count] == i) {
             indices_set[i] = 1;
             count +=1;
         }
