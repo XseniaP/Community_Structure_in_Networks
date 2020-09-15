@@ -56,14 +56,14 @@ int main(int argc,char* argv[]) {
 //
 //
 ////    create new file with the nodes
-//    int k[11] = {6,1,5,1,3,0,1,1,0,1,0};
+//    int k[37] = {10,3,1,2,5,3,0,3,5,2,0,3,2,1,2,2,6,9,4,0,1,7,9,2,4,8,2,5,8,3,6,7,9,3,4,5,8};
 //    FILE * f2 = NULL; int n;
-//    f2 = fopen("graph_test4.in", "wb");
+//    f2 = fopen("graph_test5.in", "wb");
 //    assert(f2 != NULL);
-//    n = fwrite(&k, sizeof(int), 11, f2);
-//    assert(n==11);
+//    n = fwrite(&k, sizeof(int), 37, f2);
+//    assert(n==37);
 //    fclose(f2);
-//
+
 //
 //
 ////int divide_a_network(Graph* graph,int **output_set){

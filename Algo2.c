@@ -258,18 +258,18 @@ int divide_network(char* argv[], int*** output_p){
         printf("%d  ", final_cluster_p->nodes_group_ind[i]);
     }
 
-    ///write into output file
-    writeToFile(argv[2],final_cluster_p);
-
-    ///check what was written into the file
-    printf("\n  ");
-    int temp;
-    FILE *f = fopen(argv[2], "r");
-
-        while (fread(&temp, 1, sizeof(int), f) == sizeof(int)) {
-            printf("%d  " , temp);
-        }
-        fclose(f);
+//    ///write into output file
+//    writeToFile(argv[2],final_cluster_p);
+//
+//    ///check what was written into the file
+//    printf("\n  ");
+//    int temp;
+//    FILE *f = fopen(argv[2], "r");
+//
+//        while (fread(&temp, 1, sizeof(int), f) == sizeof(int)) {
+//            printf("%d  " , temp);
+//        }
+//        fclose(f);
 
 
     ///free memory
