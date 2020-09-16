@@ -442,6 +442,7 @@ int divide_network(char* argv[], int*** output_p){
         }
         fclose(f);
 
+    printf("\n-----------------End of program------------------\n");
 
     ///free memory
 //    free(myGraph_p->deg_vec->data);
