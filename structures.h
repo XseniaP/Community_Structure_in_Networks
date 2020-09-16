@@ -45,7 +45,7 @@ typedef struct Group_{
 
 typedef struct Element
 {
-    void* data;
+    Group* data;
     struct Element* next;
 }Element;
 

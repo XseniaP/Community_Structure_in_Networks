@@ -13,7 +13,7 @@ Element* createElement(size_t data_size_bytes)
         printf("failed to allocate memory for the Node");
         return NULL;
     }
-    newNode->data =  malloc(data_size_bytes);/*changes by input*/
+    newNode->data =  malloc(sizeof(Group));/*changes by input*/
     if(NULL == newNode->data)
     {
         printf("failed to allocate memory for the Node's data");
@@ -53,10 +53,10 @@ Group* remove_graph_from_list(Element* p_set_head){
     }
 }
 
-int add_group_to_element(Group* g_p, Element* some_set_head){
-    Element temp;
+int add_group_to_element(Group* g_p, Element* some_set_head, Element* next_el){
+    Element *temp = NULL;
     if ((some_set_head->data == NULL)&&(some_set_head->next == NULL)){
-        some_set_head->data = g_p;
+        *some_set_head = *next_el;
         return 0;
     }
     else if ((some_set_head->data == NULL)&&(some_set_head->next != NULL)){
@@ -64,9 +64,9 @@ int add_group_to_element(Group* g_p, Element* some_set_head){
         return 1;
     }
     else{
-        temp = *some_set_head;
-        some_set_head->data = g_p;
-        some_set_head->next = &temp;
+        temp = some_set_head;
+        some_set_head = next_el;
+        some_set_head->next = temp;
         return 0;
     }
 }
