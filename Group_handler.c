@@ -28,7 +28,7 @@ int is_empty(Node* p_set_head){
 }
 
 Group* pop_group(Node* p_set_head){
-    Group *temp; Node* temp2;
+    Group *temp; Node temp2;
     if ((p_set_head->data == NULL)&&(p_set_head->next == NULL)){
         printf("the set is empty, no groups to remove");
         return NULL;
@@ -42,12 +42,13 @@ Group* pop_group(Node* p_set_head){
     }
     else{
         temp = p_set_head->data;
+//        temp2 = *p_set_head;
         *p_set_head = *p_set_head->next;
         return temp;
     }
 }
 
-int push_group(Group* g_p, Node* p_set_head, Node* new_node, Group* new_group){
+int add_group(Group* g_p, Node* p_set_head, Node* new_node, Group* new_group){
     Node* temp; int i;
     if ((p_set_head->data == NULL)&&(p_set_head->next == NULL)){
         p_set_head->data = new_group;

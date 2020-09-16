@@ -221,8 +221,10 @@ int divide_network(char* argv[], int*** output_p){
     separate_singletones(myGraph_p,g_p,final_cluster_p);
 
     ///creating P list
-    p_set_head = createNode();
+//    p_set_head = createNode();
+    p_set_head = (Node*)malloc(sizeof(Node));
     p_set_head->data = g_p;
+    p_set_head->next = NULL;
 
     while (!is_empty(p_set_head)){
         g_p = pop_group(p_set_head);
@@ -241,7 +243,7 @@ int divide_network(char* argv[], int*** output_p){
                 new_group = (Group*)malloc(sizeof(Group));
                 new_group->indices = (int*)malloc(g2_p->group_size*sizeof(int));
                 new_group->Adj_indices = (int*)malloc(g2_p->group_size*sizeof(int));
-                push_group(g2_p, p_set_head, next, new_group);
+                add_group(g2_p, p_set_head, next, new_group);
             }
             else if (g2_p->group_size == 1){
                 add_group_to_final_cluster(g2_p, final_cluster_p);
@@ -249,19 +251,19 @@ int divide_network(char* argv[], int*** output_p){
                 new_group = (Group*)malloc(sizeof(Group));
                 new_group->indices = (int*)malloc(g1_p->group_size*sizeof(int));
                 new_group->Adj_indices = (int*)malloc(g1_p->group_size*sizeof(int));
-                push_group(g1_p, p_set_head, next,new_group);
+                add_group(g1_p, p_set_head, next,new_group);
             }
             else {
                 next = (Node*)malloc(sizeof(Node));
                 new_group = (Group*)malloc(sizeof(Group));
                 new_group->indices = (int*)malloc(g1_p->group_size*sizeof(int));
                 new_group->Adj_indices = (int*)malloc(g1_p->group_size*sizeof(int));
-                push_group(g1_p, p_set_head, next, new_group);
+                add_group(g1_p, p_set_head, next, new_group);
                 next2 = (Node*)malloc(sizeof(Node));
                 new_group2 = (Group*)malloc(sizeof(Group));
                 new_group2->indices = (int*)malloc(g2_p->group_size*sizeof(int));
                 new_group2->Adj_indices = (int*)malloc(g2_p->group_size*sizeof(int));
-                push_group(g2_p, p_set_head, next2, new_group2);
+                add_group(g2_p, p_set_head, next2, new_group2);
             }
         }
     }
