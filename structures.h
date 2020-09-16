@@ -44,11 +44,6 @@ typedef struct Group{
     struct Group* next;
 }Group;
 
-typedef struct Element
-{
-    Group* data;
-    struct Element* next;
-}Element;
 
 typedef struct Final_List_{
     int total_nodes;
