@@ -36,11 +36,12 @@ typedef struct Graph {
     SparseMatrix *adj_matrix;
 }Graph;
 
-typedef struct Group_{
+typedef struct Group{
     int *indices;
     int group_size;
     int *Adj_indices;
     int Adj_size;
+    struct Group* next;
 }Group;
 
 typedef struct Element
