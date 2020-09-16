@@ -43,11 +43,17 @@ typedef struct Group_{
     int Adj_size;
 }Group;
 
-typedef struct Element
+//typedef struct Element
+//{
+//    void* data;
+//    struct Element* next;
+//}Element;
+
+typedef struct Node
 {
-    void* data;
-    struct Element* next;
-}Element;
+    Group* data;
+    struct Node* next;
+}Node;
 
 typedef struct Final_List_{
     int total_nodes;

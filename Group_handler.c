@@ -3,28 +3,23 @@
 #include "structures.h"
 #include <math.h>
 
-Element* createElement(size_t data_size_bytes)
+Node* createNode()
 {
-    Element* newNode = NULL;
+    Node* newNode = NULL;
 
-    newNode =  malloc(sizeof(Element));/*always the same*/
+    newNode =  (Node*)malloc(sizeof(Node));
     if(NULL == newNode)
     {
         printf("failed to allocate memory for the Node");
         return NULL;
     }
-    newNode->data =  malloc(data_size_bytes);/*changes by input*/
-    if(NULL == newNode->data)
-    {
-        printf("failed to allocate memory for the Node's data");
-        return NULL;
-    }
+    newNode->data = NULL;
     newNode->next = NULL;
     return newNode;
 }
 
-int is_empty(Element* p_set_head){
-    if (p_set_head->data == NULL){
+int is_empty(Node* p_set_head){
+    if ((p_set_head->data == NULL)&&(p_set_head->next == NULL)){
         return 1;
     }
     else{
@@ -32,8 +27,8 @@ int is_empty(Element* p_set_head){
     }
 }
 
-Group* remove_graph_from_list(Element* p_set_head){
-    Group *temp;
+Group* pop_group(Node* p_set_head){
+    Group *temp; Node* temp2;
     if ((p_set_head->data == NULL)&&(p_set_head->next == NULL)){
         printf("the set is empty, no groups to remove");
         return NULL;
@@ -47,51 +42,46 @@ Group* remove_graph_from_list(Element* p_set_head){
     }
     else{
         temp = p_set_head->data;
-        p_set_head->data = p_set_head->next->data;
-        p_set_head->next = p_set_head->next->next;
+        *p_set_head = *p_set_head->next;
         return temp;
     }
 }
 
-int add_group_to_element(Group* g_p, Element* some_set_head){
-    Element temp;
-    if ((some_set_head->data == NULL)&&(some_set_head->next == NULL)){
-        some_set_head->data = g_p;
+int push_group(Group* g_p, Node* p_set_head, Node* new_node, Group* new_group){
+    Node* temp; int i;
+    if ((p_set_head->data == NULL)&&(p_set_head->next == NULL)){
+        p_set_head->data = new_group;
+        p_set_head->data->group_size = g_p->group_size;
+        for(i=0; i<g_p->group_size; i++){
+            p_set_head->data->indices[i] = g_p->indices[i];
+        }
+        p_set_head->data->Adj_size = g_p->Adj_size;
+        for(i=0; i<g_p->Adj_size; i++){
+            p_set_head->data->Adj_indices[i] = g_p->Adj_indices[i];
+        }
+        free(new_node);
         return 0;
     }
-    else if ((some_set_head->data == NULL)&&(some_set_head->next != NULL)){
+    else if ((p_set_head->data == NULL)&&(p_set_head->next != NULL)){
         printf("linked list element has inaccurate structure");
         return 1;
     }
     else{
-        temp = *some_set_head;
-        some_set_head->data = g_p;
-        some_set_head->next = &temp;
-        return 0;
-    }
-}
-
-int add_group_to_final_set(Group* g_p, Element* some_set_head){
-    Element temp; int i;
-
-    printf("\n \n");
-    for(i=0;i<g_p->group_size;i++){
-        printf("%d  ",g_p->indices[i]);
-        printf("\n");
-    }
-
-    if ((some_set_head->data == NULL)&&(some_set_head->next == NULL)){
-        some_set_head->data = g_p->indices;
-        return 0;
-    }
-    else if ((some_set_head->data == NULL)&&(some_set_head->next != NULL)){
-        printf("linked list element has inaccurate structure");
-        return 1;
-    }
-    else{
-        temp = *some_set_head;
-        some_set_head->data = g_p->indices;
-        some_set_head->next = &temp;
+        new_node->data = new_group;
+        new_node->data->group_size = g_p->group_size;
+        for(i=0; i<g_p->group_size; i++){
+            new_node->data->indices[i] = g_p->indices[i];
+        }
+        new_node->data->Adj_size = g_p->Adj_size;
+        for(i=0; i<g_p->Adj_size; i++){
+            new_node->data->Adj_indices[i] = g_p->Adj_indices[i];
+        }
+        new_node->next = NULL;
+        temp = p_set_head;
+        while(temp->next!=NULL){
+            temp = temp->next;
+        }
+        temp->next = new_node;
         return 0;
     }
 }
@@ -107,9 +97,3 @@ int add_group_to_final_cluster(Group* g_p, Final_List* final_cluster_p){
     return 0;
 }
 
-int count_size(Element* set_head){
-    int cnt = 0;
-    for (; set_head!=NULL; set_head = set_head->next)
-        cnt++;
-    return cnt;
-}

@@ -164,9 +164,9 @@ int divide_network(char* argv[], int*** output_p){
     Final_List final_cluster = {0, 0,NULL,0.0};
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,NULL};Group g1 ={NULL,NULL};Group g2 ={NULL,NULL};
-    Group *g_p, *g1_p, *g2_p; g_p = &g; g1_p = &g1; g2_p = &g2;
-    Element p_set ={NULL,NULL}, o_set ={NULL,NULL};
-    Element *p_set_head, next; Final_List *final_cluster_p;
+    Group *g_p, *g1_p, *g2_p, *new_group, *new_group2; g_p = &g; g1_p = &g1; g2_p = &g2;
+    Node p_set ={NULL,NULL};
+    Node *p_set_head, *next, *next2; Final_List *final_cluster_p;
     double *dq_p; double dq;
 
     int i=0, a, result;
@@ -221,11 +221,11 @@ int divide_network(char* argv[], int*** output_p){
     separate_singletones(myGraph_p,g_p,final_cluster_p);
 
     ///creating P list
-    p_set_head = createElement(sizeof(Group));
+    p_set_head = createNode();
     p_set_head->data = g_p;
 
     while (!is_empty(p_set_head)){
-        g_p = remove_graph_from_list(p_set_head);
+        g_p = pop_group(p_set_head);
         result = divide_group_into_two(myGraph_p,g_p,g1_p, g2_p, dq_p);
         if (result ==1){
             add_group_to_final_cluster(g_p, final_cluster_p);
@@ -237,15 +237,31 @@ int divide_network(char* argv[], int*** output_p){
             }
             else if (g1_p->group_size == 1){
                 add_group_to_final_cluster(g1_p, final_cluster_p);
-                add_group_to_element(g2_p, p_set_head);
+                next = (Node*)malloc(sizeof(Node));
+                new_group = (Group*)malloc(sizeof(Group));
+                new_group->indices = (int*)malloc(g2_p->group_size*sizeof(int));
+                new_group->Adj_indices = (int*)malloc(g2_p->group_size*sizeof(int));
+                push_group(g2_p, p_set_head, next, new_group);
             }
             else if (g2_p->group_size == 1){
-                add_group_to_element(g1_p, p_set_head);
                 add_group_to_final_cluster(g2_p, final_cluster_p);
+                next = (Node*)malloc(sizeof(Node));
+                new_group = (Group*)malloc(sizeof(Group));
+                new_group->indices = (int*)malloc(g1_p->group_size*sizeof(int));
+                new_group->Adj_indices = (int*)malloc(g1_p->group_size*sizeof(int));
+                push_group(g1_p, p_set_head, next,new_group);
             }
             else {
-                add_group_to_element(g1_p, p_set_head);
-                add_group_to_element(g2_p, p_set_head);
+                next = (Node*)malloc(sizeof(Node));
+                new_group = (Group*)malloc(sizeof(Group));
+                new_group->indices = (int*)malloc(g1_p->group_size*sizeof(int));
+                new_group->Adj_indices = (int*)malloc(g1_p->group_size*sizeof(int));
+                push_group(g1_p, p_set_head, next, new_group);
+                next2 = (Node*)malloc(sizeof(Node));
+                new_group2 = (Group*)malloc(sizeof(Group));
+                new_group2->indices = (int*)malloc(g2_p->group_size*sizeof(int));
+                new_group2->Adj_indices = (int*)malloc(g2_p->group_size*sizeof(int));
+                push_group(g2_p, p_set_head, next2, new_group2);
             }
         }
     }
