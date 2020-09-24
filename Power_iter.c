@@ -1,26 +1,37 @@
 #include "Power_iter.h"
 
 
-int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set){
+int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set, int marker){
     int i, count =0;
     for (i=0; i<size; i++){
-        if((indices[count] == i)&&(count<group->group_size)) {
-            indices_set[i] = 1;
-            count +=1;
+        if (marker == 1) {
+            if ((indices[count] == i) && (count < group->group_size)) {
+                indices_set[i] = 1;
+                count += 1;
+            } else {
+                indices_set[i] = 0;
+            }
         }
-        else{
-            indices_set[i] = 0;
+        else if (marker == 2){
+            if (indices[count] == i) {
+                indices_set[i] = 1;
+                count += 1;
+            } else {
+                indices_set[i] = 0;
+            }
         }
     }
     return 0;
 }
+
+
 
 ///create random vector for initialization of power iteration ; O(n)
 int create_vec(Group* g, int size, double *vec){
     int i;
     int* indices_set;
     indices_set = (int*)malloc(size*sizeof(int));
-    indices_to_indices_set(g,g->indices, size, indices_set);
+    indices_to_indices_set(g,g->indices, size, indices_set,1);
 
     srand(time(NULL));
     for (i=0; i<size; i++){
@@ -50,11 +61,11 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
-    indices_to_indices_set(g,g->indices, graph->number_of_nodes, indices_set);
+    indices_to_indices_set(g,g->indices, graph->number_of_nodes, indices_set,1);
 
     int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
-    indices_to_indices_set(g,g->Adj_indices, graph->M/2, Adj_indices_set);
+    indices_to_indices_set(g,g->Adj_indices, graph->M/2, Adj_indices_set,2);
 
 
     /// the loop is O(n*(m+n))
@@ -126,17 +137,32 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
 
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
-    indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set);
+    indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set,1);
 
     int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
-    indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set);
+    indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
+
+//    for (i=0; i<graph->adj_matrix->size; i++){
+//            row_norm[i] = 0.0;
+//        }
 
 //    printf("\n  ");
 //    for (i=0; i<graph->adj_matrix->size; i++){
 //        printf("  %d  ", g_p->Adj_indices[i]);
 //    }
 //    printf("\n  ");
+
+//    printf("\n------------------------------------\n");
+//    printf("Printing Adj indices");
+//    printf("\n------------------------------------\n");
+//    printf("\n %d  %d  %d  %d  %d   %d   %d  %d  %d  %d  %d  %d  %d \n", indices_set[0],indices_set[1],indices_set[2],indices_set[3],indices_set[4],indices_set[5],indices_set[6],indices_set[7],indices_set[8],indices_set[9],indices_set[10],indices_set[11],indices_set[12]);
+//
+//
+//    printf("\n------------------------------------\n");
+//    printf("Printing Adj indices");
+//    printf("\n------------------------------------\n");
+//    printf("\n %d  %d  %d  %d  %d   %d   %d  %d  %d  %d  %d  %d  %d \n", Adj_indices_set[0],Adj_indices_set[1],Adj_indices_set[2],Adj_indices_set[3],Adj_indices_set[4],Adj_indices_set[5],Adj_indices_set[6],Adj_indices_set[7],Adj_indices_set[8],Adj_indices_set[9],Adj_indices_set[10],Adj_indices_set[11],Adj_indices_set[12]);
 
     ///step1 - calculate A * random vector - O(m)
     for (i=0; i<graph->adj_matrix->size; i++){
@@ -148,7 +174,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         }
 //        printf("\n\n%f  %f  %f  %f  %f   %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
     }
-//    printf("\n\n%f  %f  %f  %f  %f   %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
+//    printf("\n------------------------------------\n");
+//    printf("Printing A *   random vector");
+//    printf("\n------------------------------------\n");
+//    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
 //    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
 //    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
 //    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
@@ -158,6 +187,9 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(rand_vec[i])*(long double)(graph->deg_vec->data[i]);
     }
+//    printf("\n------------------------------------\n");
+//    printf("Printing constant");
+//    printf("\n------------------------------------\n");
 //    printf("\n%Lf  ", cons);
 
     ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
@@ -165,7 +197,11 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
-//    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5]);
+
+//    printf("\n------------------------------------\n");
+//    printf("Printing constant by k and divide by M");
+//    printf("\n------------------------------------\n");
+//    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf  %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5],comp2[6], comp2[7],comp2[8],comp2[9]);
 
     ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
     comp3 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
@@ -186,7 +222,11 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         comp[i] = row_sums_p->data[i]*rand_vec[i];
         row_norm[i] = row_norm[i] - comp[i];
     }
-//    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
+
+    printf("\n------------------------------------\n");
+    printf("Printing final");
+    printf("\n------------------------------------\n");
+    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
 
 //    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     free(comp);
@@ -213,11 +253,14 @@ int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row
     }
 
     ///print normalized vector at each step of power iter
-//    printf("  \n");
-//    for (i=0; i<graph->number_of_nodes; i++){
-//        printf("%f  ",row_norm[i]);
-//    }
-//    printf("  \n");
+    printf("\n------------------------------------\n");
+    printf("Printing normalized vector at each step");
+    printf("\n------------------------------------\n");
+    printf("  \n");
+    for (i=0; i<graph->number_of_nodes; i++){
+        printf("%f  ",row_norm[i]);
+    }
+    printf("  \n");
     return 0;
 }
 
@@ -336,11 +379,11 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     row_norm = (double*)calloc(graph->number_of_nodes,sizeof(double));
     int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
-    indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set);
+    indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set,1);
 
     int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
-    indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set);
+    indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 
     ///step1 - calculate A *  s_vector - O(m)
     for (i=0; i<graph->adj_matrix->size; i++){
@@ -350,9 +393,13 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
             row_norm[ind1] += s_p[ind2];
             row_norm[ind2] += s_p[ind1];
         }
-//        printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
+
+//        printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6]);
     }
-//    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
+    printf("\n------------------------------------\n");
+    printf("Printing A *  s_vector");
+    printf("\n------------------------------------\n");
+    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
 //    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
 //    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
 //    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
@@ -362,14 +409,21 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(s_p[i])*(long double)(graph->deg_vec->data[i]);
     }
-//    printf("\n%Lf  \\n", cons);
+
+    printf("\n------------------------------------\n");
+    printf("Printing Constant = s_vector * k^T ");
+    printf("\n------------------------------------\n");
+    printf("\n%Lf \n", cons);
 
     ///step3 - multiply Constant (s_vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
-//    printf("\n\n%Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2]);
+    printf("\n------------------------------------\n");
+    printf("Printing s_vector * k^T earlier calculated");
+    printf("\n------------------------------------\n");
+    printf("\n\n%Lf  %Lf  %Lf  %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5]);
 
     ///step4 - combine 3 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){
@@ -391,6 +445,12 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     for(i=0; i<graph->number_of_nodes;i++){
         *dq_p += row_norm[i]*s_p[i];
     }
+
+    printf("\n------------------------------------\n");
+    printf("Printing sT * B_hat * s");
+    printf("\n------------------------------------\n");
+    printf("\n%f \n", *dq_p);
+
 
     ///step7 - divide by 2M according to the original paper
 //    *dq_p = *dq_p/(graph->M*2);
