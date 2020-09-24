@@ -17,8 +17,6 @@ int compute_s(Pair *pair_p, int* s_p, int size){
     return 0;
 }
 
-
-
 /// O(m*n)
 int adj_for_g(Graph* graph ,Group* g){
     int i, j, count1=0,count2=0;
@@ -164,7 +162,7 @@ int divide_network(char* argv[], int*** output_p){
     Final_List final_cluster = {0, 0,NULL,0.0};
     SparseMatrix adj_matrix = {0, NULL,NULL, NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,NULL};Group g1 ={NULL,NULL};Group g2 ={NULL,NULL};
-    Group *g_p, *g1_p, *g2_p, *g3_p=NULL, *g4_p=NULL;g_p = &g;g1_p = &g1; g2_p = &g2;
+    Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
     Final_List *final_cluster_p;
     double *dq_p; double dq;
     struct Group* root;
@@ -197,12 +195,18 @@ int divide_network(char* argv[], int*** output_p){
     }
 
 ///    print indices in the default g
+    printf("\n------------------------------------\n");
+    printf("Printing indices of the group");
+    printf("\n------------------------------------\n");
     for (i=0; i<new_graph.number_of_nodes; i++){
         printf("%c",'\n');
         printf("%d", g.indices[i]);
     }
 
 ///    print full adjacency matrix
+    printf("\n------------------------------------\n");
+    printf("Printing Adj matrix");
+    printf("\n------------------------------------\n");
     for (i=0; i<new_graph.M/2; i++){
         printf("%c",'\n');
         printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
@@ -248,8 +252,8 @@ int divide_network(char* argv[], int*** output_p){
 
         result = divide_group_into_two(myGraph_p,root,g1_p, g2_p, dq_p);
 
-        printf("------------------------------------\n");
-        printf("Removing group size: %d\n",root->group_size);
+        printf("\n------------------------------------");
+        printf("\nRemoving group size: %d\n",root->group_size);
         printf("------------------------------------\n");
 
 
@@ -322,6 +326,7 @@ int divide_network(char* argv[], int*** output_p){
     printf("\n  ");
     int temp;
     FILE *f = fopen(argv[2], "r");
+//    FILE *f = fopen("groups.out", "r");
 
         while (fread(&temp, 1, sizeof(int), f) == sizeof(int)) {
             printf("%d  " , temp);

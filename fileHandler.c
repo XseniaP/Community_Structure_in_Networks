@@ -26,7 +26,8 @@ int readFile(char *fileName, struct Graph *graph) {
     }
     graph->M = m;
     graph->adj_matrix->size = m/2;
-    //size of ADJ matrix will be 1/2 of total degrees M, storing one of the symmetric halves in sparse matrix format, can allocate memory now
+
+    ///size of ADJ matrix will be 1/2 of total degrees M, storing one of the symmetric halves in sparse matrix format, can allocate memory now
     graph->adj_matrix->row = (int*) malloc( graph->M/2* sizeof(int));
     graph->adj_matrix->col = (int*) malloc( graph->M/2* sizeof(int));
     rewind(stream);

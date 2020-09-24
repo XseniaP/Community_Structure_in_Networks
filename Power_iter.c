@@ -253,13 +253,19 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
     create_vec(g_p,graph->number_of_nodes, vec);
 
     ///print random vector
+    printf("\n------------------------------------\n");
+    printf("Printing Random vector");
+    printf("\n------------------------------------\n");
     for (i=0; i<graph->number_of_nodes; i++){
-        printf("\n\n%f",vec[i]);
+        printf("\n%f",vec[i]);
     }
 
     matrix_shift_C_new(graph, g_p, max, row_sums_p);
     ///print ||C|| = max column
-    printf("\n\n %f \n\n",max_v);
+    printf("\n------------------------------------\n");
+    printf("Printing ||C|| = max column");
+    printf("\n------------------------------------\n");
+    printf("\n %f \n",max_v);
 
     temp = vec;
     while (true == 0) {
@@ -279,6 +285,9 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
 
     pair_p->eigenvector = row_norm;
     ///print eigenvector
+    printf("\n------------------------------------\n");
+    printf("Printing eigenvector");
+    printf("\n------------------------------------\n");
     for (i=0; i<graph->number_of_nodes; i++){
         printf("\n\n%f", pair_p->eigenvector[i] );
     }
@@ -299,14 +308,20 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
     for(i=0; i<graph->number_of_nodes;i++){
         numerator+= vect_temp[i]*pair_p->eigenvector[i];
     }
-    printf("\n\n%f \n", numerator);
+    printf("\n------------------------------------\n");
+    printf("Printing eigenvalue of shifted");
+    printf("\n------------------------------------\n");
+    printf("\n%f \n", numerator);
 
 ///deduct ||C|| to get leading eigenvalue of the original matrix O(1)
 //    printf("\n\n%f \n", value);
     value_without_c = numerator - max_v;
     pair_p->eigenvalue = value_without_c;
 
-    printf("\n\n%f \n", pair_p->eigenvalue);
+    printf("\n------------------------------------\n");
+    printf("Printing eigenvalue final");
+    printf("\n------------------------------------\n");
+    printf("\n%f \n", pair_p->eigenvalue);
 
 //    free(row_norm);
     return 0;
@@ -362,7 +377,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     }
 //    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
 
-    ///step5 - deduct Row sums of B_hat matrix * Eigenvector  - O(n)
+    ///step5 - deduct Row sums of B_hat matrix * vector S  - O(n)
     comp = (double *)malloc(graph->number_of_nodes*sizeof(double));
     for(i=0; i<graph->number_of_nodes;i++){
         comp[i] = row_sums_p->data[i]*s_p[i];
@@ -372,7 +387,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 
 //    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
 
-    ///step6 - multiply the obtained vector by ST from the left  - O(n)
+    ///step6 - multiply the obtained vector by S^T from the left  - O(n)
     for(i=0; i<graph->number_of_nodes;i++){
         *dq_p += row_norm[i]*s_p[i];
     }
