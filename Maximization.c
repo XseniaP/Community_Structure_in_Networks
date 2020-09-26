@@ -88,8 +88,8 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, moved,1);
 
     score = (long double *)calloc(graph->number_of_nodes,sizeof(long double));
-    improve = (long double *)calloc(graph->number_of_nodes,sizeof(long double));
-    indices_moved = (int *)calloc(graph->number_of_nodes,sizeof(int));
+    improve = (long double *)calloc(g_p->group_size,sizeof(long double));
+    indices_moved = (int *)calloc(g_p->group_size,sizeof(int));
 
     /// the while loop will finish because we should have either zero improvement or negative at certain point
     /// "do" while will ensure we enter while with dQ=0.0
@@ -97,13 +97,17 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, moved,1);
         for(i=0; i<graph->number_of_nodes; i++){
             score[i] = 0.0;
+        }
+        for(i=0; i<g_p->group_size; i++){
             improve[i] = 0.0;
             indices_moved[i]=0;
-            max_improve=0.0;
         }
+        max_improve=0.0;
 
         ///overall O(n^2) complexity
         for (i=0; i<g_p->group_size; i++){
+
+
             printf("\n------------------------------------\n");
             printf("Printing S");
             printf("\n------------------------------------\n");
@@ -132,7 +136,7 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
             printf("\n------------------------------------\n");
             printf("Printing indices of moved elements");
             printf("\n------------------------------------\n");
-            for(j=0; j<graph->number_of_nodes;j++) {
+            for(j=0; j<g_p->group_size;j++) {
                 printf("%d ", indices_moved[j]);
             }
 
@@ -149,7 +153,7 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
             printf("\n------------------------------------\n");
             printf("Printing Improve");
             printf("\n------------------------------------\n");
-            for(j=0; j<graph->number_of_nodes;j++) {
+            for(j=0; j<g_p->group_size;j++) {
                 printf("%Lf ", improve[j]);
             }
 
