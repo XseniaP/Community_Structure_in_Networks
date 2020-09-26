@@ -420,6 +420,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
+
 //    printf("\n------------------------------------\n");
 //    printf("Printing s_vector * k^T earlier calculated");
 //    printf("\n------------------------------------\n");
