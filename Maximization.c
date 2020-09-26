@@ -108,37 +108,37 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         for (i=0; i<g_p->group_size; i++){
 
 
-            printf("\n------------------------------------\n");
-            printf("Printing S");
-            printf("\n------------------------------------\n");
-            for(j=0; j<graph->number_of_nodes;j++) {
-                printf("%d ", s_p[j]);
-            }
-            printf("\n------------------------------------\n");
-            printf("Printing moved");
-            printf("\n------------------------------------\n");
-            for(j=0; j<graph->number_of_nodes;j++) {
-                printf("%d ", moved[j]);
-            }
+//            printf("\n------------------------------------\n");
+//            printf("Printing S");
+//            printf("\n------------------------------------\n");
+//            for(j=0; j<graph->number_of_nodes;j++) {
+//                printf("%d ", s_p[j]);
+//            }
+//            printf("\n------------------------------------\n");
+//            printf("Printing moved");
+//            printf("\n------------------------------------\n");
+//            for(j=0; j<graph->number_of_nodes;j++) {
+//                printf("%d ", moved[j]);
+//            }
 
             max_index = score_calc(graph,g_p, s_p, score,moved);  /// O(n+m) time complexity
 
-            printf("\n------------------------------------\n");
-            printf("Printing Scores");
-            printf("\n------------------------------------\n");
-            for(j=0; j<graph->number_of_nodes;j++) {
-                printf("%Lf ", score[j]);
-            }
+//            printf("\n------------------------------------\n");
+//            printf("Printing Scores");
+//            printf("\n------------------------------------\n");
+//            for(j=0; j<graph->number_of_nodes;j++) {
+//                printf("%Lf ", score[j]);
+//            }
 
             s_p[max_index] = -s_p[max_index];
             indices_moved[i] = max_index;
 
-            printf("\n------------------------------------\n");
-            printf("Printing indices of moved elements");
-            printf("\n------------------------------------\n");
-            for(j=0; j<g_p->group_size;j++) {
-                printf("%d ", indices_moved[j]);
-            }
+//            printf("\n------------------------------------\n");
+//            printf("Printing indices of moved elements");
+//            printf("\n------------------------------------\n");
+//            for(j=0; j<g_p->group_size;j++) {
+//                printf("%d ", indices_moved[j]);
+//            }
 
             if (i==0){
                 improve[i] = score[max_index];
@@ -150,12 +150,12 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
                     max_improve_index = i;
                 }
             }
-            printf("\n------------------------------------\n");
-            printf("Printing Improve");
-            printf("\n------------------------------------\n");
-            for(j=0; j<g_p->group_size;j++) {
-                printf("%Lf ", improve[j]);
-            }
+//            printf("\n------------------------------------\n");
+//            printf("Printing Improve");
+//            printf("\n------------------------------------\n");
+//            for(j=0; j<g_p->group_size;j++) {
+//                printf("%Lf ", improve[j]);
+//            }
 
             moved[max_index] = 0;  /// moved starts with 0's of the elements that are not in the group and 1's that are in the group and then changes them to 0 after they are moved
         }
@@ -170,19 +170,19 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         else{
             dQ = improve[max_improve_index];
         }
-        printf("\n------------------------------------\n");
-        printf("Printing dQ");
-        printf("\n------------------------------------\n");
-        printf("%Lf \n",dQ);
+//        printf("\n------------------------------------\n");
+//        printf("Printing dQ");
+//        printf("\n------------------------------------\n");
+//        printf("%Lf \n",dQ);
 
     }while (IS_POSITIVE(dQ));
 
-    printf("\n------------------------------------\n");
-    printf("Printing S after maximization");
-    printf("\n------------------------------------\n");
-    for(i=0; i<graph->number_of_nodes;i++) {
-        printf("%d ", s_p[i]);
-    }
+//    printf("\n------------------------------------\n");
+//    printf("Printing S after maximization");
+//    printf("\n------------------------------------\n");
+//    for(i=0; i<graph->number_of_nodes;i++) {
+//        printf("%d ", s_p[i]);
+//    }
 
     free(moved);
     free(improve);
