@@ -83,7 +83,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
 }
 
 int maximize(Graph* graph,Group* g_p, int *s_p){
-    int *moved, *indices_moved; int i; long double* score, *improve, max_improve=0.0, dQ = 0.0; int j=0, max_index, max_improve_index=g_p->group_size-1;
+    int *moved, *indices_moved; int i; long double* score, *improve, max_improve, dQ = 0.0; int j=0, max_index, max_improve_index=g_p->group_size-1;
     moved = (int*)malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, moved,1);
 
@@ -99,6 +99,7 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
             score[i] = 0.0;
             improve[i] = 0.0;
             indices_moved[i]=0;
+            max_improve=0.0;
         }
 
         ///overall O(n^2) complexity
