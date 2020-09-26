@@ -180,7 +180,6 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         printf("%d ", s_p[i]);
     }
 
-
     free(moved);
     free(improve);
     free(score);
