@@ -458,8 +458,8 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 //    printf("Printing dQ");
 //    printf("\n------------------------------------\n");
     *dq_p = *dq_p/(2);
-//    printf("\n  %f  \n",*dq_p);
 
+//    printf("\n  %f  \n",*dq_p);
 
     free(comp);
     free(comp2);
