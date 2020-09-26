@@ -94,30 +94,30 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
     do{
         ///overall O(n^2) complexity
         for (i=0; i<g_p->group_size; i++){
-            printf("\n------------------------------------\n");
-            printf("Printing S");
-            printf("\n------------------------------------\n");
-            printf("%d %d %d %d %d %d %d %d", s_p[0], s_p[1],s_p[2],s_p[3],s_p[4],s_p[5],s_p[6],s_p[7]);
+//            printf("\n------------------------------------\n");
+//            printf("Printing S");
+//            printf("\n------------------------------------\n");
+//            printf("%d %d %d %d %d %d %d %d", s_p[0], s_p[1],s_p[2],s_p[3],s_p[4],s_p[5],s_p[6],s_p[7]);
 
-            printf("\n------------------------------------\n");
-            printf("Printing moved");
-            printf("\n------------------------------------\n");
-            printf("%d %d %d %d %d %d %d %d", moved[0], moved[1],moved[2],moved[3],moved[4],moved[5],moved[6],moved[7]);
+//            printf("\n------------------------------------\n");
+//            printf("Printing moved");
+//            printf("\n------------------------------------\n");
+//            printf("%d %d %d %d %d %d %d %d", moved[0], moved[1],moved[2],moved[3],moved[4],moved[5],moved[6],moved[7]);
 
             max_index = score_calc(graph,g_p, s_p, score,moved);  /// O(n+m) time complexity
 
-            printf("\n------------------------------------\n");
-            printf("Printing Scores");
-            printf("\n------------------------------------\n");
-            printf("%Lf %Lf %Lf %Lf %Lf %Lf %Lf %Lf", score[0], score[1],score[2],score[3],score[4],score[5],score[6],score[7]);
+//            printf("\n------------------------------------\n");
+//            printf("Printing Scores");
+//            printf("\n------------------------------------\n");
+//            printf("%Lf %Lf %Lf %Lf %Lf %Lf %Lf %Lf", score[0], score[1],score[2],score[3],score[4],score[5],score[6],score[7]);
 
             s_p[max_index] = -s_p[max_index];
             indices_moved[i] = max_index;
 
-            printf("\n------------------------------------\n");
-            printf("Printing indices of moved elements");
-            printf("\n------------------------------------\n");
-            printf("%d %d %d %d %d %d %d %d", indices_moved[0], indices_moved[1],indices_moved[2],indices_moved[3],indices_moved[4],indices_moved[5],indices_moved[6],indices_moved[7]);
+//            printf("\n------------------------------------\n");
+//            printf("Printing indices of moved elements");
+//            printf("\n------------------------------------\n");
+//            printf("%d %d %d %d %d %d %d %d", indices_moved[0], indices_moved[1],indices_moved[2],indices_moved[3],indices_moved[4],indices_moved[5],indices_moved[6],indices_moved[7]);
 
             if (i==0){
                 improve[i] = score[max_index];
@@ -129,10 +129,10 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
                     max_improve_index = i;
                 }
             }
-            printf("\n------------------------------------\n");
-            printf("Printing Improve");
-            printf("\n------------------------------------\n");
-            printf("%Lf %Lf %Lf %Lf %Lf %Lf %Lf %Lf", improve[0], improve[1],improve[2],improve[3],improve[4],improve[5],improve[6],improve[7]);
+//            printf("\n------------------------------------\n");
+//            printf("Printing Improve");
+//            printf("\n------------------------------------\n");
+//            printf("%Lf %Lf %Lf %Lf %Lf %Lf %Lf %Lf", improve[0], improve[1],improve[2],improve[3],improve[4],improve[5],improve[6],improve[7]);
 
             moved[max_index] = 0;  /// moved starts with 0's of the elements that are not in the group and 1's that are in the group and then changes them to 0 after they are moved
         }
@@ -147,10 +147,10 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         else{
             dQ = improve[max_improve_index];
         }
-        printf("\n------------------------------------\n");
-        printf("Printing dQ");
-        printf("\n------------------------------------\n");
-        printf("%Lf \n",dQ);
+//        printf("\n------------------------------------\n");
+//        printf("Printing dQ");
+//        printf("\n------------------------------------\n");
+//        printf("%Lf \n",dQ);
     }while (IS_POSITIVE(dQ));
 
 //    printf("\n------------------------------------\n");
