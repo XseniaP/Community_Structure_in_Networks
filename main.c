@@ -14,12 +14,12 @@ int main(int argc,char* argv[]) {
 
 
 ////    create new file with the nodes
-//    int k[11] = {6,1,5,1,3,0,1,1,0,1,0};
+//    int k[25] = {8,1,4,3,2,3,5,3,1,3,5,3,1,2,5,1,0,3,1,2,3,1,7,1,6};
 //    FILE * f2 = NULL; int n;
-//    f2 = fopen("graph_test4.in", "wb");
+//    f2 = fopen("graph_test_7m.in", "wb");
 //    assert(f2 != NULL);
-//    n = fwrite(&k, sizeof(int), 11, f2);
-//    assert(n==11);
+//    n = fwrite(&k, sizeof(int), 25, f2);
+//    assert(n==25);
 //    fclose(f2);
 
 

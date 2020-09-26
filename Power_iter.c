@@ -174,10 +174,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         }
 //        printf("\n\n%f  %f  %f  %f  %f   %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
     }
-//    printf("\n------------------------------------\n");
-//    printf("Printing A *   random vector");
-//    printf("\n------------------------------------\n");
-//    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
+    printf("\n------------------------------------\n");
+    printf("Printing A *   random vector");
+    printf("\n------------------------------------\n");
+    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
 //    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
 //    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
 //    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
@@ -187,10 +187,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(rand_vec[i])*(long double)(graph->deg_vec->data[i]);
     }
-//    printf("\n------------------------------------\n");
-//    printf("Printing constant");
-//    printf("\n------------------------------------\n");
-//    printf("\n%Lf  ", cons);
+    printf("\n------------------------------------\n");
+    printf("Printing constant");
+    printf("\n------------------------------------\n");
+    printf("\n%Lf  ", cons);
 
     ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
@@ -198,10 +198,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
 
-//    printf("\n------------------------------------\n");
-//    printf("Printing constant by k and divide by M");
-//    printf("\n------------------------------------\n");
-//    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf  %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5],comp2[6], comp2[7],comp2[8],comp2[9]);
+    printf("\n------------------------------------\n");
+    printf("Printing constant by k and divide by M");
+    printf("\n------------------------------------\n");
+    printf("\n\n%Lf  %Lf  %Lf   %Lf  %Lf  %Lf  %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5],comp2[6], comp2[7],comp2[8],comp2[9]);
 
     ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
     comp3 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
@@ -223,10 +223,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         row_norm[i] = row_norm[i] - comp[i];
     }
 
-//    printf("\n------------------------------------\n");
-//    printf("Printing final");
-//    printf("\n------------------------------------\n");
-//    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
+    printf("\n------------------------------------\n");
+    printf("Printing final");
+    printf("\n------------------------------------\n");
+    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
 
 //    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     free(comp);
