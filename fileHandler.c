@@ -12,6 +12,7 @@ int readFile(char *fileName, struct Graph *graph) {
 
     fread(&n, sizeof(int), 1, stream);
     printf("There are %d nodes in the graph\n",n);
+    printf("%d",n);
     graph->number_of_nodes = n;
     graph->deg_vec->size = n;
     graph->deg_vec->data = (int*) malloc( n * sizeof(int));
@@ -39,10 +40,12 @@ int readFile(char *fileName, struct Graph *graph) {
 
     for (i=0; i<graph->number_of_nodes; i++){
         unsigned long a = fread(&buffer1, sizeof(int), 1, stream);
+        printf(",%d",buffer1);
         if (a == 0)
             break;
         for (j=0; j<buffer1; j++){
             fread(&buffer2, sizeof(int), 1, stream);
+            printf(",%d",buffer2);
             if (i>buffer2){
                 graph->adj_matrix->row[adj_loc] = i;
                 graph->adj_matrix->col[adj_loc] = buffer2;
