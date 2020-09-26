@@ -65,6 +65,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
             if (score[i] > max) {
                 max_index = i;
                 max = score[i];
+
             }
         }
     }
