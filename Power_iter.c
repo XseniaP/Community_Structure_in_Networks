@@ -223,10 +223,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         row_norm[i] = row_norm[i] - comp[i];
     }
 
-    printf("\n------------------------------------\n");
-    printf("Printing final");
-    printf("\n------------------------------------\n");
-    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
+//    printf("\n------------------------------------\n");
+//    printf("Printing final");
+//    printf("\n------------------------------------\n");
+//    printf("\n %f  %f  %f  %f  %f   %f   %f  %f  %f  %f \n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6],row_norm[7],row_norm[8],row_norm[9]);
 
 //    printf("\n\n%f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2]);
     free(comp);
@@ -253,14 +253,14 @@ int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row
     }
 
     ///print normalized vector at each step of power iter
-    printf("\n------------------------------------\n");
-    printf("Printing normalized vector at each step");
-    printf("\n------------------------------------\n");
-    printf("  \n");
-    for (i=0; i<graph->number_of_nodes; i++){
-        printf("%f  ",row_norm[i]);
-    }
-    printf("  \n");
+//    printf("\n------------------------------------\n");
+//    printf("Printing normalized vector at each step");
+//    printf("\n------------------------------------\n");
+//    printf("  \n");
+//    for (i=0; i<graph->number_of_nodes; i++){
+//        printf("%f  ",row_norm[i]);
+//    }
+//    printf("  \n");
     return 0;
 }
 
@@ -396,10 +396,10 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 
 //        printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5],row_norm[6]);
     }
-    printf("\n------------------------------------\n");
-    printf("Printing A *  s_vector");
-    printf("\n------------------------------------\n");
-    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
+//    printf("\n------------------------------------\n");
+//    printf("Printing A *  s_vector");
+//    printf("\n------------------------------------\n");
+//    printf("\n\n%f  %f  %f  %f  %f  %f\n", row_norm[0],row_norm[1],row_norm[2],row_norm[3],row_norm[4],row_norm[5]);
 //    printf("\n\n%f  %f  %f\n", rand_vec[0],rand_vec[1],rand_vec[2]);
 //    printf("\n\n%d  %d  %d\n", graph->adj_matrix->row[0],graph->adj_matrix->row[1],graph->adj_matrix->row[2]);
 //    printf("\n\n%d  %d  %d\n", graph->deg_vec->data[0],graph->deg_vec->data[1],graph->deg_vec->data[2]);
@@ -410,20 +410,20 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
         cons+=(long double)(s_p[i])*(long double)(graph->deg_vec->data[i]);
     }
 
-    printf("\n------------------------------------\n");
-    printf("Printing Constant = s_vector * k^T ");
-    printf("\n------------------------------------\n");
-    printf("\n%Lf \n", cons);
+//    printf("\n------------------------------------\n");
+//    printf("Printing Constant = s_vector * k^T ");
+//    printf("\n------------------------------------\n");
+//    printf("\n%Lf \n", cons);
 
     ///step3 - multiply Constant (s_vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
-    printf("\n------------------------------------\n");
-    printf("Printing s_vector * k^T earlier calculated");
-    printf("\n------------------------------------\n");
-    printf("\n\n%Lf  %Lf  %Lf  %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5]);
+//    printf("\n------------------------------------\n");
+//    printf("Printing s_vector * k^T earlier calculated");
+//    printf("\n------------------------------------\n");
+//    printf("\n\n%Lf  %Lf  %Lf  %Lf  %Lf  %Lf\n", comp2[0],comp2[1],comp2[2],comp2[3],comp2[4],comp2[5]);
 
     ///step4 - combine 3 steps - O(n)
     for (i=0; i<graph->number_of_nodes; i++){

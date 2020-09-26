@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define IS_POSITIVE(X) ((X) > 0.00001)
+#define NEGINFINITY -1000000000.0
 
 typedef struct Vector_int {
     int size;

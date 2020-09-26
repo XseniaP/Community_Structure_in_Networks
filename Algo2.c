@@ -137,7 +137,10 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 //    }
 //    printf("\n");
 
-    calculate_dq(graph,g, s_p, row_sums_p, dq_p);
+    calculate_dq(graph, g, s_p, row_sums_p, dq_p);
+
+    ///    call for maximization
+    maximize(graph, g, s_p);
 
     if (!IS_POSITIVE(pair_p->eigenvalue)){
         printf("network is non-dividable");
@@ -195,13 +198,13 @@ int divide_network(char* argv[], int*** output_p){
     }
 
 ///    print indices in the default g
-    printf("\n------------------------------------\n");
-    printf("Printing indices of the group");
-    printf("\n------------------------------------\n");
-    for (i=0; i<new_graph.number_of_nodes; i++){
-        printf("%c",'\n');
-        printf("%d", g.indices[i]);
-    }
+//    printf("\n------------------------------------\n");
+//    printf("Printing indices of the group");
+//    printf("\n------------------------------------\n");
+//    for (i=0; i<new_graph.number_of_nodes; i++){
+//        printf("%c",'\n');
+//        printf("%d", g.indices[i]);
+//    }
 
 ///    print full adjacency matrix
     printf("\n------------------------------------\n");
@@ -219,24 +222,11 @@ int divide_network(char* argv[], int*** output_p){
 //    }
 
 
+    ///Start groups division here
     ///extracting singletones
     final_cluster.total_nodes = myGraph_p->number_of_nodes;
     final_cluster.nodes_group_ind = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
     separate_singletones(myGraph_p,g_p,final_cluster_p);
-
-    ///creating P list
-//    p_set_head = createElement(sizeof(Group));
-//   p_set_head->data = g_p;
-//    p_set_head->data->Adj_size = g_p->Adj_size;
-//    p_set_head->data->group_size = g_p->group_size;
-//    p_set_head->data->indices = (int*)malloc(g_p->group_size*sizeof(int));
-//    for (i=0; i< g_p->group_size; i++){
-//        p_set_head->data->indices[i] = g_p->indices[i];
-//    }
-//    p_set_head->data->Adj_indices = (int*)malloc(g_p->Adj_size*sizeof(int));
-//    for (i=0; i<g_p->Adj_size; i++){
-//        p_set_head->data->Adj_indices[i] = g_p->Adj_indices[i];
-//    }
 
     ///create root
 //    root = (struct Group*)malloc(sizeof(struct Group));
@@ -252,9 +242,9 @@ int divide_network(char* argv[], int*** output_p){
 
         result = divide_group_into_two(myGraph_p,root,g1_p, g2_p, dq_p);
 
-        printf("\n------------------------------------");
-        printf("\nRemoving group size: %d\n",root->group_size);
-        printf("------------------------------------\n");
+//        printf("\n------------------------------------");
+//        printf("\nRemoving group size: %d\n",root->group_size);
+//        printf("------------------------------------\n");
 
 
         if (result ==1){
@@ -274,19 +264,19 @@ int divide_network(char* argv[], int*** output_p){
         }
         else if (g1_p->group_size == 1){
             add_group_to_final_cluster(g1_p, final_cluster_p);
-
-            printf("------------------------------------\n");
-            printf("Adding group size: %d\n",g2_p->group_size);
-            printf("------------------------------------\n");
+//
+//            printf("------------------------------------\n");
+//            printf("Adding group size: %d\n",g2_p->group_size);
+//            printf("------------------------------------\n");
 
             push(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&root);
         }
         else if (g2_p->group_size == 1){
 
 
-            printf("------------------------------------\n");
-            printf("Adding group size: %d\n",g1_p->group_size);
-            printf("------------------------------------\n");
+//            printf("------------------------------------\n");
+//            printf("Adding group size: %d\n",g1_p->group_size);
+//            printf("------------------------------------\n");
 
 
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
@@ -294,16 +284,16 @@ int divide_network(char* argv[], int*** output_p){
         }
         else {
 
-            printf("------------------------------------\n");
-            printf("Adding group size: %d\n",g2_p->group_size);
-            printf("------------------------------------\n");
+//            printf("------------------------------------\n");
+//            printf("Adding group size: %d\n",g2_p->group_size);
+//            printf("------------------------------------\n");
 
             push(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&root);
 
 
-            printf("------------------------------------\n");
-            printf("Adding group size: %d\n",g1_p->group_size);
-            printf("------------------------------------\n");
+//            printf("------------------------------------\n");
+//            printf("Adding group size: %d\n",g1_p->group_size);
+//            printf("------------------------------------\n");
 
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
         }
@@ -312,12 +302,12 @@ int divide_network(char* argv[], int*** output_p){
 
 
     ///print final set O
-    printf("\n  ");
-    printf("%d  ", final_cluster_p->total_groups);
-    printf("\n  ");
-    for (i=0; i<final_cluster_p->total_nodes;i++){
-        printf("%d  ", final_cluster_p->nodes_group_ind[i]);
-    }
+//    printf("\n  ");
+//    printf("%d  ", final_cluster_p->total_groups);
+//    printf("\n  ");
+//    for (i=0; i<final_cluster_p->total_nodes;i++){
+//        printf("%d  ", final_cluster_p->nodes_group_ind[i]);
+//    }
 
     ///write into output file
     writeToFile(argv[2],final_cluster_p);

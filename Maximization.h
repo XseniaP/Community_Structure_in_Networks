@@ -5,6 +5,7 @@
 #include "fileHandler.h"
 #include "Power_iter.h"
 
-int maximize(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, double* dq_p);
+int maximize(Graph* graph,Group* g_p, int *s_p);
+int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int *moved);
 
 #endif //PROJECT_TOHNA_MAXIMIZATION_H
