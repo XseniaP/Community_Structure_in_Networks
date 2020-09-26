@@ -68,27 +68,27 @@ int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2)
     group1->group_size = count1;
     group2->indices = (int*)calloc(count2,sizeof(int));
     group2->group_size = count2;
-    for (i=0; i<graph->number_of_nodes; i++){
-        printf("%d ", s_p[i]);
-    }
-    printf("\n ");
+//    for (i=0; i<graph->number_of_nodes; i++){
+//        printf("%d ", s_p[i]);
+//    }
+//    printf("\n ");
     count1=0; count2=0;
     for (i=0; i<graph->number_of_nodes; i++){
         if(s_p[i]==1){
             group1->indices[count1]=i;
-            printf("gr1  %d  ",i);
+//            printf("gr1  %d  ",i);
             count1+=1;
         }
         else if(s_p[i]==(-1)){
             group2->indices[count2]=i;
-            printf("gr2  %d  ",i);
+//            printf("gr2  %d  ",i);
             count2+=1;
         }
     }
     adj_for_g(graph ,group1);
     adj_for_g(graph ,group2);
 
-    printf("\n");
+//    printf("\n");
     return 0;
 }
 
