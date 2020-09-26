@@ -415,6 +415,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 //    printf("\n------------------------------------\n");
 //    printf("\n%Lf \n", cons);
 
+
     ///step3 - multiply Constant (s_vector * k^T earlier calculated) by k and divide by M  - O(n)
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
