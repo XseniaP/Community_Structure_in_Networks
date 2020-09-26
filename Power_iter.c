@@ -457,6 +457,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 //    printf("\n------------------------------------\n");
 //    printf("Printing dQ");
 //    printf("\n------------------------------------\n");
+
     *dq_p = *dq_p/(2);
 
 //    printf("\n  %f  \n",*dq_p);
