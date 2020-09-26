@@ -139,6 +139,7 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 
     calculate_dq(graph, g, s_p, row_sums_p, dq_p);
 
+
     ///    call for maximization
     maximize(graph, g, s_p);
 
