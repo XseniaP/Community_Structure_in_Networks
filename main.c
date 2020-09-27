@@ -3,7 +3,7 @@
 
 int main(int argc,char* argv[]) {
 
-    ///check command line args
+    /*check command line args*/
     if (argc<3){
         printf("Command line arguments missing\n");
         return 1;

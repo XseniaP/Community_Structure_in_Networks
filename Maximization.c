@@ -13,7 +13,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
         score[i]=0.0;
     }
 
-///step1 - calculate A * S - O(m)
+/** step1 - calculate A * S - O(m) */
     for (i = 0; i < graph->adj_matrix->size; i++) {
         if (Adj_indices_set[i] == 1) {
             ind1 = graph->adj_matrix->row[i];
@@ -27,12 +27,12 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
         }
     }
 
-///step2 - to calculate Constant = S * k^T - O(n)
+/** step2 - to calculate Constant = S * k^T - O(n) */
     for (i = 0; i < graph->number_of_nodes; i++) {
         cons += (long double) (s_p[i]) * (long double) (graph->deg_vec->data[i]);
     }
 
-///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
+/** step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n) */
     comp2 = (long double *) calloc(graph->number_of_nodes,sizeof(long double));
     for (i = 0; i < graph->number_of_nodes; i++) {
         if(moved[i]!=0) {
@@ -42,7 +42,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
         }
     }
 
-///step4 - calulcating score - O(n)
+/** step4 - calulcating score - O(n) */
     for (i = 0; i < graph->number_of_nodes; i++) {
         if (moved[i]!=0) {
             score[i] = 4 * (-s_p[i]) * (score[i] - comp2[i]) +
@@ -70,8 +70,8 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
     improve = (long double *)calloc(g_p->group_size,sizeof(long double));
     indices_moved = (int *)calloc(g_p->group_size,sizeof(int));
 
-    /// the while loop will finish because we should have either zero improvement or negative at certain point
-    /// "do" while will ensure we enter first time with dQ=0.0
+    /**  the while loop will finish because we should have either zero improvement or negative at certain point
+     "do" while will ensure we enter first time with dQ=0.0 */
     do{
         indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, moved,1);
         for(i=0; i<graph->number_of_nodes; i++){
@@ -85,10 +85,10 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         max_improve=0.0;
         max_improve_index = g_p->group_size-1;
 
-        ///overall O(n^2) complexity
+        /** overall O(n^2) complexity */
         for (i=0; i<g_p->group_size; i++){
 
-            max_index = score_calc(graph,g_p, s_p, score,moved);  /// O(n+m) time complexity
+            max_index = score_calc(graph,g_p, s_p, score,moved);  /**  O(n+m) time complexity */
 
             s_p[max_index] = -s_p[max_index];
             indices_moved[i] = max_index;
@@ -103,7 +103,7 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
                     max_improve_index = i;
                 }
             }
-            moved[max_index] = 0;  /// moved starts with 0's of the elements that are not in the group and 1's that are in the group and then changes them to 0 after they are moved
+            moved[max_index] = 0;  /** moved starts with 0's of the elements that are not in the group and 1's that are in the group and then changes them to 0 after they are moved */
         }
 
         for(i=g_p->group_size-1; i>max_improve_index; i--){

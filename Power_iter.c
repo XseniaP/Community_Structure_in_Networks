@@ -26,7 +26,7 @@ int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set
 
 
 
-///create random vector for initialization of power iteration ; O(n)
+/** create random vector for initialization of power iteration ; O(n) **/
 int create_vec(Group* g, int size, double *vec){
     int i;
     int* indices_set;
@@ -50,8 +50,8 @@ int create_vec(Group* g, int size, double *vec){
     return 0;
 }
 
-///calculate ||C|| (sum of max column) /// optionally add it to diagonal elements of symmetric matrix B to create b^, but we dont need to keep b^
-/// complexity O(m+n)*n , sparse graphs with m ~ n are in in the focus thus the resulting complexity would be O(n^2)
+/** calculate ||C|| (sum of max column) /// optionally add it to diagonal elements of symmetric matrix B to create b^, but we dont need to keep b^
+/// complexity O(m+n)*n , sparse graphs with m ~ n are in in the focus thus the resulting complexity would be O(n^2) **/
 int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row_sums_p){
     int i,j;
     double sum, max;
@@ -68,10 +68,10 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
     indices_to_indices_set(g,g->Adj_indices, graph->M/2, Adj_indices_set,2);
 
 
-    /// the loop is O(n*(m+n))
+    /** the loop is O(n*(m+n))  **/
     for (i=0; i<graph->number_of_nodes; i++){
 
-        /// the loop is O(M); going over Adj matrix and adding 1 where appropriate
+        /** the loop is O(M); going over Adj matrix and adding 1 where appropriate **/
         for (j=0; j<graph->adj_matrix->size;j++) {
             if (Adj_indices_set[j] == 1) {
                 if ((graph->adj_matrix->row[j] == i) || (graph->adj_matrix->col[j] == i)) {
@@ -84,12 +84,12 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
             }
         }
 
-        /// the loop is O(n); deducting kikj/M
+        /** the loop is O(n); deducting kikj/M  **/
         for (j=0; j<graph->number_of_nodes; j++){
             temp[j] +=  - (((double)graph->deg_vec->data[i]) * ((double)graph->deg_vec->data[j]) / (double)graph->M);
         }
 
-        /// the loop is O(n); multiplying by the indices , not relevant elements will turn zero
+        /** the loop is O(n); multiplying by the indices , not relevant elements will turn zero **/
         for (j=0; j<graph->number_of_nodes; j++){
             temp[j] = temp[j]*indices_set[i]*indices_set[j];
             sum += temp[j];
@@ -98,7 +98,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
         row_sums_p->data[i]=sum;
         sum=0;
 
-        /// the loop is O(n)
+        /** the loop is O(n) **/
         for (j=0; j<graph->number_of_nodes; j++){
             if(i==j){
                 sum += fabs(temp[j]-row_sums_p->data[i]);
@@ -112,7 +112,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
         }
         sum=0;
 
-        /// memset is O(n)
+        /** memset is O(n) **/
         memset(temp,(double)0.0,(graph->number_of_nodes)*(sizeof(double)));
     }
 
@@ -124,7 +124,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 
 }
 
-///multiply vector by symmetric shifted matrix B ; O(n+m)
+/** multiply vector by symmetric shifted matrix B ; O(n+m) **/
 int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, Vector_double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
@@ -135,7 +135,7 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 
-    ///step1 - calculate A * random vector - O(m)
+    /** step1 - calculate A * random vector - O(m) **/
     for (i=0; i<graph->adj_matrix->size; i++){
         if (Adj_indices_set[i]==1) {
             ind1 = graph->adj_matrix->row[i];
@@ -145,29 +145,29 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
         }
     }
 
-    ///step2 - to calculate Constant = Random vector * k^T - O(n)
+    /** step2 - to calculate Constant = Random vector * k^T - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(rand_vec[i])*(long double)(graph->deg_vec->data[i]);
     }
 
-    ///step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n)
+    /** step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n) **/
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
 
-    ///step4 - random vector * ||C|| (matrix shift max column sum) - O(n)
+    /** step4 - random vector * ||C|| (matrix shift max column sum) - O(n) **/
     comp3 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp3[i] = (long double)max * (long double)rand_vec[i];
     }
 
-    ///step5 - combine 4 steps - O(n)
+    /** step5 - combine 4 steps - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
         row_norm[i] = row_norm[i]-(double)comp2[i]+(double)comp3[i];
     }
 
-    ///step6 - deduct Row sums of B_hat matrix * Eigenvector  - O(n)
+    /** step6 - deduct Row sums of B_hat matrix * Eigenvector  - O(n) **/
     comp = (double *)malloc(graph->number_of_nodes*sizeof(double));
     for(i=0; i<graph->number_of_nodes;i++){
         comp[i] = row_sums_p->data[i]*rand_vec[i];
@@ -182,24 +182,24 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     return 0;
 }
 
-///O(n+m) due to vec_mult_B complexity
+/**O(n+m) due to vec_mult_B complexity **/
 int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p){
     int i=0;
     double sum=0.0;
     vec_mult_B_shifted(graph, g_p,rand_vec,max,row_norm,row_sums_p);
-    ///step5 - combine 4 steps - O(n)
+    /**step5 - combine 4 steps - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
         sum +=pow(row_norm[i],2);
     }
 
-    ///step6 - normalize - O(n)
+    /**step6 - normalize - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
         row_norm[i] = row_norm[i]/pow(sum,0.5);
     }
     return 0;
 }
 
-///check if the difference between two vectors is ~0 - O(n)
+/**check if the difference between two vectors is ~0 - O(n) **/
 int check_difference(int height ,double *temp ,double *next){
     double difference, *pointer1 = NULL, *pointer2 = NULL;
     int i;
@@ -217,17 +217,17 @@ int check_difference(int height ,double *temp ,double *next){
     return 1;
 }
 
-///power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue
+/**power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue **/
 int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_sums_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, numerator, max_v;
     int check, true=0, i=0; double value_without_c; double* vect_temp;
     max = &max_v;
     vec = (double *)malloc(graph->number_of_nodes*sizeof(double));
 
-    /// using calloc to initialize to zero - important!
+    /** using calloc to initialize to zero - important! **/
     row_norm = (double *)calloc(graph->number_of_nodes,sizeof(double));
 
-    /// create random vector
+    /** create random vector **/
     create_vec(g_p,graph->number_of_nodes, vec);
 
     matrix_shift_C_new(graph, g_p, max, row_sums_p);
@@ -249,19 +249,19 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
 
     pair_p->eigenvector = row_norm;
 
-    ///find corresponding eigenvalue of the shifted matrix
+    /** find corresponding eigenvalue of the shifted matrix **/
     numerator = 0.0;
 
-    ///important to use calloc here, so that zeroes are initiated
+    /** important to use calloc here, so that zeroes are initiated **/
     vect_temp = (double *)calloc(graph->number_of_nodes,sizeof(double));
     vec_mult_B_shifted(graph, g_p, pair_p->eigenvector , max_v,vect_temp, row_sums_p);
 
-///dot product of eigenvector and vector with the results from B_hat shifted * eigenvector - O(n)
+/** dot product of eigenvector and vector with the results from B_hat shifted * eigenvector - O(n) **/
     for(i=0; i<graph->number_of_nodes;i++){
         numerator+= vect_temp[i]*pair_p->eigenvector[i];
     }
 
-///deduct ||C|| to get leading eigenvalue of the original matrix O(1)
+/** deduct ||C|| to get leading eigenvalue of the original matrix O(1) **/
     value_without_c = numerator - max_v;
     pair_p->eigenvalue = value_without_c;
 
@@ -284,7 +284,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 
-    ///step1 - calculate A *  s_vector - O(m)
+    /** step1 - calculate A *  s_vector - O(m)  **/
     for (i=0; i<graph->adj_matrix->size; i++){
         if (Adj_indices_set[i]==1) {
             ind1 = graph->adj_matrix->row[i];
@@ -295,35 +295,35 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
 
     }
 
-    ///step2 - to calculate Constant = s_vector * k^T - O(n)
+    /** step2 - to calculate Constant = s_vector * k^T - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
         cons+=(long double)(s_p[i])*(long double)(graph->deg_vec->data[i]);
     }
 
-    ///step3 - multiply Constant (s_vector * k^T earlier calculated) by k and divide by M  - O(n)
+    /** step3 - multiply Constant (s_vector * k^T earlier calculated) by k and divide by M  - O(n) **/
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
 
-    ///step4 - combine 3 steps - O(n)
+    /** step4 - combine 3 steps - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
         row_norm[i] = row_norm[i]-(double)comp2[i];
     }
 
-    ///step5 - deduct Row sums of B_hat matrix * vector S  - O(n)
+    /** step5 - deduct Row sums of B_hat matrix * vector S  - O(n) **/
     comp = (double *)malloc(graph->number_of_nodes*sizeof(double));
     for(i=0; i<graph->number_of_nodes;i++){
         comp[i] = row_sums_p->data[i]*s_p[i];
         row_norm[i] = row_norm[i] - comp[i];
     }
 
-    ///step6 - multiply the obtained vector by S^T from the left  - O(n)
+    /** step6 - multiply the obtained vector by S^T from the left  - O(n) **/
     for(i=0; i<graph->number_of_nodes;i++){
         *dq_p += row_norm[i]*s_p[i];
     }
 
-    ///step7 - divide by 2 (or 2M according to the original paper) - O(1)
+    /** step7 - divide by 2 (or 2M according to the original paper) - O(1) **/
     *dq_p = *dq_p/(2);
 
     free(comp);

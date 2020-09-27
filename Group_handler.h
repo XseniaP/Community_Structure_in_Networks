@@ -8,4 +8,4 @@ void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Gro
 void pop(struct Group** stack);
 Group* top(struct Group* stack);
 
-#endif //PROJECT_TOHNA_GROUP_HANDLER_H
+#endif

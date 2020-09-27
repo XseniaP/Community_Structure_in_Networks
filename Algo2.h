@@ -15,4 +15,4 @@ int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p
 
 
 
-#endif //PROJECT_TOHNA_ALGO2_H
+#endif

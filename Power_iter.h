@@ -13,4 +13,4 @@ int matrix_shift_C_new(Graph* graph,Group* g, double* max_p, Vector_double *row_
 int indices_to_indices_set(Group* group, int *indices, int size, int* indices_set, int marker);
 int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, double* dq_p);
 
-#endif //PROJECT_TOHNA_POWER_ITER_H
+#endif
