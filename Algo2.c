@@ -166,8 +166,6 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
         return 0;
     }
 
-//    free(pair_p->eigenvector);
-//    return 0;
 }
 
 int divide_network(char* argv[], int*** output_p){
