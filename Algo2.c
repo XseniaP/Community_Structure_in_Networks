@@ -1,6 +1,6 @@
 #include "Algo2.h"
 
-/// O(n)
+/// compute s vector based on the eigenvector - O(n)
 int compute_s(Pair *pair_p, int* s_p, int size){
     int i=0;
     for (i=0; i<size; i++){
@@ -17,9 +17,10 @@ int compute_s(Pair *pair_p, int* s_p, int size){
     return 0;
 }
 
-/// O(m*n)
+/// Create array which marks which of the "Adjacency matrix" indices are relevant for the specific group - O(m*n)
 int adj_for_g(Graph* graph ,Group* g){
     int i, j, count1=0,count2=0;
+    ///O(m*n)
     for(i=0;i<graph->M/2;i++) {
         for (j = 0; j < g->group_size; j++) {
             if ((g->indices[j] == graph->adj_matrix->row[i])||(g->indices[j] == graph->adj_matrix->col[i])) {
@@ -53,9 +54,12 @@ int adj_for_g(Graph* graph ,Group* g){
     return 0;
 }
 
+
+/// Splits group into two based on the s vector - O(m*n)
 int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2){
     int i,count1=0, count2=0;
 
+    ///O(n)
     for (i=0; i<graph->number_of_nodes; i++){
             if(s_p[i]==1){
                 count1+=1;
@@ -68,33 +72,30 @@ int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2)
     group1->group_size = count1;
     group2->indices = (int*)calloc(count2,sizeof(int));
     group2->group_size = count2;
-//    for (i=0; i<graph->number_of_nodes; i++){
-//        printf("%d ", s_p[i]);
-//    }
-//    printf("\n ");
+
+    ///O(n)
     count1=0; count2=0;
     for (i=0; i<graph->number_of_nodes; i++){
         if(s_p[i]==1){
             group1->indices[count1]=i;
-//            printf("gr1  %d  ",i);
             count1+=1;
         }
         else if(s_p[i]==(-1)){
             group2->indices[count2]=i;
-//            printf("gr2  %d  ",i);
             count2+=1;
         }
     }
+    ///O(m*n)
     adj_for_g(graph ,group1);
     adj_for_g(graph ,group2);
 
-//    printf("\n");
     return 0;
 }
 
-
+///in case if the initial graph has isolated nodes (singletones) we immediately add them to the output using this function
 int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p){
     int i, count = 0;
+    ///O(n)
     for (i=0; i<graph->number_of_nodes; i++){
         if (IS_POSITIVE(graph->deg_vec->data[i])){
             count+=1;
@@ -104,6 +105,8 @@ int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p
     free(group->indices);
     group->indices = (int*)malloc(group->group_size* sizeof(int));
     count = 0;
+
+    ///O(n)
     for (i=0; i<graph->number_of_nodes; i++){
         if (IS_POSITIVE(graph->deg_vec->data[i])){
             group->indices[count] = i;
@@ -116,30 +119,23 @@ int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p
     }
     return 0;
 }
-
+    ///function receives group and applies Power iteration algorithm, followed by maximization to
 int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *dq_p){
     ///declarations
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;
     int* s_p;
     ///pointers
     Pair* pair_p = &pair;row_sums_p=&row_sums;
- //   int i, count1=0, count2=0;
 
     row_sums.data = (double *)calloc(graph->number_of_nodes,sizeof(double));
+    ///O(n^2) * number of iterations needed to converge (regularly expected to be O(n) based on the literature and Newman Paper)
     powerIteration(graph, g, pair_p, row_sums_p);
 
     s_p = (int*)malloc(graph->number_of_nodes * sizeof(int));
+    ///O(n)
     compute_s(pair_p, s_p, graph->number_of_nodes);
 
-//    printf("\n");
-//    for (i=0; i<graph->number_of_nodes; i++){
-//        printf("%f  ", row_sums_p->data[i]);
-//    }
-//    printf("\n");
-
-//    calculate_dq(graph, g, s_p, row_sums_p, dq_p);
-
-    ///    call for maximization
+    /// call for maximization - O(n^2) * number of iterations of the while loop before getting dQ<=0 (Worst case O(n));
     maximize(graph, g, s_p);
 
     calculate_dq(graph, g, s_p, row_sums_p, dq_p);
@@ -168,10 +164,10 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 
 }
 
-int divide_network(char* argv[], int*** output_p){
+int divide_network(char* argv[]){
 ///declarations , initializations, pointers
     Graph new_graph = {0,0,NULL,NULL};Graph *myGraph_p;
-    Final_List final_cluster = {0, 0,NULL,0.0};
+    Final_List final_cluster = {0, 0,NULL};
     SparseMatrix adj_matrix = {0, NULL,NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,0,NULL,0,NULL};Group g1 ={NULL,0,NULL,0,NULL};Group g2 ={NULL,0,NULL,0,NULL};
     Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
@@ -206,31 +202,6 @@ int divide_network(char* argv[], int*** output_p){
         g.Adj_indices[i]=i;
     }
 
-///    print indices in the default g
-//    printf("\n------------------------------------\n");
-//    printf("Printing indices of the group");
-//    printf("\n------------------------------------\n");
-//    for (i=0; i<new_graph.number_of_nodes; i++){
-//        printf("%c",'\n');
-//        printf("%d", g.indices[i]);
-//    }
-
-///    print full adjacency matrix
-    printf("\n------------------------------------\n");
-    printf("Printing Adj matrix");
-    printf("\n------------------------------------\n");
-    for (i=0; i<new_graph.M/2; i++){
-        printf("%c",'\n');
-        printf("%d %d", new_graph.adj_matrix->row[i],new_graph.adj_matrix->col[i]);
-    }
-
-///    print degree vector
-//    for (i=0; i<new_graph.number_of_nodes; i++){
-//        printf("%c",'\n');
-//        printf("%d", new_graph.deg_vec->data[i]);
-//    }
-
-
     ///Start groups division here
     ///extracting singletones
     final_cluster.total_nodes = myGraph_p->number_of_nodes;
@@ -238,34 +209,20 @@ int divide_network(char* argv[], int*** output_p){
     separate_singletones(myGraph_p,g_p,final_cluster_p);
 
     ///create root
-//    root = (struct Group*)malloc(sizeof(struct Group));
     push(g_p->Adj_size,g_p->group_size,g_p->indices,g_p->Adj_indices,&root);
     root->next = NULL;
 
 
     while (top(root) != NULL){
 
-
-//        g_p = top(root);
-
-
         result = divide_group_into_two(myGraph_p,root,g1_p, g2_p, dq_p);
-
-//        printf("\n------------------------------------");
-//        printf("\nRemoving group size: %d\n",root->group_size);
-//        printf("------------------------------------\n");
-
 
         if (result ==1){
             add_group_to_final_cluster(root, final_cluster_p);
             pop(&root);
             continue;
         }
-        pop(&root);
-        ///remove element from linked list
-
-
-
+        pop(&root);  ///remove element from linked list
 
         if ((g1_p->group_size == 1)&&(g2_p->group_size == 1)){
             add_group_to_final_cluster(g1_p, final_cluster_p);
@@ -273,37 +230,14 @@ int divide_network(char* argv[], int*** output_p){
         }
         else if (g1_p->group_size == 1){
             add_group_to_final_cluster(g1_p, final_cluster_p);
-//
-//            printf("------------------------------------\n");
-//            printf("Adding group size: %d\n",g2_p->group_size);
-//            printf("------------------------------------\n");
-
             push(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&root);
         }
         else if (g2_p->group_size == 1){
-
-
-//            printf("------------------------------------\n");
-//            printf("Adding group size: %d\n",g1_p->group_size);
-//            printf("------------------------------------\n");
-
-
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
             add_group_to_final_cluster(g2_p, final_cluster_p);
         }
         else {
-
-//            printf("------------------------------------\n");
-//            printf("Adding group size: %d\n",g2_p->group_size);
-//            printf("------------------------------------\n");
-
             push(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&root);
-
-
-//            printf("------------------------------------\n");
-//            printf("Adding group size: %d\n",g1_p->group_size);
-//            printf("------------------------------------\n");
-
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
         }
         free(g1_p->indices);
@@ -312,15 +246,6 @@ int divide_network(char* argv[], int*** output_p){
         free(g2_p->Adj_indices);
 
     }
-
-
-    ///print final set O
-//    printf("\n  ");
-//    printf("%d  ", final_cluster_p->total_groups);
-//    printf("\n  ");
-//    for (i=0; i<final_cluster_p->total_nodes;i++){
-//        printf("%d  ", final_cluster_p->nodes_group_ind[i]);
-//    }
 
     ///write into output file
     writeToFile(argv[2],final_cluster_p);

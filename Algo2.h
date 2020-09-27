@@ -6,7 +6,7 @@
 #include "Maximization.h"
 
 
-int divide_network(char* argv[], int*** output_p);
+int divide_network(char* argv[]);
 int adj_for_g(Graph* graph ,Group* g);
 int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *dq_p);
 int compute_s(Pair *pair_p, int* s_p, int size);

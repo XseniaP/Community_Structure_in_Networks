@@ -18,14 +18,12 @@ void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Gro
         Element->Adj_indices[i] = Adj_indices[i];
     }
 
-
     Element->next = *stack;
     (*stack) = Element;
 }
 
 void pop(struct Group** stack){
     if(*stack != NULL){
-//        printf("Element popped: %c\n",(*stack) -> data);
         struct Group* tempPtr = *stack;
         *stack = (*stack)->next;
         free(tempPtr->indices);
@@ -39,7 +37,6 @@ void pop(struct Group** stack){
 
 Group* top(struct Group* stack){
     if(stack != NULL){
-//        printf("Element on top: %c\n", stack -> data);
         return stack;
     }
     else{

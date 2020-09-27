@@ -50,7 +50,6 @@ typedef struct Final_List_{
     int total_nodes;
     int total_groups;
     int* nodes_group_ind;
-    double modularity;
 }Final_List;
 
 #endif //PROJECT_TOHNA_STRUCTURES_H
