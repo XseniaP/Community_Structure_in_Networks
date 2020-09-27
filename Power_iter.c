@@ -366,7 +366,8 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
 //    printf("\n------------------------------------\n");
 //    printf("\n%f \n", pair_p->eigenvalue);
 
-//    free(row_norm);
+
+    free(vect_temp);
     return 0;
 }
 
@@ -465,6 +466,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     printf("\n  %f  \n",*dq_p);
 
     free(comp);
+    free(row_norm);
     free(comp2);
     free(indices_set);
     free(Adj_indices_set);

@@ -88,6 +88,7 @@ int writeToFile(char* fileName, Final_List* final_cluster_p){
         }
     }
     fclose(f);
+    free(group_sizes);
     return 0;
 }
 

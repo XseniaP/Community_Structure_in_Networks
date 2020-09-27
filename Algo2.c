@@ -123,7 +123,7 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
     int* s_p;
     ///pointers
     Pair* pair_p = &pair;row_sums_p=&row_sums;
-    int i, count1=0, count2=0;
+ //   int i, count1=0, count2=0;
 
     row_sums.data = (double *)calloc(graph->number_of_nodes,sizeof(double));
     powerIteration(graph, g, pair_p, row_sums_p);
@@ -148,18 +148,21 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
         printf("network is non-dividable");
         free(pair_p->eigenvector);
         free(row_sums.data);
+        free(s_p);
         return 1;
     }
     else if (!IS_POSITIVE(*dq_p)){
         printf("%f  network is non-dividable", *dq_p);
         free(pair_p->eigenvector);
         free(row_sums.data);
+        free(s_p);
         return 1;
     }
     else{
         split_group_based_on_s(s_p, graph, g1, g2);
         free(pair_p->eigenvector);
         free(row_sums.data);
+        free(s_p);
         return 0;
     }
 
@@ -305,6 +308,10 @@ int divide_network(char* argv[], int*** output_p){
 
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
         }
+        free(g1_p->indices);
+        free(g2_p->indices);
+        free(g1_p->Adj_indices);
+        free(g2_p->Adj_indices);
 
     }
 
