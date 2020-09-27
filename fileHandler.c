@@ -40,12 +40,10 @@ int readFile(char *fileName, struct Graph *graph) {
 
     for (i=0; i<graph->number_of_nodes; i++){
         unsigned long a = fread(&buffer1, sizeof(int), 1, stream);
-        printf(",%d",buffer1);
         if (a == 0)
             break;
         for (j=0; j<buffer1; j++){
             fread(&buffer2, sizeof(int), 1, stream);
-            printf(",%d",buffer2);
             if (i>buffer2){
                 graph->adj_matrix->row[adj_loc] = i;
                 graph->adj_matrix->col[adj_loc] = buffer2;

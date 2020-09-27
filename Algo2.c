@@ -170,12 +170,12 @@ int divide_network(char* argv[]){
     Final_List final_cluster = {0, 0,NULL};
     SparseMatrix adj_matrix = {0, NULL,NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,0,NULL,0,NULL};Group g1 ={NULL,0,NULL,0,NULL};Group g2 ={NULL,0,NULL,0,NULL};
-    Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
     Final_List *final_cluster_p;
     double *dq_p; double dq;
     struct Group* root;
-
     int i=0, a, result;
+    int temp;FILE *f;
+    Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
 
     new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph; final_cluster_p = &final_cluster;
      dq_p = &dq;
@@ -252,9 +252,7 @@ int divide_network(char* argv[]){
 
     ///check what was written into the file
     printf("\n  ");
-    int temp;
-    FILE *f = fopen(argv[2], "r");
-//    FILE *f = fopen("groups.out", "r");
+    f = fopen(argv[2], "r");
 
         while (fread(&temp, 1, sizeof(int), f) == sizeof(int)) {
             printf("%d  " , temp);

@@ -56,14 +56,14 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
     int i,j;
     double sum, max;
     double * temp;
+    int* indices_set;    int* Adj_indices_set;
     temp = (double*) calloc( graph->number_of_nodes , sizeof(double));
     sum=0, max=0;
 
-    int* indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g,g->indices, graph->number_of_nodes, indices_set,1);
 
-    int* Adj_indices_set;
+
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g,g->Adj_indices, graph->M/2, Adj_indices_set,2);
 
@@ -129,11 +129,9 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
 
-    int* indices_set;
+    int* indices_set;    int* Adj_indices_set;
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set,1);
-
-    int* Adj_indices_set;
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 
@@ -273,16 +271,16 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
 
 
 int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, double* dq_p){
-    int i=0, ind1=0,ind2=0; double* row_norm;
+    int i=0, ind1=0,ind2=0; double* row_norm; int* indices_set; int* Adj_indices_set;
     long double cons=0.0, *comp2; double* comp;
     *dq_p=0.0;
 
     row_norm = (double*)calloc(graph->number_of_nodes,sizeof(double));
-    int* indices_set;
+
     indices_set = (int*)malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set,1);
 
-    int* Adj_indices_set;
+
     Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 

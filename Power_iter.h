@@ -1,7 +1,3 @@
-//
-// Created by Ksenia Polonsky on 9/4/20.
-//
-
 #ifndef PROJECT_TOHNA_POWER_ITER_H
 #define PROJECT_TOHNA_POWER_ITER_H
 #include "structures.h"
