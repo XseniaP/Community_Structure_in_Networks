@@ -137,7 +137,7 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 //    }
 //    printf("\n");
 
-    calculate_dq(graph, g, s_p, row_sums_p, dq_p);
+//    calculate_dq(graph, g, s_p, row_sums_p, dq_p);
 
     ///    call for maximization
     maximize(graph, g, s_p);
@@ -146,27 +146,33 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 
     if (!IS_POSITIVE(pair_p->eigenvalue)){
         printf("network is non-dividable");
+        free(pair_p->eigenvector);
+        free(row_sums.data);
         return 1;
     }
     else if (!IS_POSITIVE(*dq_p)){
         printf("%f  network is non-dividable", *dq_p);
+        free(pair_p->eigenvector);
+        free(row_sums.data);
         return 1;
     }
     else{
         split_group_based_on_s(s_p, graph, g1, g2);
+        free(pair_p->eigenvector);
+        free(row_sums.data);
         return 0;
     }
 
-    free(pair_p->eigenvector);
-    return 0;
+//    free(pair_p->eigenvector);
+//    return 0;
 }
 
 int divide_network(char* argv[], int*** output_p){
 ///declarations , initializations, pointers
-    Graph new_graph = {NULL,0,0,NULL, NULL};Graph *myGraph_p;
+    Graph new_graph = {0,0,NULL,NULL};Graph *myGraph_p;
     Final_List final_cluster = {0, 0,NULL,0.0};
-    SparseMatrix adj_matrix = {0, NULL,NULL, NULL};Vector_int deg_vec = {0,NULL};
-    Group g ={NULL,NULL};Group g1 ={NULL,NULL};Group g2 ={NULL,NULL};
+    SparseMatrix adj_matrix = {0, NULL,NULL};Vector_int deg_vec = {0,NULL};
+    Group g ={NULL,0,NULL,0,NULL};Group g1 ={NULL,0,NULL,0,NULL};Group g2 ={NULL,0,NULL,0,NULL};
     Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
     Final_List *final_cluster_p;
     double *dq_p; double dq;
@@ -328,13 +334,13 @@ int divide_network(char* argv[], int*** output_p){
     printf("\n-----------------End of program------------------\n");
 
     ///free memory
-//    free(myGraph_p->deg_vec->data);
-//    free(myGraph_p->adj_matrix->row);
-//    free(myGraph_p->adj_matrix->col);
-//    free(myGraph_p->indices_set);
-//    free(b_matrix.value);
-//free(g.Adj_indices);
-//free(g.indices);
+    free(myGraph_p->deg_vec->data);
+    free(myGraph_p->adj_matrix->row);
+    free(myGraph_p->adj_matrix->col);
+    free(g.Adj_indices);
+    free(g.indices);
+    free(final_cluster.nodes_group_ind);
+
     return 0;
 }
 

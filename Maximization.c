@@ -84,6 +84,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
 
 int maximize(Graph* graph,Group* g_p, int *s_p){
     int *moved, *indices_moved; int i; long double* score, *improve, max_improve, dQ = 0.0; int j=0, max_index, max_improve_index;
+
     moved = (int*)malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, moved,1);
 
