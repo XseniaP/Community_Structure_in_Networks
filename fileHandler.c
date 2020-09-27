@@ -11,8 +11,6 @@ int readFile(char *fileName, struct Graph *graph) {
     }
 
     fread(&n, sizeof(int), 1, stream);
-    printf("There are %d nodes in the graph\n",n);
-    printf("%d",n);
     graph->number_of_nodes = n;
     graph->deg_vec->size = n;
     graph->deg_vec->data = (int*) malloc( n * sizeof(int));
