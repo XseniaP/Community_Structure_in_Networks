@@ -9,3 +9,4 @@ int maximize(Graph* graph,Group* g_p, int *s_p);
 int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int *moved);
 
 #endif
+

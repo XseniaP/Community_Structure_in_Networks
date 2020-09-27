@@ -9,3 +9,4 @@ void pop(struct Group** stack);
 Group* top(struct Group* stack);
 
 #endif
+

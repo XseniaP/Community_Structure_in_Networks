@@ -14,3 +14,5 @@ int indices_to_indices_set(Group* group, int *indices, int size, int* indices_se
 int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, double* dq_p);
 
 #endif
+
+
