@@ -5,14 +5,14 @@ int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set
     int i, count =0;
     for (i=0; i<size; i++){
         if ((marker == 1) && (group->group_size != 0)) {      /** this is the case of the group indides  */
-            if ((indices[count] == i) && (count < group->group_size)) {
+            if ((count < group->group_size)&&(indices[count] == i)) {
                 indices_set[i] = 1;
                 count += 1;
             } else {
                 indices_set[i] = 0;
             }
         }
-        else if ((marker == 2) && (group->group_size != 0)){             /** this is the case of the Adj indices*/
+        else if ((group->group_size != 0)&&(marker == 2)){             /** this is the case of the Adj indices*/
             if (indices[count] == i) {
                 indices_set[i] = 1;
                 count += 1;

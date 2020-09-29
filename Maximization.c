@@ -4,8 +4,8 @@
 int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* moved){
     int i=0, ind1=0,ind2=0, max_index = -1;
     long double cons=0.0, max = NEGINFINITY, *comp2;
-
     int* Adj_indices_set;
+
     Adj_indices_set = (int*)safe_malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 
