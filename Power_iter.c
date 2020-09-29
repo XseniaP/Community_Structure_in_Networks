@@ -31,7 +31,6 @@ int create_vec(Group* g, int size, double *vec){
     int i;
     int* indices_set;
     indices_set = (int*)safe_malloc(size*sizeof(int));
-//    indices_set = (int*)safe_safe_malloc(size*sizeof(int));
 
     indices_to_indices_set(g,g->indices, size, indices_set,1);
 
@@ -200,10 +199,10 @@ int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row
 
     /**step6 - normalize - O(n) */
     for (i=0; i<graph->number_of_nodes; i++){
-//        if(!IS_POSITIVE(sum)){
-//            printf("Divide overflow / Division by zero operation");
-//            exit(1);
-//        }
+        if(!IS_POSITIVE(sum)){
+            printf("Divide overflow / Division by zero operation");
+            exit(1);
+        }
         row_norm[i] = row_norm[i]/pow(sum,0.5);
     }
     return 0;

@@ -31,9 +31,6 @@ void pop(struct Group** stack){
         free(tempPtr->Adj_indices);
         free(tempPtr);
     }
-//    else{
-//        printf("The stack is empty.\n");
-//    }
 }
 
 Group* top(struct Group* stack){

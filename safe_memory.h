@@ -21,4 +21,4 @@
 void* safe_malloc(size_t size);
 void* safe_calloc(int number, size_t size);
 
-#endif //PROJECT_TOHNA_SAFE_MEMORY_H
+#endif

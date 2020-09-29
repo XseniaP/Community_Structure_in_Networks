@@ -4,13 +4,6 @@
 int compute_s(Pair *pair_p, int* s_p, int size){
     int i=0;
 
-//    printf("\n------------printing eigenvector--------------\n");
-//    for (i=0; i<size; i++) {
-//        printf("  %f  ",pair_p->eigenvector[i]);
-//    }
-//    printf("\n-----------------------------------------------\n");
-
-
     for (i=0; i<size; i++){
         if(!IS_POSITIVE(fabs(pair_p->eigenvector[i]))){
             s_p[i] = 0;
@@ -22,13 +15,6 @@ int compute_s(Pair *pair_p, int* s_p, int size){
             s_p[i] = -1;
         }
     }
-
-//    printf("\n------------printing new S - just created based on vector--------------\n");
-//    for (i=0; i<size; i++) {
-//        printf("  %d  ",s_p[i]);
-//    }
-//    printf("\n----------------------------------------------------------------------\n");
-
     return 0;
 }
 
