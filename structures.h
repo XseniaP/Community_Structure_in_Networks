@@ -55,13 +55,6 @@ typedef struct Group{
     struct Group* next;
 }Group;
 
-
-typedef struct Final_List_{
-    int total_nodes;
-    int total_groups;
-    int* nodes_group_ind;
-}Final_List;
-
 #endif
 
 

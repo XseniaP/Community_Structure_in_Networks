@@ -94,8 +94,10 @@ int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2)
 }
 
 /** in case if the initial graph has isolated nodes (singletones) we immediately add them to the output using this function */
-int separate_singletons(Graph *graph, Group* group, Final_List* final_cluster_p){
+int separate_singletons(Graph *graph, Group *group, struct Group** stack){
     int i, count = 0;
+    if(stack)
+        printf("");
     /** O(n) */
     for (i=0; i<graph->number_of_nodes; i++){
         if (IS_POSITIVE(graph->deg_vec->data[i])){
@@ -114,10 +116,12 @@ int separate_singletons(Graph *graph, Group* group, Final_List* final_cluster_p)
             count+=1;
         }
         else{
-            final_cluster_p->total_groups+=1;
-            final_cluster_p->nodes_group_ind[i] = final_cluster_p->total_groups;
+//            final_cluster_p->total_groups+=1;
+//            final_cluster_p->nodes_group_ind[i] = final_cluster_p->total_groups;
+            add_group_to_final_set(0,1,&i,NULL,stack);
         }
     }
+
     return 0;
 }
     /** function receives group and applies Power iteration algorithm, followed by maximization to */
@@ -166,18 +170,18 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 int divide_network(char* argv[]){
 /** declarations , initializations, pointers */
     Graph new_graph = {0,0,NULL,NULL};Graph *myGraph_p;
-    Final_List final_cluster = {0, 0,NULL};
+//    Final_List final_cluster = {0, 0,NULL};
     Group output = {NULL,0,NULL,0,NULL};
     SparseMatrix adj_matrix = {0, NULL,NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,0,NULL,0,NULL};Group g1 ={NULL,0,NULL,0,NULL};Group g2 ={NULL,0,NULL,0,NULL};
-    Final_List *final_cluster_p;
+//    Final_List *final_cluster_p;
     double *dq_p; double dq;
     struct Group *root, *output_root = &output;
     int i=0, a, result;
     int temp;FILE *f;
     Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
 
-    new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph; final_cluster_p = &final_cluster;
+    new_graph.deg_vec = &deg_vec; new_graph.adj_matrix = &adj_matrix; myGraph_p = &new_graph;
      dq_p = &dq;
 
 
@@ -204,9 +208,9 @@ int divide_network(char* argv[]){
 
     /** Start groups division here
     extracting singletons */
-    final_cluster.total_nodes = myGraph_p->number_of_nodes;
-    final_cluster.nodes_group_ind = (int *)safe_malloc(myGraph_p->number_of_nodes*sizeof(int));
-    separate_singletons(myGraph_p,g_p,final_cluster_p);
+//    final_cluster.total_nodes = myGraph_p->number_of_nodes;
+//    final_cluster.nodes_group_ind = (int *)safe_malloc(myGraph_p->number_of_nodes*sizeof(int));
+    separate_singletons(myGraph_p,g_p,&output_root);
 
     /** create root */
     push(g_p->Adj_size,g_p->group_size,g_p->indices,g_p->Adj_indices,&root);
@@ -276,7 +280,7 @@ int divide_network(char* argv[]){
     free(myGraph_p->adj_matrix->col);
     free(g.Adj_indices);
     free(g.indices);
-    free(final_cluster.nodes_group_ind);
+//    free(final_cluster.nodes_group_ind);
 
     return 0;
 }

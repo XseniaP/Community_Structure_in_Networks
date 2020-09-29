@@ -17,7 +17,7 @@
 #include "structures.h"
 #include "safe_memory.h"
 
-int add_group_to_final_cluster(Group* g_p, Final_List* final_cluster_p);
+//int add_group_to_final_cluster(Group* g_p, Final_List* final_cluster_p);
 void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Group** stack);
 void pop(struct Group** stack);
 Group* top(struct Group* stack);

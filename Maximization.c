@@ -37,7 +37,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
     for (i = 0; i < graph->number_of_nodes; i++) {
         if(moved[i]!=0) {
             if(graph->M == 0){
-                printf("Divide overflow 1/ Division by zero operation");
+                printf("Divide overflow / Division by zero operation");
                 exit(1);
             }
             comp2[i] =
@@ -50,7 +50,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
     for (i = 0; i < graph->number_of_nodes; i++) {
         if (moved[i]!=0) {
             if(graph->M == 0){
-                printf("Divide overflow 2/ Division by zero operation");
+                printf("Divide overflow / Division by zero operation");
                 exit(1);
             }
             score[i] = 4 * (-s_p[i]) * (score[i] - comp2[i]) +

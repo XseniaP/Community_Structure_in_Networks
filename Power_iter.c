@@ -48,7 +48,7 @@ int create_vec(Group* g, int size, double *vec){
         }
         else{
             printf("unknown character instead of index; only 0,1 are allowed");
-            return 1;
+            exit(1);
         }
     }
     free(indices_set);
@@ -334,7 +334,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, double *row_sums_p, double* 
     comp2 = (long double*)safe_malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
         if(graph->M == 0){
-            printf("Divide overflow 5/ Division by zero operation");
+            printf("Divide overflow / Division by zero operation");
             exit(1);
         }
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);

@@ -65,7 +65,6 @@ int writeToFile(char* fileName, Group* final_cluster_p){
         n++;
     }
 
-
     n = fwrite(&n, sizeof(int), 1, f);
     if (n!=1){
         printf("couldn't write number of groups into the file");
