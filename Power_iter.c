@@ -125,7 +125,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, double *row_sums_p
 
 }
 
-/** multiply vector by symmetric shifted matrix B ; O(n+m) */
+/** multiply vector by symmetric shifted matrix B ; O(n+m) time complexity */
 int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
@@ -191,7 +191,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
 int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm,double *row_sums_p){
     int i=0;
     double sum=0.0;
+
+    /**vector-matrix multiplication - O(n+m) */
     vec_mult_B_shifted(graph, g_p,rand_vec,max,row_norm,row_sums_p);
+
     /**step5 - sum of square of the vector elements - O(n) */
     for (i=0; i<graph->number_of_nodes; i++){
         sum +=pow(row_norm[i],2);
@@ -233,6 +236,8 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
     int iteration=0, max_iteration;
     max = &max_v;
     vec = (double *)safe_malloc(graph->number_of_nodes*sizeof(double));
+
+    /** the condition for the power iteration convergence check */
     max_iteration = pow(graph->number_of_nodes,2) + 20000*graph->number_of_nodes+20000;
 
     /** using calloc to initialize to zero - important! */
@@ -241,6 +246,7 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
     /** create random vector */
     create_vec(g_p,graph->number_of_nodes, vec);
 
+    /** calculate ||C|| and row_sums vector */
     matrix_shift_C_new(graph, g_p, max, row_sums_p);
 
     temp = vec;

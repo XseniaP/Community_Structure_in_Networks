@@ -19,7 +19,6 @@
 #ifndef PROJECT_TOHNA_STRUCTURES_H
 #define PROJECT_TOHNA_STRUCTURES_H
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #define IS_POSITIVE(X) ((X) > 0.00001)
