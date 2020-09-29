@@ -167,11 +167,12 @@ int divide_network(char* argv[]){
 /** declarations , initializations, pointers */
     Graph new_graph = {0,0,NULL,NULL};Graph *myGraph_p;
     Final_List final_cluster = {0, 0,NULL};
+    Group output = {NULL,0,NULL,0,NULL};
     SparseMatrix adj_matrix = {0, NULL,NULL};Vector_int deg_vec = {0,NULL};
     Group g ={NULL,0,NULL,0,NULL};Group g1 ={NULL,0,NULL,0,NULL};Group g2 ={NULL,0,NULL,0,NULL};
     Final_List *final_cluster_p;
     double *dq_p; double dq;
-    struct Group* root;
+    struct Group *root, *output_root = &output;
     int i=0, a, result;
     int temp;FILE *f;
     Group *g_p, *g1_p, *g2_p;g_p = &g;g1_p = &g1; g2_p = &g2;
@@ -211,7 +212,6 @@ int divide_network(char* argv[]){
     push(g_p->Adj_size,g_p->group_size,g_p->indices,g_p->Adj_indices,&root);
     root->next = NULL;
 
-
     while (top(root) != NULL){
 
         if(root->group_size == 0){
@@ -222,23 +222,36 @@ int divide_network(char* argv[]){
         result = divide_group_into_two(myGraph_p,root,g1_p, g2_p, dq_p);
 
         if (result ==1){
-            add_group_to_final_cluster(root, final_cluster_p);
+//            add_group_to_final_cluster(root, final_cluster_p);
+//            push(root->Adj_size,root->group_size,root->indices,root->Adj_indices,&output_root);
+            add_group_to_final_set(root->Adj_size,root->group_size,root->indices,root->Adj_indices,&output_root);
+
             pop(&root);
             continue;
         }
         pop(&root);  /** remove element from linked list */
 
+
         if ((g1_p->group_size == 1)&&(g2_p->group_size == 1)){
-            add_group_to_final_cluster(g1_p, final_cluster_p);
-            add_group_to_final_cluster(g2_p, final_cluster_p);
+
+            add_group_to_final_set(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&output_root);
+            add_group_to_final_set(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&output_root);
+
+//            add_group_to_final_cluster(g1_p, final_cluster_p);
+//            add_group_to_final_cluster(g2_p, final_cluster_p);
         }
         else if (g1_p->group_size == 1){
-            add_group_to_final_cluster(g1_p, final_cluster_p);
+//            add_group_to_final_cluster(g1_p, final_cluster_p);
+            add_group_to_final_set(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&output_root);
+
+
             push(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&root);
         }
         else if (g2_p->group_size == 1){
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
-            add_group_to_final_cluster(g2_p, final_cluster_p);
+//            add_group_to_final_cluster(g2_p, final_cluster_p);
+
+            add_group_to_final_set(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&output_root);
         }
         else {
             push(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&root);
@@ -252,7 +265,7 @@ int divide_network(char* argv[]){
     }
 
     /** write into output file */
-    writeToFile(argv[2],final_cluster_p);
+    writeToFile(argv[2],output_root);
 
     /** check what was written into the file */
     printf("\n  ");

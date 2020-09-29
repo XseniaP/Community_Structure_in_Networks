@@ -1,5 +1,6 @@
 
 #include "fileHandler.h"
+#include "Group_handler.h"
 
 int readFile(char *fileName, struct Graph *graph) {
     int buffer1, buffer2,adj_loc=0,n = 0, i = 0, j=0, m=0;
@@ -54,37 +55,74 @@ int readFile(char *fileName, struct Graph *graph) {
     return 0;
 }
 
-int writeToFile(char* fileName, Final_List* final_cluster_p){
-    int n=0,i,j; int *group_sizes;  int count;
+//int writeToFile(char* fileName, Final_List* final_cluster_p){
+//    int n=0,i,j; int *group_sizes;  int count;
+//    FILE *f = fopen(fileName, "wb");
+//    n = fwrite(&final_cluster_p->total_groups, sizeof(int), 1, f);
+//    if (n!=1){
+//        printf("couldn't write number of groups into the file");
+//        exit(1);
+//    }
+//
+//    /*complexity can be improved to O(n) changing the data structure,add Element to it with groups ordered*/
+//    group_sizes = (int*)safe_malloc(final_cluster_p->total_groups* sizeof(int));
+//    for (j = 0; j < final_cluster_p->total_groups; j++) {
+//        count =0;
+//        for (i=0; i<final_cluster_p->total_nodes; i++) {
+//            if (final_cluster_p->nodes_group_ind[i]-1==j){
+//            count+=1;
+//            }
+//        }
+//        group_sizes[j] = count;
+//    }
+//
+//    for (j = 0; j < final_cluster_p->total_groups; j++) {
+//        fwrite(&group_sizes[j], sizeof(int), 1, f);
+//        for (i=0; i<final_cluster_p->total_nodes; i++) {
+//            if (j == final_cluster_p->nodes_group_ind[i]-1) {
+//                fwrite(&i, sizeof(int), 1, f);
+//            }
+//        }
+//    }
+//    fclose(f);
+//    free(group_sizes);
+//    return 0;
+//}
+
+int writeToFile(char* fileName, Group* final_cluster_p){
+    int n=0;
     FILE *f = fopen(fileName, "wb");
-    n = fwrite(&final_cluster_p->total_groups, sizeof(int), 1, f);
+    Group *temp = final_cluster_p;
+
+    while(temp != NULL){
+        temp = temp->next;
+        n++;
+    }
+
+
+    n = fwrite(&n, sizeof(int), 1, f);
     if (n!=1){
         printf("couldn't write number of groups into the file");
         exit(1);
     }
 
-    /*complexity can be improved to O(n) changing the data structure,add Element to it with groups ordered*/
-    group_sizes = (int*)safe_malloc(final_cluster_p->total_groups* sizeof(int));
-    for (j = 0; j < final_cluster_p->total_groups; j++) {
-        count =0;
-        for (i=0; i<final_cluster_p->total_nodes; i++) {
-            if (final_cluster_p->nodes_group_ind[i]-1==j){
-            count+=1;
-            }
-        }
-        group_sizes[j] = count;
-    }
+    /** complexity is O(n) */
+    temp = final_cluster_p;
+    while(temp != NULL){
 
-    for (j = 0; j < final_cluster_p->total_groups; j++) {
-        fwrite(&group_sizes[j], sizeof(int), 1, f);
-        for (i=0; i<final_cluster_p->total_nodes; i++) {
-            if (j == final_cluster_p->nodes_group_ind[i]-1) {
-                fwrite(&i, sizeof(int), 1, f);
-            }
+        n = fwrite(&temp->group_size, sizeof(int), 1, f);
+        if (n!=1){
+            printf("couldn't write size of group into the file");
+            exit(1);
         }
+
+        n = fwrite(&temp->indices[0], sizeof(int), temp->group_size, f);
+        if (n!= temp->group_size){
+            printf("couldn't write indices of group into the file");
+            exit(1);
+        }
+        pop(&temp);
     }
     fclose(f);
-    free(group_sizes);
     return 0;
 }
-

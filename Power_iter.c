@@ -3,6 +3,8 @@
 
 int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set, int marker){
     int i, count =0;
+
+    /** O(n) time complexity */
     for (i=0; i<size; i++){
         if ((marker == 1) && (group->group_size != 0)) {      /** this is the case of the group indides  */
             if ((count < group->group_size)&&(indices[count] == i)) {
@@ -32,8 +34,10 @@ int create_vec(Group* g, int size, double *vec){
     int* indices_set;
     indices_set = (int*)safe_malloc(size*sizeof(int));
 
+    /** O(n) time complexity */
     indices_to_indices_set(g,g->indices, size, indices_set,1);
 
+    /** O(n) time complexity */
     srand(time(NULL));
     for (i=0; i<size; i++){
         if (indices_set[i] == 0){
@@ -62,10 +66,12 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, double *row_sums_p
     sum=0, max=0;
 
     indices_set = (int*)safe_malloc(graph->number_of_nodes*sizeof(int));
+    /** O(n) */
     indices_to_indices_set(g,g->indices, graph->number_of_nodes, indices_set,1);
 
 
     Adj_indices_set = (int*)safe_malloc(graph->M/2*sizeof(int));
+    /** O(m) */
     indices_to_indices_set(g,g->Adj_indices, graph->M/2, Adj_indices_set,2);
 
 
@@ -129,10 +135,13 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, double *row_sums_p
 int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
-
     int* indices_set;    int* Adj_indices_set;
+
+    /** O(n) */
     indices_set = (int*)safe_malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, indices_set,1);
+
+    /** O(m) */
     Adj_indices_set = (int*)safe_malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 

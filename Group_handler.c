@@ -6,7 +6,6 @@
 void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Group** stack){
     int i;
     struct Group* Element = (struct Group*)safe_malloc(sizeof(struct Group));
-
     Element->Adj_size = Adj_size;
     Element->group_size = group_size;
     Element->indices = (int*)safe_calloc(group_size,sizeof(int));
@@ -52,3 +51,13 @@ int add_group_to_final_cluster(Group* g_p, Final_List* final_cluster_p){
     return 0;
 }
 
+
+int add_group_to_final_set(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Group** stack){
+    if((*stack)->indices == NULL){
+        push(Adj_size,group_size,indices,Adj_indices,stack);
+        (*stack)->next = NULL;
+    } else
+        push(Adj_size,group_size,indices,Adj_indices,stack);
+
+    return 1;
+}
