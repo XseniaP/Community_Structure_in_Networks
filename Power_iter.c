@@ -229,10 +229,11 @@ int check_difference(int height ,double *temp ,double *next){
 /**power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue */
 int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, numerator, max_v;
-    int check, true=0, i=0, iteration=0, max_iteration; double value_without_c; double* vect_temp;
+    int check, true=0, i=0; double value_without_c; double* vect_temp;
+    /** int iteration=0, max_iteration; */
     max = &max_v;
     vec = (double *)safe_malloc(graph->number_of_nodes*sizeof(double));
-    max_iteration = pow(graph->number_of_nodes,3) + graph->number_of_nodes;
+   /** max_iteration = pow(graph->number_of_nodes,4) + graph->number_of_nodes; */
 
     /** using calloc to initialize to zero - important! */
     row_norm = (double *)safe_calloc(graph->number_of_nodes,sizeof(double));
@@ -243,10 +244,11 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
     matrix_shift_C_new(graph, g_p, max, row_sums_p);
 
     temp = vec;
-    while ((true == 0)&&(iteration<max_iteration)) {
+/**    while ((true == 0)&&(iteration<max_iteration)) */
+        while (true == 0){
         norm_vec(graph, g_p, temp, max_v, row_norm, row_sums_p);
         check=check_difference(graph->number_of_nodes ,temp ,row_norm);
-        iteration +=1;
+/**        iteration +=1; */
         if (check==0){
             free(temp);
             temp = row_norm;
@@ -257,11 +259,11 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
             true=1;
         }
     }
-    if(iteration>=max_iteration){
-        printf("the power method did not converge");
-        exit(1);
-    }
-
+/**    if(iteration>=max_iteration){
+//        printf("the power method did not converge");
+//        exit(1);
+//    }
+*/
     pair_p->eigenvector = row_norm;
 
     /** find corresponding eigenvalue of the shifted matrix */
