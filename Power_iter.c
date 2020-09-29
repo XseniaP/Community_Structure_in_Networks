@@ -300,7 +300,6 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
     return 0;
 }
 
-
 int calculate_dq(Graph* graph,Group* g_p, int *s_p, double *row_sums_p, double* dq_p){
     int i=0, ind1=0,ind2=0; double* row_norm; int* indices_set; int* Adj_indices_set;
     long double cons=0.0, *comp2; double* comp;
