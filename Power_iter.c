@@ -12,8 +12,8 @@ int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set
                 indices_set[i] = 0;
             }
         }
-        else if ((group->group_size != 0)&&(marker == 2)){             /** this is the case of the Adj indices*/
-            if (indices[count] == i) {
+        else if ((group->Adj_size != 0)&&(marker == 2)){             /** this is the case of the Adj indices*/
+            if ((count < group->Adj_size)&&(indices[count] == i)) {
                 indices_set[i] = 1;
                 count += 1;
             } else {
