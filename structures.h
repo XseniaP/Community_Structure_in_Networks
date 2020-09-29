@@ -23,10 +23,6 @@
 #define IS_POSITIVE(X) ((X) > 0.00001)
 #define NEGINFINITY -1000000000.0
 
-typedef struct Vector_int {
-    int size;
-    int *data;
-}Vector_int;
 
 typedef struct SparseMatrix {
     int size;
@@ -38,6 +34,11 @@ typedef struct Pair {
     double eigenvalue;
     double *eigenvector;
 }Pair;
+
+typedef struct Vector_int {
+    int size;
+    int *data;
+}Vector_int;
 
 typedef struct Graph {
     int number_of_nodes;
