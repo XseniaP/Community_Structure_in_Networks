@@ -222,8 +222,6 @@ int divide_network(char* argv[]){
         result = divide_group_into_two(myGraph_p,root,g1_p, g2_p, dq_p);
 
         if (result ==1){
-//            add_group_to_final_cluster(root, final_cluster_p);
-//            push(root->Adj_size,root->group_size,root->indices,root->Adj_indices,&output_root);
             add_group_to_final_set(root->Adj_size,root->group_size,root->indices,root->Adj_indices,&output_root);
 
             pop(&root);
@@ -236,12 +234,8 @@ int divide_network(char* argv[]){
 
             add_group_to_final_set(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&output_root);
             add_group_to_final_set(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&output_root);
-
-//            add_group_to_final_cluster(g1_p, final_cluster_p);
-//            add_group_to_final_cluster(g2_p, final_cluster_p);
         }
         else if (g1_p->group_size == 1){
-//            add_group_to_final_cluster(g1_p, final_cluster_p);
             add_group_to_final_set(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&output_root);
 
 
@@ -249,8 +243,6 @@ int divide_network(char* argv[]){
         }
         else if (g2_p->group_size == 1){
             push(g1_p->Adj_size,g1_p->group_size,g1_p->indices,g1_p->Adj_indices,&root);
-//            add_group_to_final_cluster(g2_p, final_cluster_p);
-
             add_group_to_final_set(g2_p->Adj_size,g2_p->group_size,g2_p->indices,g2_p->Adj_indices,&output_root);
         }
         else {

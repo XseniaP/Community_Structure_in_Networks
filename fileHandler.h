@@ -18,7 +18,6 @@
 
 
 int readFile(char *fileName, Graph *graph);
-//int writeToFile(char* fileName, Final_List* final_cluster_p);
 int writeToFile(char* fileName, Group* final_cluster_p);
 
 #endif
