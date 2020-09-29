@@ -1,7 +1,6 @@
 
 #include "Group_handler.h"
 #include "structures.h"
-#include <math.h>
 
 
 void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Group** stack){
@@ -10,6 +9,7 @@ void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Gro
     Element->Adj_size = Adj_size;
     Element->group_size = group_size;
     Element->indices = (int*)malloc(group_size*sizeof(int));
+
     for (i=0; i < group_size; i++){
         Element->indices[i] = indices[i];
     }
@@ -30,9 +30,9 @@ void pop(struct Group** stack){
         free(tempPtr->Adj_indices);
         free(tempPtr);
     }
-    else{
-        printf("The stack is empty.\n");
-    }
+//    else{
+//        printf("The stack is empty.\n");
+//    }
 }
 
 Group* top(struct Group* stack){
@@ -40,7 +40,6 @@ Group* top(struct Group* stack){
         return stack;
     }
     else{
-        printf("The stack is empty.\n");
         return NULL;
     }
 }

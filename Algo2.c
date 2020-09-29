@@ -3,8 +3,16 @@
 /** compute s vector based on the eigenvector - O(n) **/
 int compute_s(Pair *pair_p, int* s_p, int size){
     int i=0;
+
+//    printf("\n------------printing eigenvector--------------\n");
+//    for (i=0; i<size; i++) {
+//        printf("  %f  ",pair_p->eigenvector[i]);
+//    }
+//    printf("\n-----------------------------------------------\n");
+
+
     for (i=0; i<size; i++){
-        if(pair_p->eigenvector[i]==0.0){
+        if(!IS_POSITIVE(fabs(pair_p->eigenvector[i]))){
             s_p[i] = 0;
         }
         else if (IS_POSITIVE(pair_p->eigenvector[i])){
@@ -14,6 +22,13 @@ int compute_s(Pair *pair_p, int* s_p, int size){
             s_p[i] = -1;
         }
     }
+
+//    printf("\n------------printing new S - just created based on vector--------------\n");
+//    for (i=0; i<size; i++) {
+//        printf("  %d  ",s_p[i]);
+//    }
+//    printf("\n----------------------------------------------------------------------\n");
+
     return 0;
 }
 
@@ -123,7 +138,7 @@ int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p
 int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *dq_p){
     /** declarations **/
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;
-    int* s_p;
+    int *s_p;
     /** pointers **/
     Pair* pair_p = &pair;row_sums_p=&row_sums;
 
@@ -131,7 +146,7 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
     /** O(n^2) * number of iterations needed to converge (regularly expected to be O(n) based on the literature and Newman Paper) **/
     powerIteration(graph, g, pair_p, row_sums_p);
 
-    s_p = (int*)malloc(graph->number_of_nodes * sizeof(int));
+    s_p = (int*)calloc(graph->number_of_nodes , sizeof(int));
     /** O(n) **/
     compute_s(pair_p, s_p, graph->number_of_nodes);
 
@@ -141,14 +156,12 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
     calculate_dq(graph, g, s_p, row_sums_p, dq_p);
 
     if (!IS_POSITIVE(pair_p->eigenvalue)){
-        printf("network is non-dividable");
         free(pair_p->eigenvector);
         free(row_sums.data);
         free(s_p);
         return 1;
     }
     else if (!IS_POSITIVE(*dq_p)){
-        printf("%f  network is non-dividable", *dq_p);
         free(pair_p->eigenvector);
         free(row_sums.data);
         free(s_p);
@@ -185,7 +198,7 @@ int divide_network(char* argv[]){
     a = readFile(argv[1], myGraph_p);
     if (a){
         printf("Couldn't read the file\n");
-        return 1;
+        exit(1);
     }
 
     /** Initiate default group g of initial full graph **/
@@ -214,6 +227,11 @@ int divide_network(char* argv[]){
 
 
     while (top(root) != NULL){
+
+        if(root->group_size == 0){
+            printf("\n\n found empty \n\n");
+            pop(&root);
+        }
 
         result = divide_group_into_two(myGraph_p,root,g1_p, g2_p, dq_p);
 

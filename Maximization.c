@@ -36,6 +36,10 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
     comp2 = (long double *) calloc(graph->number_of_nodes,sizeof(long double));
     for (i = 0; i < graph->number_of_nodes; i++) {
         if(moved[i]!=0) {
+//            if(graph->M == 0){
+//                printf("Divide overflow 1/ Division by zero operation");
+//                exit(1);
+//            }
             comp2[i] =
                     ((cons * (graph->deg_vec->data[i])) - 2 * s_p[i] * pow(graph->deg_vec->data[i], 2)) * (moved[i]) /
                     (graph->M);
@@ -45,6 +49,10 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
 /** step4 - calulcating score - O(n) */
     for (i = 0; i < graph->number_of_nodes; i++) {
         if (moved[i]!=0) {
+            if(graph->M == 0){
+                printf("Divide overflow 2/ Division by zero operation");
+                exit(1);
+            }
             score[i] = 4 * (-s_p[i]) * (score[i] - comp2[i]) +
                        4 * pow(graph->deg_vec->data[i], 2) * (moved[i]) / (graph->M);
             if (score[i] > max) {
@@ -85,6 +93,12 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         max_improve=0.0;
         max_improve_index = g_p->group_size-1;
 
+//        printf("\n------------printing s before max--------------\n");
+//        for (i=0; i<graph->number_of_nodes; i++) {
+//            printf("  %d  ",s_p[i]);
+//        }
+//        printf("\n-----------------------------------------------\n");
+
         /** overall O(n^2) complexity */
         for (i=0; i<g_p->group_size; i++){
 
@@ -115,9 +129,32 @@ int maximize(Graph* graph,Group* g_p, int *s_p){
         }
         else{
             dQ = improve[max_improve_index];
+
+//            printf("\n------------printing s in the process--------------\n");
+//            for (i=0; i<graph->number_of_nodes; i++) {
+//                printf("  %d  ",s_p[i]);
+//            }
+//            printf("\n-----------------------------------------------\n");
         }
 
     }while (IS_POSITIVE(dQ));
+
+//    printf("\n------------printing s after max--------------\n");
+//    for (i=0; i<graph->number_of_nodes; i++) {
+//        printf("  %d  ",s_p[i]);
+//    }
+//    printf("\n-----------------------------------------------\n");
+
+
+//    for (i=0; i<graph->number_of_nodes; i++){
+//        if(s_p[i]==1){
+//            count1+=1;
+//        }
+//        else if(s_p[i]==(-1)){
+//            count2+=1;
+//        }
+//    }
+
 
     free(moved);
     free(improve);

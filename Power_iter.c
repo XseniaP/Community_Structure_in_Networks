@@ -4,7 +4,7 @@
 int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set, int marker){
     int i, count =0;
     for (i=0; i<size; i++){
-        if (marker == 1) {
+        if ((marker == 1) && (group->group_size != 0)) {      /** this is the case of the group indides  */
             if ((indices[count] == i) && (count < group->group_size)) {
                 indices_set[i] = 1;
                 count += 1;
@@ -12,7 +12,7 @@ int indices_to_indices_set(Group* group,int *indices, int size, int* indices_set
                 indices_set[i] = 0;
             }
         }
-        else if (marker == 2){
+        else if ((marker == 2) && (group->group_size != 0)){             /** this is the case of the Adj indices*/
             if (indices[count] == i) {
                 indices_set[i] = 1;
                 count += 1;
@@ -153,6 +153,10 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     /** step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n) **/
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
+        if(graph->M == 0){
+            printf("Divide overflow / Division by zero operation");
+            exit(1);
+        }
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
 
@@ -194,6 +198,10 @@ int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row
 
     /**step6 - normalize - O(n) **/
     for (i=0; i<graph->number_of_nodes; i++){
+//        if(!IS_POSITIVE(sum)){
+//            printf("Divide overflow / Division by zero operation");
+//            exit(1);
+//        }
         row_norm[i] = row_norm[i]/pow(sum,0.5);
     }
     return 0;
@@ -220,9 +228,10 @@ int check_difference(int height ,double *temp ,double *next){
 /**power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue **/
 int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_sums_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, numerator, max_v;
-    int check, true=0, i=0; double value_without_c; double* vect_temp;
+    int check, true=0, i=0, iteration=0, max_iteration; double value_without_c; double* vect_temp;
     max = &max_v;
     vec = (double *)malloc(graph->number_of_nodes*sizeof(double));
+    max_iteration = pow(graph->number_of_nodes,3) + graph->number_of_nodes;
 
     /** using calloc to initialize to zero - important! **/
     row_norm = (double *)calloc(graph->number_of_nodes,sizeof(double));
@@ -233,9 +242,10 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
     matrix_shift_C_new(graph, g_p, max, row_sums_p);
 
     temp = vec;
-    while (true == 0) {
+    while ((true == 0)&&(iteration<max_iteration)) {
         norm_vec(graph, g_p, temp, max_v, row_norm, row_sums_p);
         check=check_difference(graph->number_of_nodes ,temp ,row_norm);
+        iteration +=1;
         if (check==0){
             free(temp);
             temp = row_norm;
@@ -245,6 +255,10 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
             free(temp);
             true=1;
         }
+    }
+    if(iteration>=max_iteration){
+        printf("the power method did not converge");
+        exit(1);
     }
 
     pair_p->eigenvector = row_norm;
@@ -303,6 +317,10 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     /** step3 - multiply Constant (s_vector * k^T earlier calculated) by k and divide by M  - O(n) **/
     comp2 = (long double*)malloc(graph->number_of_nodes* sizeof(long double));
     for (i=0; i<graph->number_of_nodes; i++){
+        if(graph->M == 0){
+            printf("Divide overflow 5/ Division by zero operation");
+            exit(1);
+        }
         comp2[i] = cons*(graph->deg_vec->data[i])*(indices_set[i])/(graph->M);
     }
 

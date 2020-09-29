@@ -60,7 +60,7 @@ int writeToFile(char* fileName, Final_List* final_cluster_p){
     n = fwrite(&final_cluster_p->total_groups, sizeof(int), 1, f);
     if (n!=1){
         printf("couldn't write number of groups into the file");
-        return 1;
+        exit(1);
     }
 
     /*complexity can be improved to O(n) changing the data structure,add Element to it with groups ordered*/

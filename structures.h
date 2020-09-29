@@ -1,4 +1,15 @@
-
+/** Structures module summary:
+ *
+ * this module defines all struct records with multiple attributes
+ *
+ * The module defines the following structs:
+ *   SparseMatrix -
+ *   Pair -
+ *   Graph -
+ *   Group -
+ *   Final_List -
+ *
+ */
 
 #ifndef PROJECT_TOHNA_STRUCTURES_H
 #define PROJECT_TOHNA_STRUCTURES_H
