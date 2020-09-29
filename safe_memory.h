@@ -3,6 +3,7 @@
  * this module implements safe dynamic memory allocation, checks for errors
  *
  * The module implements the following Functions:
+ *
  * safe_malloc - dynamically allocates memory space of specified size and returns the pointer
  *               to the first byte of allocation; performs error checks, in case of NULL pointer program is interrupted
  *               and error code returned;

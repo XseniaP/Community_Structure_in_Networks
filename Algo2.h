@@ -11,7 +11,8 @@
  * divide_group_into_two - divides given network into two sub-groups which might or might not be divided further
  * compute_s - computes the binary vector of {-1,1} which marks each node affiliation with one of 2 groups
  * split_group_based_on_s - creates two groups out of 1 based on the binary s-vector
- * separate_singletons - extract the isolated nodes from the initial graph and writes them into the final set of indivisible groups
+ * separate_singletons - extract the isolated nodes from the initial graph and writes them into the final set(stack)
+ *                       of indivisible groups
  *
  */
 

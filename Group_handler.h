@@ -6,7 +6,8 @@
  *
  * The module implements the following Functions:
  *
- * add_group_to_final_cluster - adds indivisible group to the final set / "set O"
+ * add_group_to_final_set - adds indivisible group to the stack "set O" (which will be written to the output file at
+ *                          the end of the program)
  * push - adds the group to "set P" (stack of groups to be divided)
  * pop -  removes the group from "set P", doesn't return the group (!)
  * top - returns first group in the "set P"

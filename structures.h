@@ -10,9 +10,8 @@
  *   which holds number of nodes in the graph (n), degree vector, sum of degrees M and Adj matrix in sparse format
  *   Group - while initial graph is divided into the groups, each group is stored and manipulated in the format
  *   of struct Group data type, with the size of the group, indices of the elements from initial graph, indices of
- *   the elements from Adj matrix and its size, as well as pointer to the next group in the set left
- *   Final_List - for the groups added to this composite data type stores number of nodes, number of groups
- *   and their indices respectively; used in order to maintain the final set to be written in the output file
+ *   the elements from Adj matrix and its size, as well as pointer to the next group in the set left; the final set
+ *   is also maintained this way - as a stack of the Groups
  *
  */
 
