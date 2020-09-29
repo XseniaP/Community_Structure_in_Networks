@@ -14,7 +14,6 @@ int readFile(char *fileName, struct Graph *graph) {
     graph->number_of_nodes = n;
     graph->deg_vec->size = n;
     graph->deg_vec->data = (int*) safe_malloc( n * sizeof(int));
-//    graph->deg_vec->data = (int*) safe_malloc( n * sizeof(int));
 
     for (i=0; i<graph->number_of_nodes; i++){
         a = fread(&buffer1, sizeof(int), 1, stream);
