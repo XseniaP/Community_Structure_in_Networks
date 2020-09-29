@@ -4,16 +4,17 @@
 
 
 void push(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Group** stack){
-    struct Group* Element = (struct Group*)malloc(sizeof(struct Group));
     int i;
+    struct Group* Element = (struct Group*)safe_malloc(sizeof(struct Group));
+
     Element->Adj_size = Adj_size;
     Element->group_size = group_size;
-    Element->indices = (int*)malloc(group_size*sizeof(int));
+    Element->indices = (int*)safe_malloc(group_size*sizeof(int));
 
     for (i=0; i < group_size; i++){
         Element->indices[i] = indices[i];
     }
-    Element->Adj_indices = (int*)malloc(Adj_size*sizeof(int));
+    Element->Adj_indices = (int*)safe_malloc(Adj_size*sizeof(int));
     for (i=0; i < Adj_size; i++){
         Element->Adj_indices[i] = Adj_indices[i];
     }

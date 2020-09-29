@@ -6,7 +6,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
     long double cons=0.0, max = NEGINFINITY, *comp2;
 
     int* Adj_indices_set;
-    Adj_indices_set = (int*)malloc(graph->M/2*sizeof(int));
+    Adj_indices_set = (int*)safe_malloc(graph->M/2*sizeof(int));
     indices_to_indices_set(g_p, g_p->Adj_indices, graph->M/2, Adj_indices_set,2);
 
     for (i=0; i<graph->number_of_nodes; i++){
@@ -33,7 +33,7 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
     }
 
 /** step3 - multiply Constant (Random vector * k^T earlier calculated) by k and divide by M  - O(n) */
-    comp2 = (long double *) calloc(graph->number_of_nodes,sizeof(long double));
+    comp2 = (long double *) safe_calloc(graph->number_of_nodes,sizeof(long double));
     for (i = 0; i < graph->number_of_nodes; i++) {
         if(moved[i]!=0) {
 //            if(graph->M == 0){
@@ -71,12 +71,12 @@ int score_calc(Graph* graph,Group*  g_p, int *s_p, long double *score, int* move
 int maximize(Graph* graph,Group* g_p, int *s_p){
     int *moved, *indices_moved; int i; long double* score, *improve, max_improve, dQ = 0.0; int j=0, max_index, max_improve_index;
 
-    moved = (int*)malloc(graph->number_of_nodes*sizeof(int));
+    moved = (int*)safe_malloc(graph->number_of_nodes*sizeof(int));
     indices_to_indices_set(g_p, g_p->indices, graph->number_of_nodes, moved,1);
 
-    score = (long double *)calloc(graph->number_of_nodes,sizeof(long double));
-    improve = (long double *)calloc(g_p->group_size,sizeof(long double));
-    indices_moved = (int *)calloc(g_p->group_size,sizeof(int));
+    score = (long double *)safe_calloc(graph->number_of_nodes,sizeof(long double));
+    improve = (long double *)safe_calloc(g_p->group_size,sizeof(long double));
+    indices_moved = (int *)safe_calloc(g_p->group_size,sizeof(int));
 
     /**  the while loop will finish because we should have either zero improvement or negative at certain point
      "do" while will ensure we enter first time with dQ=0.0 */

@@ -1,6 +1,6 @@
 #include "Algo2.h"
 
-/** compute s vector based on the eigenvector - O(n) **/
+/** compute s vector based on the eigenvector - O(n) */
 int compute_s(Pair *pair_p, int* s_p, int size){
     int i=0;
 
@@ -32,10 +32,10 @@ int compute_s(Pair *pair_p, int* s_p, int size){
     return 0;
 }
 
-/** Create array which marks which of the "Adjacency matrix" indices are relevant for the specific group - O(m*n) **/
+/** Create array which marks which of the "Adjacency matrix" indices are relevant for the specific group - O(m*n) */
 int adj_for_g(Graph* graph ,Group* g){
     int i, j, count1=0,count2=0;
-    /** O(m*n) **/
+    /** O(m*n) */
     for(i=0;i<graph->M/2;i++) {
         for (j = 0; j < g->group_size; j++) {
             if ((g->indices[j] == graph->adj_matrix->row[i])||(g->indices[j] == graph->adj_matrix->col[i])) {
@@ -49,7 +49,7 @@ int adj_for_g(Graph* graph ,Group* g){
         count1 = 0;
     }
     g->Adj_size = count2;
-    g->Adj_indices = (int*)malloc(g->Adj_size* sizeof(int));
+    g->Adj_indices = (int*)safe_malloc(g->Adj_size* sizeof(int));
 
     count1=0,count2=0;
     for(i=0;i<graph->M/2;i++) {
@@ -70,11 +70,11 @@ int adj_for_g(Graph* graph ,Group* g){
 }
 
 
-/** Splits group into two based on the s vector - O(m*n) **/
+/** Splits group into two based on the s vector - O(m*n) */
 int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2){
     int i,count1=0, count2=0;
 
-    /** O(n) **/
+    /** O(n) */
     for (i=0; i<graph->number_of_nodes; i++){
             if(s_p[i]==1){
                 count1+=1;
@@ -83,12 +83,12 @@ int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2)
                 count2+=1;
             }
     }
-    group1->indices = (int*)calloc(count1,sizeof(int));
+    group1->indices = (int*)safe_calloc(count1,sizeof(int));
     group1->group_size = count1;
-    group2->indices = (int*)calloc(count2,sizeof(int));
+    group2->indices = (int*)safe_calloc(count2,sizeof(int));
     group2->group_size = count2;
 
-    /** O(n) **/
+    /** O(n) */
     count1=0; count2=0;
     for (i=0; i<graph->number_of_nodes; i++){
         if(s_p[i]==1){
@@ -100,17 +100,17 @@ int split_group_based_on_s(int *s_p, Graph *graph, Group* group1, Group* group2)
             count2+=1;
         }
     }
-    /** O(m*n) **/
+    /** O(m*n) */
     adj_for_g(graph ,group1);
     adj_for_g(graph ,group2);
 
     return 0;
 }
 
-/** in case if the initial graph has isolated nodes (singletones) we immediately add them to the output using this function **/
-int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p){
+/** in case if the initial graph has isolated nodes (singletones) we immediately add them to the output using this function */
+int separate_singletons(Graph *graph, Group* group, Final_List* final_cluster_p){
     int i, count = 0;
-    /** O(n) **/
+    /** O(n) */
     for (i=0; i<graph->number_of_nodes; i++){
         if (IS_POSITIVE(graph->deg_vec->data[i])){
             count+=1;
@@ -118,10 +118,10 @@ int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p
     }
     group->group_size = count;
     free(group->indices);
-    group->indices = (int*)malloc(group->group_size* sizeof(int));
+    group->indices = (int*)safe_malloc(group->group_size* sizeof(int));
     count = 0;
 
-    /** O(n) **/
+    /** O(n) */
     for (i=0; i<graph->number_of_nodes; i++){
         if (IS_POSITIVE(graph->deg_vec->data[i])){
             group->indices[count] = i;
@@ -134,23 +134,23 @@ int separate_singletones(Graph *graph, Group* group, Final_List* final_cluster_p
     }
     return 0;
 }
-    /** function receives group and applies Power iteration algorithm, followed by maximization to **/
+    /** function receives group and applies Power iteration algorithm, followed by maximization to */
 int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *dq_p){
-    /** declarations **/
+    /** declarations */
     Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;
     int *s_p;
-    /** pointers **/
+    /** pointers */
     Pair* pair_p = &pair;row_sums_p=&row_sums;
 
-    row_sums.data = (double *)calloc(graph->number_of_nodes,sizeof(double));
-    /** O(n^2) * number of iterations needed to converge (regularly expected to be O(n) based on the literature and Newman Paper) **/
+    row_sums.data = (double *)safe_calloc(graph->number_of_nodes,sizeof(double));
+    /** O(n^2) * number of iterations needed to converge (regularly expected to be O(n) based on the literature and Newman Paper) */
     powerIteration(graph, g, pair_p, row_sums_p);
 
-    s_p = (int*)calloc(graph->number_of_nodes , sizeof(int));
-    /** O(n) **/
+    s_p = (int*)safe_calloc(graph->number_of_nodes , sizeof(int));
+    /** O(n) */
     compute_s(pair_p, s_p, graph->number_of_nodes);
 
-    /** call for maximization - O(n^2) * number of iterations of the while loop before getting dQ<=0 (Worst case O(n)); **/
+    /** call for maximization - O(n^2) * number of iterations of the while loop before getting dQ<=0 (Worst case O(n)); */
     maximize(graph, g, s_p);
 
     calculate_dq(graph, g, s_p, row_sums_p, dq_p);
@@ -178,7 +178,7 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 }
 
 int divide_network(char* argv[]){
-/** declarations , initializations, pointers **/
+/** declarations , initializations, pointers */
     Graph new_graph = {0,0,NULL,NULL};Graph *myGraph_p;
     Final_List final_cluster = {0, 0,NULL};
     SparseMatrix adj_matrix = {0, NULL,NULL};Vector_int deg_vec = {0,NULL};
@@ -194,32 +194,32 @@ int divide_network(char* argv[]){
      dq_p = &dq;
 
 
-/** reading the file, creating the graph with Adj matrix and degree vector **/
+/** reading the file, creating the graph with Adj matrix and degree vector */
     a = readFile(argv[1], myGraph_p);
     if (a){
         printf("Couldn't read the file\n");
         exit(1);
     }
 
-    /** Initiate default group g of initial full graph **/
-    g.indices = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
+    /** Initiate default group g of initial full graph */
+    g.indices = (int *)safe_malloc(myGraph_p->number_of_nodes*sizeof(int));
     g.group_size = myGraph_p->number_of_nodes;
     for (i=0; i<myGraph_p->number_of_nodes;i++){
             g.indices[i] = i;
     }
 
-    /** Initiate Adj matrix indices for default g **/
-    g.Adj_indices = (int *)calloc(myGraph_p->M/2,sizeof(int));
+    /** Initiate Adj matrix indices for default g */
+    g.Adj_indices = (int *)safe_calloc(myGraph_p->M/2,sizeof(int));
     g.Adj_size = myGraph_p->M/2;
     for (i=0; i<myGraph_p->M/2;i++){
         g.Adj_indices[i]=i;
     }
 
     /** Start groups division here
-    extracting singletones **/
+    extracting singletons */
     final_cluster.total_nodes = myGraph_p->number_of_nodes;
-    final_cluster.nodes_group_ind = (int *)malloc(myGraph_p->number_of_nodes*sizeof(int));
-    separate_singletones(myGraph_p,g_p,final_cluster_p);
+    final_cluster.nodes_group_ind = (int *)safe_malloc(myGraph_p->number_of_nodes*sizeof(int));
+    separate_singletons(myGraph_p,g_p,final_cluster_p);
 
     /** create root */
     push(g_p->Adj_size,g_p->group_size,g_p->indices,g_p->Adj_indices,&root);

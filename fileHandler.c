@@ -13,7 +13,8 @@ int readFile(char *fileName, struct Graph *graph) {
     fread(&n, sizeof(int), 1, stream);
     graph->number_of_nodes = n;
     graph->deg_vec->size = n;
-    graph->deg_vec->data = (int*) malloc( n * sizeof(int));
+    graph->deg_vec->data = (int*) safe_malloc( n * sizeof(int));
+//    graph->deg_vec->data = (int*) safe_malloc( n * sizeof(int));
 
     for (i=0; i<graph->number_of_nodes; i++){
         a = fread(&buffer1, sizeof(int), 1, stream);
@@ -27,8 +28,8 @@ int readFile(char *fileName, struct Graph *graph) {
     graph->adj_matrix->size = m/2;
 
     /*size of ADJ matrix will be 1/2 of total degrees M, storing one of the symmetric halves in sparse matrix format, can allocate memory now*/
-    graph->adj_matrix->row = (int*) malloc( graph->M/2* sizeof(int));
-    graph->adj_matrix->col = (int*) malloc( graph->M/2* sizeof(int));
+    graph->adj_matrix->row = (int*) safe_malloc( graph->M/2* sizeof(int));
+    graph->adj_matrix->col = (int*) safe_malloc( graph->M/2* sizeof(int));
     rewind(stream);
     a = fread(&buffer1, sizeof(int), 1, stream);
     if (a == 0) {
@@ -64,7 +65,7 @@ int writeToFile(char* fileName, Final_List* final_cluster_p){
     }
 
     /*complexity can be improved to O(n) changing the data structure,add Element to it with groups ordered*/
-    group_sizes = (int*)malloc(final_cluster_p->total_groups* sizeof(int));
+    group_sizes = (int*)safe_malloc(final_cluster_p->total_groups* sizeof(int));
     for (j = 0; j < final_cluster_p->total_groups; j++) {
         count =0;
         for (i=0; i<final_cluster_p->total_nodes; i++) {

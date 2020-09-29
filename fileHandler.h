@@ -14,6 +14,7 @@
 #define PROJECT_TOHNA_FILEHANDLER_H
 
 #include "structures.h"
+#include "safe_memory.h"
 
 
 int readFile(char *fileName, Graph *graph);

@@ -2,7 +2,7 @@
 #define PROJECT_TOHNA_MAXIMIZATION_H
 
 #include "Group_handler.h"
-#include "fileHandler.h"
+
 #include "Power_iter.h"
 
 int maximize(Graph* graph,Group* g_p, int *s_p);
