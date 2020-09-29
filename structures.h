@@ -30,11 +30,6 @@ typedef struct Vector_int {
     int *data;
 }Vector_int;
 
-typedef struct Vector_double {
-    int size;
-    double *data;
-}Vector_double;
-
 typedef struct SparseMatrix {
     int size;
     int *row;

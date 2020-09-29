@@ -54,7 +54,7 @@ int create_vec(Group* g, int size, double *vec){
 
 /** calculate ||C|| (sum of max column) /// optionally add it to diagonal elements of symmetric matrix B to create b^, but we dont need to keep b^
 /// complexity O(m+n)*n , sparse graphs with m ~ n are in in the focus thus the resulting complexity would be O(n^2) */
-int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row_sums_p){
+int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, double *row_sums_p){
     int i,j;
     double sum, max;
     double * temp;
@@ -97,13 +97,13 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
             sum += temp[j];
         }
 
-        row_sums_p->data[i]=sum;
+        row_sums_p[i]=sum;
         sum=0;
 
         /** the loop is O(n) */
         for (j=0; j<graph->number_of_nodes; j++){
             if(i==j){
-                sum += fabs(temp[j]-row_sums_p->data[i]);
+                sum += fabs(temp[j]-row_sums_p[i]);
             }
             else {
                 sum += fabs(temp[j]);
@@ -127,7 +127,7 @@ int matrix_shift_C_new(Graph* graph, Group* g, double* max_p, Vector_double *row
 }
 
 /** multiply vector by symmetric shifted matrix B ; O(n+m) */
-int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, Vector_double *row_sums_p) {
+int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm, double *row_sums_p) {
     int i=0, ind1=0,ind2=0;
     long double cons=0.0, *comp2, *comp3; double* comp;
 
@@ -176,7 +176,7 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
     /** step6 - deduct Row sums of B_hat matrix * Eigenvector  - O(n) */
     comp = (double *)safe_malloc(graph->number_of_nodes*sizeof(double));
     for(i=0; i<graph->number_of_nodes;i++){
-        comp[i] = row_sums_p->data[i]*rand_vec[i];
+        comp[i] = row_sums_p[i]*rand_vec[i];
         row_norm[i] = row_norm[i] - comp[i];
     }
 
@@ -189,7 +189,7 @@ int vec_mult_B_shifted(Graph* graph, Group* g_p, double *rand_vec, double max,do
 }
 
 /**O(n+m) due to vec_mult_B complexity */
-int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm,Vector_double *row_sums_p){
+int norm_vec (Graph* graph, Group* g_p, double *rand_vec, double max,double *row_norm,double *row_sums_p){
     int i=0;
     double sum=0.0;
     vec_mult_B_shifted(graph, g_p,rand_vec,max,row_norm,row_sums_p);
@@ -228,7 +228,7 @@ int check_difference(int height ,double *temp ,double *next){
 }
 
 /**power iteration which starts with random vector and matrix shift and returns the Pair structure with eigenvector and eigenvalue */
-int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_sums_p){
+int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, double *row_sums_p){
     double *temp = NULL, *row_norm = NULL,  *vec = NULL, *max =NULL, numerator, max_v;
     int check, true=0, i=0, iteration=0, max_iteration; double value_without_c; double* vect_temp;
     max = &max_v;
@@ -286,7 +286,7 @@ int powerIteration(Graph* graph, Group* g_p, Pair* pair_p, Vector_double *row_su
 }
 
 
-int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, double* dq_p){
+int calculate_dq(Graph* graph,Group* g_p, int *s_p, double *row_sums_p, double* dq_p){
     int i=0, ind1=0,ind2=0; double* row_norm; int* indices_set; int* Adj_indices_set;
     long double cons=0.0, *comp2; double* comp;
     *dq_p=0.0;
@@ -334,7 +334,7 @@ int calculate_dq(Graph* graph,Group* g_p, int *s_p, Vector_double *row_sums_p, d
     /** step5 - deduct Row sums of B_hat matrix * vector S  - O(n) */
     comp = (double *)safe_malloc(graph->number_of_nodes*sizeof(double));
     for(i=0; i<graph->number_of_nodes;i++){
-        comp[i] = row_sums_p->data[i]*s_p[i];
+        comp[i] = row_sums_p[i]*s_p[i];
         row_norm[i] = row_norm[i] - comp[i];
     }
 

@@ -137,12 +137,12 @@ int separate_singletons(Graph *graph, Group* group, Final_List* final_cluster_p)
     /** function receives group and applies Power iteration algorithm, followed by maximization to */
 int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *dq_p){
     /** declarations */
-    Pair pair = {0.0, NULL};Vector_double row_sums = {0,NULL};Vector_double *row_sums_p;
+    Pair pair = {0.0, NULL};double *row_sums_p = NULL;
     int *s_p;
     /** pointers */
-    Pair* pair_p = &pair;row_sums_p=&row_sums;
+    Pair* pair_p = &pair;
 
-    row_sums.data = (double *)safe_calloc(graph->number_of_nodes,sizeof(double));
+    row_sums_p = (double *)safe_calloc(graph->number_of_nodes,sizeof(double));
     /** O(n^2) * number of iterations needed to converge (regularly expected to be O(n) based on the literature and Newman Paper) */
     powerIteration(graph, g, pair_p, row_sums_p);
 
@@ -157,20 +157,20 @@ int divide_group_into_two(Graph* graph, Group* g, Group* g1, Group* g2, double *
 
     if (!IS_POSITIVE(pair_p->eigenvalue)){
         free(pair_p->eigenvector);
-        free(row_sums.data);
+        free(row_sums_p);
         free(s_p);
         return 1;
     }
     else if (!IS_POSITIVE(*dq_p)){
         free(pair_p->eigenvector);
-        free(row_sums.data);
+        free(row_sums_p);
         free(s_p);
         return 1;
     }
     else{
         split_group_based_on_s(s_p, graph, g1, g2);
         free(pair_p->eigenvector);
-        free(row_sums.data);
+        free(row_sums_p);
         free(s_p);
         return 0;
     }
