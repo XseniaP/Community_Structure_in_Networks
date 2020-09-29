@@ -55,7 +55,7 @@ int readFile(char *fileName, struct Graph *graph) {
 }
 
 int writeToFile(char* fileName, Final_List* final_cluster_p){
-    int n,i,j; int *group_sizes;  int count;
+    int n=0,i,j; int *group_sizes;  int count;
     FILE *f = fopen(fileName, "wb");
     n = fwrite(&final_cluster_p->total_groups, sizeof(int), 1, f);
     if (n!=1){
