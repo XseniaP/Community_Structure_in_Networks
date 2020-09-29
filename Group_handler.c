@@ -41,17 +41,6 @@ Group* top(struct Group* stack){
     }
 }
 
-//
-//int add_group_to_final_cluster(Group* g_p, Final_List* final_cluster_p){
-//    int i;
-//    final_cluster_p->total_groups +=1;
-//    for (i=0;i<g_p->group_size;i++){
-//        final_cluster_p->nodes_group_ind[g_p->indices[i]] = final_cluster_p->total_groups;
-//    }
-//    return 0;
-//}
-
-
 int add_group_to_final_set(int Adj_size,int group_size,int* indices, int *Adj_indices, struct Group** stack){
     if((*stack)->indices == NULL){
         push(Adj_size,group_size,indices,Adj_indices,stack);
